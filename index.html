@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crescenzo Esposito | Cybersecurity & Systems Engineer</title>
+    <meta name="description" content="Portfolio of Crescenzo Esposito - Cybersecurity M.Sc. Student, Graduate Research Assistant (PNRR Age-IT), IoT Hardening, ROS2 Middleware & Biomedical ML Author." />
+    <meta name="author" content="Crescenzo Esposito" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Crescenzo Esposito | Cybersecurity & Systems Engineer" />
+    <meta property="og:description" content="Cybersecurity M.Sc. Student, PNRR Age-IT Graduate Research Assistant, Zero-Trust IoT & ROS2 Developer." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kappino.github.io/" />
+
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- SPA redirect decoder for GitHub Pages -->
+    <script type="text/javascript">
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, '',
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased font-sans">
+    <div id="root"></div>
+    <noscript>This portfolio requires JavaScript to run. Please enable it in your browser.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
