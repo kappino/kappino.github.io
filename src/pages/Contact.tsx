@@ -12,13 +12,13 @@ export const Contact = () => {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  useEffect(() => () => clearTimeout(copyTimeoutRef.current), []);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => { if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current); }, []);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(personalInfo.email).then(() => {
       setCopied(true);
-      clearTimeout(copyTimeoutRef.current);
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
       copyTimeoutRef.current = setTimeout(() => setCopied(false), 2500);
     }).catch(() => { /* clipboard access denied */ });
   };

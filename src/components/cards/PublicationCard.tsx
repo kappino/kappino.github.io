@@ -9,13 +9,13 @@ interface PublicationCardProps {
 
 export const PublicationCard: React.FC<PublicationCardProps> = ({ publication }) => {
   const [copied, setCopied] = useState(false);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  useEffect(() => () => clearTimeout(copyTimeoutRef.current), []);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => { if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current); }, []);
 
   const handleCopyBibtex = () => {
     navigator.clipboard.writeText(publication.bibtex).then(() => {
       setCopied(true);
-      clearTimeout(copyTimeoutRef.current);
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
       copyTimeoutRef.current = setTimeout(() => setCopied(false), 2500);
     }).catch(() => { /* clipboard access denied */ });
   };

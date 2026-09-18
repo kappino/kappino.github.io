@@ -92,15 +92,15 @@ def train_spectra_classifier(raw_eeg_signals, labels):
 export const CodeSnippetViewer = () => {
   const [activeTab, setActiveTab] = useState('esp32');
   const [copied, setCopied] = useState(false);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  useEffect(() => () => clearTimeout(copyTimeoutRef.current), []);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => { if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current); }, []);
 
   const snippet = SNIPPETS.find((s) => s.id === activeTab) || SNIPPETS[0];
 
   const handleCopy = () => {
     navigator.clipboard.writeText(snippet.code).then(() => {
       setCopied(true);
-      clearTimeout(copyTimeoutRef.current);
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
       copyTimeoutRef.current = setTimeout(() => setCopied(false), 2500);
     }).catch(() => { /* clipboard access denied */ });
   };

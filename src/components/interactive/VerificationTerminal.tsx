@@ -9,8 +9,8 @@ interface VerificationTerminalProps {
 export const VerificationTerminal: React.FC<VerificationTerminalProps> = ({ terminal }) => {
   const [activeTabId, setActiveTabId] = useState<string>(terminal.tabs[0]?.id || '');
   const [copied, setCopied] = useState(false);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  useEffect(() => () => clearTimeout(copyTimeoutRef.current), []);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => () => { if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current); }, []);
 
   const activeTab = terminal.tabs.find((t) => t.id === activeTabId) || terminal.tabs[0];
 
@@ -21,7 +21,7 @@ export const VerificationTerminal: React.FC<VerificationTerminalProps> = ({ term
       : activeTab.output;
     navigator.clipboard.writeText(textToCopy).then(() => {
       setCopied(true);
-      clearTimeout(copyTimeoutRef.current);
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
       copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
     }).catch(() => { /* clipboard access denied */ });
   };

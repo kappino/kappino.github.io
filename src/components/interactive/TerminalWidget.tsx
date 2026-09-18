@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Terminal as TerminalIcon, CornerDownLeft, Trash2, HelpCircle, ChevronDown, ChevronUp, X, Plus } from 'lucide-react';
 
 interface CommandOutput {
