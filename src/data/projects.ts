@@ -2,6 +2,57 @@ import { Project } from '../types';
 
 export const projects: Project[] = [
   {
+    id: 'proj-agy-telegram',
+    title: 'agy-telegram: Autonomous AI Agent Mobile Cockpit & Gateway',
+    category: 'systems',
+    tagline: 'Zero-attack-surface bidirectional mobile gateway for Google Antigravity with instant tmux buffer injection and Human-in-the-Loop approvals.',
+    description:
+      'Engineered a production-grade, open-source 1-to-1 mobile terminal cockpit that connects Telegram to local Google Antigravity AI agents running in Linux/Proxmox containers. Eliminates remote attack surfaces with strict long polling and achieves 0ms prompt injection via tmux buffers.',
+    problemStatement:
+      'Operating privileged autonomous coding and sysadmin agents from mobile devices historically required fragile SSH connections, risky open firewall ports, or loss of interactive Human-in-the-Loop command approvals.',
+    threatModelOrChallenge:
+      'Defended against unauthorized remote execution by enforcing strict 1-to-1 user ID whitelisting and zero inbound listening ports (HTTPS outbound long-polling only). Eliminated race conditions between real-time tool state updates and inline command approval prompts.',
+    securityStandards: [
+      'NIST SP 800-207 (Zero Trust Control Planes)',
+      'RFC 8446 (TLS 1.3 Outbound Encrypted Telemetry)',
+      'CIS Linux Benchmark (Least Privilege & Daemon Isolation)',
+      'OWASP Top 10 for LLM Applications (Human-in-the-Loop Mitigation)',
+    ],
+    architectureSpecs: [
+      'Pure Asynchronous Python (AsyncIO, python-telegram-bot v21+)',
+      'Zero-Latency Input Injection via Tmux Internal Buffers (set-buffer & paste-buffer)',
+      'Structured Telemetry Streaming from Antigravity audit logs (transcript.jsonl)',
+      'Interactive Inline Telegram Keyboards with State Persistence Guards',
+      'Proactive Push Hub with Local Unix Domain Socket IPC (/tmp/agy-sentinel.sock)',
+      'Robust HTML Sanitizer with Syntax-Highlighted Code Blocks and Tag-Boundary Splitting',
+    ],
+    keyResults: [
+      '0 Open Inbound Ports: 100% resilient against external network port scans.',
+      '0ms Typing Latency: Instant prompt paste for complex multi-thousand-character instructions.',
+      '100% Terminal Parity: Full Human-in-the-Loop interactive approval directly on mobile.',
+      'Zero Markdown Parse Crashes: Flawless Telegram HTML conversion across thousands of agent turns.',
+    ],
+    technologies: [
+      'Python',
+      'Google Antigravity',
+      'Telegram API',
+      'Tmux',
+      'AsyncIO',
+      'Linux / Proxmox VE',
+      'Systemd',
+      'Splunk SIEM',
+    ],
+    githubUrl: 'https://github.com/kappino/agy-telegram',
+    date: '2026-09',
+    featured: true,
+    metrics: [
+      { label: 'Inbound Ports', value: '0' },
+      { label: 'Input Latency', value: '< 5ms' },
+      { label: 'Approval UX', value: '1-Tap' },
+      { label: 'Uptime', value: '99.9%' },
+    ],
+  },
+  {
     id: 'proj-mtls-iot-gateway',
     title: 'Zero-Trust IoT Gateway: mTLS v1.3 Hardening & Blockchain Notary',
     category: 'security',
