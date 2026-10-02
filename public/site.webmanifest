@@ -1,0 +1,16 @@
+{
+  "name": "Crescenzo Esposito | Cybersecurity & Systems Engineer",
+  "short_name": "kappino.me",
+  "description": "Portfolio of Crescenzo Esposito - Cybersecurity M.Sc. Student, Graduate Research Assistant (PNRR Age-IT), IoT Hardening, ROS2 Middleware & Biomedical ML Author.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

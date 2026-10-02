@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Shield, Bot, Cpu, Server, Mail, FileDown } from 'lucide-react';
+import { ArrowRight, BookOpen, Shield, Bot, Cpu, Server, Mail, FileDown, Activity } from 'lucide-react';
 import { personalInfo } from '@/data/personal';
 import { publications } from '@/data/publications';
 import { GithubIcon, LinkedinIcon } from '@/components/common/Icons';
@@ -232,69 +232,149 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 3. Three Plain-English Specializations */}
+      {/* 3. Engineering Pillars & Core Competencies */}
       <section id="specializations" className="snap-page-section min-h-[calc(100vh-3.5rem)] flex flex-col justify-center border-b border-zinc-800/80 py-12 lg:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full">
-          <div className="mb-10 pb-4 border-b border-zinc-800">
-            <span className="font-mono text-xs uppercase tracking-wider text-sky-400 font-semibold mb-1 block">
-              What I Work On
-            </span>
-            <h2 className="text-2xl font-bold text-white tracking-tight">
-              Three Main Specializations
-            </h2>
+          <div className="mb-8 pb-4 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <span className="font-mono text-xs uppercase tracking-wider text-sky-400 font-semibold mb-1 block">
+                Engineering Domains &amp; Competencies
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                What I Build &amp; Research
+              </h2>
+            </div>
+            <p className="text-xs text-zinc-400 max-w-md">
+              Bridging bare-metal execution, cryptographic edge defense, autonomous robotics, and clinical signal analysis.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Card 1 */}
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Domain 1: Zero-Trust & Network Hardening */}
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 flex flex-col justify-between hover:border-sky-500/40 hover:bg-zinc-900/70 transition-all group">
               <div>
-                <div className="h-10 w-10 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 mb-4">
-                  <Shield className="h-5 w-5" />
+                <div className="flex items-center justify-between mb-3">
+                  <div className="h-9 w-9 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 group-hover:scale-105 transition-transform">
+                    <Shield className="h-4 w-4" />
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-500/20">
+                    Security
+                  </span>
                 </div>
-                <h3 className="text-base font-bold text-white mb-2">
-                  IoT &amp; Network Security
+                <h3 className="text-sm font-bold text-white mb-2">
+                  Zero-Trust PKI &amp; IoT Hardening
                 </h3>
-                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed mb-4">
-                  I configure low-power microcontrollers to communicate over mutual TLS 1.3 with private certificates, dropping spoofed packets before they ever touch application memory.
+                <p className="text-xs text-zinc-300 leading-relaxed mb-4">
+                  Mutual TLS 1.3 handshake verification, isolated X.509 clientAuth architectures, and tamper-evident packet dropping on resource-constrained embedded nodes.
                 </p>
               </div>
-              <div className="text-[11px] font-mono text-sky-400 pt-3 border-t border-zinc-800/80">
-                mTLS v1.3 · X.509 · OpenSSL · Mosquitto
+              <div className="space-y-2 pt-3 border-t border-zinc-800/80">
+                <div className="text-[10px] font-mono text-sky-400 truncate">
+                  mTLS v1.3 · X.509 · HMAC · OpenSSL
+                </div>
+                <Link
+                  to="/projects/proj-mtls-iot-gateway"
+                  className="inline-flex items-center gap-1 text-[11px] font-mono text-zinc-400 group-hover:text-sky-300 transition-colors"
+                >
+                  <span>Inspect Gateway</span>
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
             </div>
 
-            {/* Card 2 */}
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between">
+            {/* Domain 2: Autonomous Robotics & ROS2 */}
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 flex flex-col justify-between hover:border-emerald-500/40 hover:bg-zinc-900/70 transition-all group">
               <div>
-                <div className="h-10 w-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
-                  <Bot className="h-5 w-5" />
+                <div className="flex items-center justify-between mb-3">
+                  <div className="h-9 w-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
+                    <Bot className="h-4 w-4" />
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                    Robotics
+                  </span>
                 </div>
-                <h3 className="text-base font-bold text-white mb-2">
-                  Healthcare Robotics &amp; ROS2
+                <h3 className="text-sm font-bold text-white mb-2">
+                  Robotics &amp; Deterministic Runtimes
                 </h3>
-                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed mb-4">
-                  I write ROS2 packages and rule inference runtimes for the CARE assistive robot. When an urgent patient medication alert triggers, the robot cancels routine patrol and navigates to the bedside.
+                <p className="text-xs text-zinc-300 leading-relaxed mb-4">
+                  ROS2 package engineering, asynchronous life-safety arbitration, and microsecond rule inference (GoRules JDM) for autonomous assistive healthcare robots.
                 </p>
               </div>
-              <div className="text-[11px] font-mono text-emerald-400 pt-3 border-t border-zinc-800/80">
-                ROS2 Humble · Python · GoRules JDM · Docker
+              <div className="space-y-2 pt-3 border-t border-zinc-800/80">
+                <div className="text-[10px] font-mono text-emerald-400 truncate">
+                  ROS2 Humble · JDM Tables · FSM · Python
+                </div>
+                <Link
+                  to="/projects/proj-care-decision-planner"
+                  className="inline-flex items-center gap-1 text-[11px] font-mono text-zinc-400 group-hover:text-emerald-300 transition-colors"
+                >
+                  <span>Inspect CARE Planner</span>
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
             </div>
 
-            {/* Card 3 */}
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between">
+            {/* Domain 3: Embedded Firmware & Real-Time Kernels */}
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 flex flex-col justify-between hover:border-amber-500/40 hover:bg-zinc-900/70 transition-all group">
               <div>
-                <div className="h-10 w-10 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-4">
-                  <Cpu className="h-5 w-5" />
+                <div className="flex items-center justify-between mb-3">
+                  <div className="h-9 w-9 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
+                    <Cpu className="h-4 w-4" />
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                    Embedded
+                  </span>
                 </div>
-                <h3 className="text-base font-bold text-white mb-2">
-                  Embedded Firmware &amp; ML
+                <h3 className="text-sm font-bold text-white mb-2">
+                  Embedded Systems &amp; RTOS
                 </h3>
-                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed mb-4">
-                  I write low-level C firmware on STM32 microcontrollers with FreeRTOS, and clean raw brainwave signals from 14-channel EEG headsets to classify psychiatric emotional states.
+                <p className="text-xs text-zinc-300 leading-relaxed mb-4">
+                  Bare-metal C/C++ firmware on 32-bit ARM Cortex-M (STM32) and ESP32, hardware sensor bus interfacing (I2C/SPI/PWM), and real-time scheduling on FreeRTOS &amp; ChibiOS.
                 </p>
               </div>
-              <div className="text-[11px] font-mono text-amber-400 pt-3 border-t border-zinc-800/80">
-                STM32 · FreeRTOS · EEG Signal ML (97.2%)
+              <div className="space-y-2 pt-3 border-t border-zinc-800/80">
+                <div className="text-[10px] font-mono text-amber-400 truncate">
+                  STM32 · ARM Cortex-M · ChibiOS · FreeRTOS
+                </div>
+                <Link
+                  to="/projects/proj-munnisc-cestinno"
+                  className="inline-flex items-center gap-1 text-[11px] font-mono text-zinc-400 group-hover:text-amber-300 transition-colors"
+                >
+                  <span>Inspect Hardware Prototype</span>
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Domain 4: Biomedical Signal ML & Systems */}
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 flex flex-col justify-between hover:border-purple-500/40 hover:bg-zinc-900/70 transition-all group">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="h-9 w-9 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform">
+                    <Activity className="h-4 w-4" />
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                    Biomedical ML
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-white mb-2">
+                  Biomedical ML &amp; Signal Processing
+                </h3>
+                <p className="text-xs text-zinc-300 leading-relaxed mb-4">
+                  Multi-channel wireless EEG artifact decontamination (PICARD-ICA), spectral PSD band separation, and supervised psychiatric classification (97.2% test accuracy).
+                </p>
+              </div>
+              <div className="space-y-2 pt-3 border-t border-zinc-800/80">
+                <div className="text-[10px] font-mono text-purple-400 truncate">
+                  PICARD ICA · MLP · Scikit-learn · 14-Ch EEG
+                </div>
+                <Link
+                  to="/projects/proj-spectra-eeg"
+                  className="inline-flex items-center gap-1 text-[11px] font-mono text-zinc-400 group-hover:text-purple-300 transition-colors"
+                >
+                  <span>Inspect SPECTRA Pipeline</span>
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
             </div>
           </div>

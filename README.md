@@ -8,6 +8,9 @@
 
 Personal engineering and academic portfolio for **Crescenzo Esposito** (`kappino`), showcasing applied research in **Cybersecurity**, **Zero-Trust IoT Hardening**, **ROS2 Robotic Coordination**, and **Biomedical Machine Learning**.
 
+- **Production URL**: [https://kappino.me](https://kappino.me) (Custom Domain on GitHub Pages)
+- **Deployment Status**: Automated CI/CD pipeline via GitHub Actions.
+
 ---
 
 ## Architecture & Highlights
@@ -54,7 +57,12 @@ npm run preview
 ├── public/
 │   ├── 404.html              # GitHub Pages SPA redirect router
 │   ├── blog/                 # Technical Markdown articles and index.json
-│   └── favicon.svg           # Vector shield icon
+│   ├── CNAME                 # Custom domain configuration (kappino.me)
+│   ├── favicon.svg           # Vector shield icon
+│   ├── og-image.png          # High-resolution 1200x630 Open Graph social preview
+│   ├── robots.txt            # Search engine crawler directives
+│   ├── sitemap.xml           # XML sitemap for SEO discovery
+│   └── site.webmanifest      # PWA metadata & bookmarking manifest
 ├── src/
 │   ├── components/
 │   │   ├── cards/            # ProjectCard, PublicationCard

@@ -54,6 +54,12 @@ export const personalInfo: PersonalInfo = {
       software: ['Python 3.11', 'FastAPI', 'Uvicorn', 'SQLite (WAL Mode)', 'Systemd Timers'],
     },
     {
+      name: 'ct108-immich',
+      role: 'Self-Hosted Asset & Machine Learning Engine',
+      specs: 'Debian 12 LXC, PostgreSQL pgvector, Redis caching, GPU-assisted ML microservices',
+      software: ['Immich Server', 'PostgreSQL (pgvector)', 'Redis', 'Machine Learning Microservices', 'Hardware Transcoding'],
+    },
+    {
       name: 'home-assistant-vm',
       role: 'Smart Home & LLM Assist Hub',
       specs: 'Home Assistant OS VM, Gemini Tool Calling integration, local automation',

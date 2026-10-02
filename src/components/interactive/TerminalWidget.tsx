@@ -14,9 +14,28 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
         <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">mTLS 1.3 Engine:</span> X.509 clientAuth ready (208ms handshake)</p>
         <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">ROS2 Decision Core:</span> GoRules JDM runtime evaluated (1.4ms)</p>
         <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">EEG Signal ML:</span> 97.2% classification accuracy (IAS-19)</p>
+        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">agy-telegram:</span> Mobile agent gateway online (0 inbound ports)</p>
         <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">Physical Nodes:</span> Proxmox host &amp; STM32/ESP32 bench online</p>
       </div>
       <p className="text-sky-400 text-[10px] pt-0.5">:: Click a pill below or type commands to inspect live packets and logs.</p>
+    </div>
+  ),
+  agy: (
+    <div className="font-mono text-xs space-y-2 text-zinc-300">
+      <p className="text-zinc-500">Executing: agy-telegram --telemetry --stream /tmp/agy-sentinel.sock</p>
+      <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 space-y-1.5 text-[11px]">
+        <div className="flex items-center justify-between text-sky-400 font-bold">
+          <span>[TELEGRAM_BOT] Long-Polling Daemon Active</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-300 font-mono">0 INBOUND PORTS</span>
+        </div>
+        <p className="text-zinc-400">|-- Auth Plane: Whitelisted 1-to-1 UserID enforcement (Strict Drop)</p>
+        <p className="text-zinc-400">|-- Control Plane: 0ms Tmux buffer paste injection (set-buffer &amp; paste-buffer)</p>
+        <p className="text-zinc-400">`-- Telemetry Stream: Live transcript.jsonl parser with HTML entity escaping</p>
+        <div className="flex items-center gap-2 pt-1 text-emerald-400 font-bold">
+          <span>[OK] Mobile Cockpit: Human-in-the-Loop interactive approvals ready</span>
+        </div>
+      </div>
+      <p className="text-sky-400 text-[10px]">:: Open source: github.com/kappino/agy-telegram</p>
     </div>
   ),
   mtls: (
@@ -65,7 +84,7 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
   ),
   homelab: (
     <div className="font-mono text-xs space-y-2 text-zinc-300">
-      <p className="text-zinc-500">Executing: tailscale status | grep -E "pve|npm|pihole|ct107"</p>
+      <p className="text-zinc-500">Executing: tailscale status | grep -E "pve|npm|pihole|ct107|immich"</p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1">
         <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
           <div className="flex items-center justify-between text-emerald-400 font-bold">
@@ -100,7 +119,7 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
   ),
   cv: (
     <div className="font-mono text-xs space-y-2 text-zinc-300">
-      <p className="text-zinc-500">Executing: curl -sSL -O https://kappino.github.io/esposito_crescenzo_cv.pdf</p>
+      <p className="text-zinc-500">Executing: curl -sSL -O https://kappino.me/esposito_crescenzo_cv.pdf</p>
       <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 space-y-1.5 text-[11px]">
         <div className="flex items-center justify-between text-zinc-400">
           <span>% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span>
@@ -137,6 +156,7 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
       <p className="text-zinc-400 font-semibold mb-1">Available Commands:</p>
       <p><span className="text-sky-400 font-bold">status</span>   :: Diagnostics &amp; live testbed health.</p>
       <p><span className="text-sky-400 font-bold">cv</span>       :: Fetch and download Curriculum Vitae via curl.</p>
+      <p><span className="text-sky-400 font-bold">agy</span>      :: agy-telegram mobile agent cockpit &amp; gateway.</p>
       <p><span className="text-sky-400 font-bold">mtls</span>     :: Simulate X.509 handshake verification and certificate checking.</p>
       <p><span className="text-sky-400 font-bold">ros2</span>     :: Inspect healthcare telemetry packet and priority override.</p>
       <p><span className="text-sky-400 font-bold">spectra</span>  :: Display EEG machine learning benchmark and paper award.</p>
@@ -183,7 +203,7 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
     setInputVal('');
   };
 
-  const runCommand = (cmd: string) => {
+  function runCommand(cmd: string) {
     // Strip query strings or trailing args for clean command routing (e.g. "cv?t=123" -> "cv")
     const cleanCmd = cmd.split('?')[0].trim();
     const raw = cleanCmd.toLowerCase();
@@ -203,6 +223,8 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
       cvTimeoutRef.current = setTimeout(() => {
         window.open('/esposito_crescenzo_cv.pdf', '_blank', 'noopener,noreferrer');
       }, 2000);
+    } else if (raw === 'agy' || raw.includes('telegram') || raw.includes('cockpit') || raw.includes('agent')) {
+      resolvedKey = 'agy';
     } else if (raw === 'bio' || raw.includes('kappino') || raw.includes('whoami')) {
       resolvedKey = 'bio';
     } else if (raw === 'mtls' || raw.includes('openssl') || raw.includes('cert') || raw.includes('security')) {
@@ -231,11 +253,14 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
 
     setHistory((prev) => [...prev, { command: cleanCmd, output: out }]);
     setInputVal('');
-  };
+  }
 
   useEffect(() => {
     if (externalTriggerCommand) {
-      runCommand(externalTriggerCommand);
+      const timer = setTimeout(() => {
+        runCommand(externalTriggerCommand);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [externalTriggerCommand]);
 
@@ -387,6 +412,7 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
           {[
             { id: 'status', label: 'status' },
             { id: 'cv', label: 'curl cv.pdf' },
+            { id: 'agy', label: 'agy' },
             { id: 'mtls', label: 'mtls' },
             { id: 'ros2', label: 'ros2' },
             { id: 'spectra', label: 'spectra' },
