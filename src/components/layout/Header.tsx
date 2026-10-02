@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Shield, Terminal, BookOpen, Briefcase, Mail } from 'lucide-react';
+import { Menu, X, Shield, Terminal, BookOpen, Briefcase, Mail, Home } from 'lucide-react';
 import { personalInfo } from '@/data/personal';
 
 const NAV_ITEMS = [
+  { path: '/', label: 'Home', icon: Home },
   { path: '/projects', label: 'Projects', icon: Terminal },
   { path: '/research', label: 'Research', icon: Shield },
   { path: '/experience', label: 'Experience', icon: Briefcase },
