@@ -5,18 +5,51 @@
 @layer base {
   :root {
     color-scheme: dark;
+    accent-color: #38bdf8;
+    --scrollbar-thumb: #27272a;
+    --scrollbar-track: #09090b;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    scrollbar-width: thin;
+  }
+
+  @media (prefers-contrast: more) {
+    :root {
+      --scrollbar-thumb: #38bdf8;
+      --scrollbar-track: #000000;
+    }
   }
 
   html {
     background-color: #09090b;
     color: #f4f4f5;
-    scroll-behavior: smooth;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Target navigation smooth scroll only on intentional anchor clicks */
+  @media (prefers-reduced-motion: no-preference) {
+    :root:has(:target) {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
     min-height: 100vh;
     overflow-x: clip; /* clip prevents horizontal bleed without breaking root-level scroll-snap */
+  }
+
+  /* Modern Web Typography: Balanced headlines and runt-free paragraphs */
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  p, blockquote, li {
+    text-wrap: pretty;
+  }
+
+  /* Accessible high-visibility focus indicators */
+  :focus-visible {
+    outline: 2px solid #38bdf8;
+    outline-offset: 2px;
   }
 
   ::selection {
@@ -27,22 +60,37 @@
   /* Monospace block styling */
   pre, code {
     font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    color-scheme: dark;
   }
 
-  /* Minimal scrollbar */
-  ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+  /* WebKit Scrollbar Fallback */
+  @supports not (scrollbar-color: auto) {
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
   }
-  ::-webkit-scrollbar-track {
-    background: #09090b;
+}
+
+/* User Motion Preference Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
   }
-  ::-webkit-scrollbar-thumb {
-    background: #27272a;
-    border-radius: 4px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #3f3f46;
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
@@ -52,6 +100,12 @@
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+}
+
+/* Performance: Off-screen Content-Visibility Optimization */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
 }
 
 /* Root-level Snap Scroll when on Home page */
@@ -70,3 +124,23 @@ html.snap-active {
   scroll-snap-stop: normal;
 }
 
+/* KaTeX Math Typography & Overflow Handling */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.75rem 1rem;
+  margin: 1.5rem 0 !important;
+  background: rgba(18, 18, 21, 0.6);
+  border: 1px solid rgba(39, 39, 42, 0.8);
+  border-radius: 0.75rem;
+}
+
+.katex {
+  font-size: 1.05em;
+  text-rendering: auto;
+  color: #e4e4e7;
+}
+
+.katex .mord.mathnormal {
+  color: #7dd3fc;
+}

@@ -27,15 +27,15 @@ export const Projects: React.FC = () => {
     <div className="py-16 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
-        <div className="mb-12">
+        <div className="mb-10 pb-6 border-b border-zinc-800/80">
           <span className="font-mono text-xs uppercase tracking-widest text-sky-400 font-semibold mb-2 block">
-            Engineering Portfolio
+            Systems &amp; Specifications
           </span>
-          <h1 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-4">
+          <h1 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-3">
             Projects &amp; Architectures
           </h1>
-          <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-            A curated index of hardware-software systems, cryptographic hardening implementations, robotic middlewares, and machine learning pipelines developed for research and practical applications.
+          <p className="text-sm sm:text-base text-zinc-300 max-w-2xl leading-relaxed">
+            Curated implementations across autonomous agent runtimes, cryptographic microcontrollers, and real-time robotics middlewares built from first principles.
           </p>
         </div>
 

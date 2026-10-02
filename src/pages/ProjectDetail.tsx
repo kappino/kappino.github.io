@@ -1,22 +1,59 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Terminal, ShieldAlert, CheckCircle2, Layers, Shield, Copy, Check } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  ExternalLink,
+  CheckCircle2,
+  Layers,
+  Shield,
+  Copy,
+  Check,
+  BookOpen,
+} from 'lucide-react';
 import { projects } from '@/data/projects';
 import { GithubIcon } from '@/components/common/Icons';
 import { VerificationTerminal } from '@/components/interactive/VerificationTerminal';
 import { MisuseCaseDiagram } from '@/components/interactive/MisuseCaseDiagram';
+
+const PROJECT_ARTICLE_MAP: Record<string, { title: string; url: string }> = {
+  'proj-agy-telegram': {
+    title: 'Mobile Cockpit & Gateway for Google Antigravity',
+    url: '/blog/agy-telegram-mobile-cockpit',
+  },
+  'proj-mtls-iot-gateway': {
+    title: 'Zero-Trust mTLS v1.3 with Hardware Crypto on ESP32',
+    url: '/blog/zero-trust-mtls-constrained-iot-esp32',
+  },
+  'proj-care-decision-planner': {
+    title: 'Deterministic Life-Safety Arbitration in ROS2 via GoRules JDM',
+    url: '/blog/deterministic-life-safety-arbitration-ros2-gorules',
+  },
+  'proj-spectra-eeg': {
+    title: 'Schizophrenia Emotion Recognition via 14-Channel EEG (IAS-19)',
+    url: '/blog/eeg-emotion-recognition-schizophrenia-ias19',
+  },
+};
 
 export const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [diagramCopied, setDiagramCopied] = useState(false);
   const project = projects.find((p) => p.id === id);
 
+  const { prevProject, nextProject } = useMemo(() => {
+    const currentIndex = projects.findIndex((p) => p.id === id);
+    if (currentIndex === -1) return { prevProject: null, nextProject: null };
+    const prev = currentIndex > 0 ? projects[currentIndex - 1] : null;
+    const next = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null;
+    return { prevProject: prev, nextProject: next };
+  }, [id]);
+
   if (!project) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-28 text-center">
         <h1 className="text-2xl font-bold text-white mb-4">Project Not Found</h1>
         <p className="text-zinc-400 mb-8 text-sm">
-          The requested technical specification does not exist or has been archived.
+          The requested technical specification does not exist or has been relocated.
         </p>
         <Link
           to="/projects"
@@ -28,6 +65,8 @@ export const ProjectDetail: React.FC = () => {
       </div>
     );
   }
+
+  const relatedArticle = project ? PROJECT_ARTICLE_MAP[project.id] : null;
 
   return (
     <div className="py-16 sm:py-24">
@@ -61,7 +100,7 @@ export const ProjectDetail: React.FC = () => {
             {project.description}
           </p>
 
-          {/* External Code & Demo Links */}
+          {/* External Code & Deep-Dive Action Bar */}
           <div className="flex flex-wrap items-center gap-3">
             {project.githubUrl && (
               <a
@@ -74,6 +113,17 @@ export const ProjectDetail: React.FC = () => {
                 <span>View Source Repository</span>
               </a>
             )}
+
+            {relatedArticle && (
+              <Link
+                to={relatedArticle.url}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/40 text-xs font-mono text-sky-300 hover:text-white transition-colors"
+              >
+                <BookOpen className="h-4 w-4 text-sky-400" />
+                <span>Read Technical Article</span>
+              </Link>
+            )}
+
             {project.demoUrl && (
               <a
                 href={project.demoUrl}
@@ -108,25 +158,13 @@ export const ProjectDetail: React.FC = () => {
           </div>
         )}
 
-        {/* Real Metrics Banner */}
-        {project.metrics && project.metrics.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-12">
-            {project.metrics.map((m) => (
-              <div key={m.label} className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-                <div className="text-[10px] font-mono text-zinc-500 uppercase mb-1">{m.label}</div>
-                <div className="text-sm sm:text-base font-mono font-bold text-sky-400">{m.value}</div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ASCII Architecture Diagram if Available */}
+        {/* Architecture Diagram (ASCII Specification) */}
         {project.architectureDiagram && (
           <section className="mb-12">
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 overflow-hidden shadow-md">
-              <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-zinc-900/70 font-mono text-xs text-zinc-400">
-                <div className="flex items-center gap-2">
-                  <Terminal className="h-3.5 w-3.5 text-sky-400" />
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950/90 shadow-xl overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-900/90 border-b border-zinc-800 text-xs font-mono text-zinc-400">
+                <div className="flex items-center gap-2 text-sky-400">
+                  <span className="h-2 w-2 rounded-full bg-sky-400 animate-pulse" />
                   <span>architecture_diagram.txt</span>
                 </div>
                 <button
@@ -183,9 +221,8 @@ export const ProjectDetail: React.FC = () => {
 
           {project.threatModelOrChallenge && (
             <div className="p-6 rounded-xl bg-zinc-900/40 border border-zinc-800">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold mb-2 flex items-center gap-1.5">
-                <ShieldAlert className="h-3.5 w-3.5" />
-                <span>Threat Model &amp; Technical Solution</span>
+              <h3 className="text-xs font-mono uppercase tracking-wider text-rose-400 font-semibold mb-2">
+                Threat Model &amp; Technical Challenge
               </h3>
               <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
                 {project.threatModelOrChallenge}
@@ -235,7 +272,7 @@ export const ProjectDetail: React.FC = () => {
         )}
 
         {/* Technology Stack & Toolchain */}
-        <section className="border-t border-zinc-800 pt-8">
+        <section className="border-t border-zinc-800 pt-8 pb-12">
           <h3 className="text-xs font-mono uppercase tracking-wider text-zinc-500 mb-3">
             Toolchain, Languages &amp; Standards
           </h3>
@@ -248,6 +285,51 @@ export const ProjectDetail: React.FC = () => {
                 {t}
               </span>
             ))}
+          </div>
+        </section>
+
+        {/* Next / Previous Project Navigation Cards */}
+        <section className="border-t border-zinc-800 pt-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {prevProject ? (
+              <Link
+                to={`/projects/${prevProject.id}`}
+                className="group p-5 rounded-xl border border-zinc-800 bg-zinc-900/30 hover:bg-zinc-900/70 hover:border-zinc-700 transition-all flex flex-col justify-between"
+              >
+                <div className="flex items-center gap-1.5 text-xs font-mono text-zinc-500 mb-2">
+                  <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
+                  <span>Previous System Spec</span>
+                </div>
+                <div className="text-xs font-mono text-sky-400 uppercase tracking-wider mb-1">
+                  {prevProject.category}
+                </div>
+                <span className="text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-1">
+                  {prevProject.title}
+                </span>
+              </Link>
+            ) : (
+              <div />
+            )}
+
+            {nextProject ? (
+              <Link
+                to={`/projects/${nextProject.id}`}
+                className="group p-5 rounded-xl border border-zinc-800 bg-zinc-900/30 hover:bg-zinc-900/70 hover:border-zinc-700 transition-all flex flex-col justify-between text-right"
+              >
+                <div className="flex items-center justify-end gap-1.5 text-xs font-mono text-zinc-500 mb-2">
+                  <span>Next System Spec</span>
+                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+                </div>
+                <div className="text-xs font-mono text-sky-400 uppercase tracking-wider mb-1">
+                  {nextProject.category}
+                </div>
+                <span className="text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-1">
+                  {nextProject.title}
+                </span>
+              </Link>
+            ) : (
+              <div />
+            )}
           </div>
         </section>
       </div>

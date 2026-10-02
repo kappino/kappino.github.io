@@ -26,22 +26,22 @@ To solve this, we engineered **[agy-telegram](https://github.com/kappino/agy-tel
 
 ```mermaid
 flowchart TD
-    subgraph Mobile
-        TG[Telegram Mobile App]
+    subgraph Mobile ["Mobile Client"]
+        TG["Telegram Mobile App"]
     end
 
-    subgraph Host Infrastructure (Linux / Proxmox CT)
-        subgraph agy-telegram Daemon
-            BOT[Telegram Bot Core (python-telegram-bot)]
-            TW[JSONL Transcript Watcher]
-            TM[Tmux Mirror Engine]
-            SENTINEL[Unix Socket Sentinel Server]
+    subgraph Host_Infra ["Host Infrastructure (Linux / Proxmox CT)"]
+        subgraph Daemon ["agy-telegram Daemon"]
+            BOT["Telegram Bot Core (python-telegram-bot)"]
+            TW["JSONL Transcript Watcher"]
+            TM["Tmux Mirror Engine"]
+            SENTINEL["Unix Socket Sentinel Server"]
         end
 
-        subgraph Local Agent Environment
-            TMUX[Tmux Session: aegis:0.0]
-            AGY[Antigravity CLI (agy)]
-            AUDIT[transcript.jsonl Audit Log]
+        subgraph Local_Env ["Local Agent Environment"]
+            TMUX["Tmux Session: aegis:0.0"]
+            AGY["Antigravity CLI (agy)"]
+            AUDIT["transcript.jsonl Audit Log"]
         end
     end
 

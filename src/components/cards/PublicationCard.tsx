@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Award, Clock, Copy, Check, BookOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Award, Clock, Copy, Check, BookOpen, FileText } from 'lucide-react';
 import { Publication } from '@/types';
 import { Badge } from '@/components/common/Badge';
 
@@ -22,19 +23,29 @@ export const PublicationCard: React.FC<PublicationCardProps> = ({ publication })
 
   return (
     <article className="rounded-xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8 backdrop-blur-sm transition-all hover:border-slate-700/80 shadow-md">
-      {/* Badges Bar */}
-      <div className="flex flex-wrap items-center gap-2.5 mb-4">
-        <Badge variant="warning" size="md">
-          <Award className="h-3.5 w-3.5" />
-          <span>Best Student Paper Finalist</span>
-        </Badge>
-        <Badge variant="accent" size="md">
-          <Clock className="h-3.5 w-3.5" />
-          <span>{publication.status}</span>
-        </Badge>
-        <span className="font-mono text-xs text-slate-400">
-          {publication.series} · {publication.year}
-        </span>
+      {/* Badges Bar & Direct Link */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Badge variant="warning" size="md">
+            <Award className="h-3.5 w-3.5" />
+            <span>Best Student Paper Finalist</span>
+          </Badge>
+          <Badge variant="accent" size="md">
+            <Clock className="h-3.5 w-3.5" />
+            <span>{publication.status}</span>
+          </Badge>
+          <span className="font-mono text-xs text-slate-400">
+            {publication.series} · {publication.year}
+          </span>
+        </div>
+
+        <Link
+          to="/blog/eeg-emotion-recognition-schizophrenia-ias19"
+          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-sky-500/15 border border-sky-500/40 text-xs font-mono font-semibold text-sky-300 hover:text-white hover:bg-sky-500/25 transition-colors shadow-sm"
+        >
+          <FileText className="h-3.5 w-3.5 text-sky-400" />
+          <span>Read Paper Breakdown</span>
+        </Link>
       </div>
 
       {/* Title */}

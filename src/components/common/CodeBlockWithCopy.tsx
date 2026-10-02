@@ -38,13 +38,29 @@ export const CodeBlockWithCopy: React.FC<CodeBlockWithCopyProps> = ({
       .catch(() => {});
   };
 
+  // Detect language if passed via <code className="language-xyz">
+  let language = 'code';
+  if (React.isValidElement(children)) {
+    const childProps = children.props as { className?: string };
+    const match = /language-(\w+)/.exec(childProps?.className || '');
+    if (match) {
+      language = match[1];
+    }
+  }
+
   return (
-    <div className="relative group my-5 rounded-xl overflow-hidden border border-zinc-800 bg-zinc-950/90 shadow-lg">
-      <div className="flex items-center justify-between px-3.5 py-1.5 bg-zinc-900/80 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 select-none">
-        <span className="flex items-center gap-1.5 text-zinc-400">
-          <span className="h-2 w-2 rounded-full bg-sky-400/60" />
-          <span>code snippet</span>
-        </span>
+    <div className="relative group my-6 rounded-xl overflow-hidden border border-zinc-800 bg-zinc-950/95 shadow-xl">
+      <div className="flex items-center justify-between px-4 py-2 bg-zinc-900/90 border-b border-zinc-800 text-[11px] font-mono text-zinc-400 select-none">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-rose-500/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-500/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/70" />
+          </div>
+          <span className="ml-2 uppercase text-xs font-semibold text-sky-400">
+            {language}
+          </span>
+        </div>
         <button
           type="button"
           onClick={handleCopy}

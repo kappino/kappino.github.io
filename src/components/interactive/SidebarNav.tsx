@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Terminal, Layers, Shield, BookOpen, Server } from 'lucide-react';
+import { Terminal, Layers, Cpu, Shield, BookOpen, Server } from 'lucide-react';
 
 interface NavSection {
   id: string;
@@ -10,7 +10,8 @@ interface NavSection {
 const SECTIONS: NavSection[] = [
   { id: 'hero', label: 'Overview', icon: Terminal },
   { id: 'architecture', label: 'Architecture', icon: Layers },
-  { id: 'specializations', label: 'Specializations', icon: Shield },
+  { id: 'projects', label: 'Featured Systems', icon: Cpu },
+  { id: 'specializations', label: 'Domains', icon: Shield },
   { id: 'research', label: 'Research', icon: BookOpen },
   { id: 'homelab', label: 'Homelab', icon: Server },
 ];

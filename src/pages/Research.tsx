@@ -59,7 +59,7 @@ export const Research: React.FC = () => {
             <span>Peer-Reviewed Papers</span>
           </h2>
 
-          <div className="space-y-8">
+          <div className="space-y-8 content-visibility-auto">
             {publications.map((pub) => (
               <PublicationCard key={pub.id} publication={pub} />
             ))}

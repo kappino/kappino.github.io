@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Shield, Bot, Cpu, Server, Mail, FileDown, Activity } from 'lucide-react';
 import { personalInfo } from '@/data/personal';
 import { publications } from '@/data/publications';
+import { projects } from '@/data/projects';
 import { GithubIcon, LinkedinIcon } from '@/components/common/Icons';
 import { TerminalWidget } from '@/components/interactive/TerminalWidget';
 import { ArchitectureFlow } from '@/components/interactive/ArchitectureFlow';
@@ -11,6 +12,11 @@ import { SpotlightCard } from '@/components/common/SpotlightCard';
 
 export const Home: React.FC = () => {
   const featuredPublication = publications[0];
+  const featuredProjects = [
+    projects.find((p) => p.id === 'proj-agy-telegram'),
+    projects.find((p) => p.id === 'proj-mtls-iot-gateway'),
+    projects.find((p) => p.id === 'proj-care-decision-planner'),
+  ].filter(Boolean) as typeof projects;
   const [terminalTrigger, setTerminalTrigger] = useState<string | null>(null);
 
   const handleDownloadCV = () => {
@@ -171,9 +177,110 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. Three Plain-English Specializations */}
+      {/* 2.5 Featured Engineering Projects */}
+      <section id="projects" className="snap-page-section content-visibility-auto min-h-[calc(100vh-3.5rem)] flex flex-col justify-center border-b border-zinc-800/80 py-12 lg:py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full">
+          <div className="mb-6 sm:mb-8 pb-4 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <span className="font-mono text-xs uppercase tracking-wider text-sky-400 font-semibold mb-1 block">
+                Flagship Systems &amp; Hardware
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                Featured Engineering Implementations
+              </h2>
+            </div>
+            <Link
+              to="/projects"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-sky-400 hover:text-sky-300 transition-colors group"
+            >
+              <span>Explore All {projects.length} Projects &amp; Architectures</span>
+              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {featuredProjects.map((project) => (
+              <SpotlightCard
+                key={project.id}
+                className="p-5 flex flex-col justify-between"
+                spotlightColor="rgba(56, 189, 248, 0.12)"
+                borderColor="rgba(56, 189, 248, 0.35)"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3 text-xs">
+                    <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-500/20 uppercase tracking-wide">
+                      {project.category}
+                    </span>
+                    <span className="font-mono text-zinc-500 text-[11px]">{project.date}</span>
+                  </div>
+
+                  <h3 className="text-base font-bold text-white mb-2 leading-snug group-hover:text-sky-300 transition-colors">
+                    <Link to={`/projects/${project.id}`}>{project.title}</Link>
+                  </h3>
+
+                  <p className="text-xs text-zinc-300 leading-relaxed line-clamp-3 mb-4">
+                    {project.tagline || project.description}
+                  </p>
+
+                  {project.metrics && project.metrics.length > 0 && (
+                    <div className="grid grid-cols-2 gap-2 mb-4 p-2.5 rounded-lg bg-zinc-950 border border-zinc-800/80">
+                      {project.metrics.slice(0, 2).map((m, idx) => (
+                        <div key={idx} className="flex flex-col">
+                          <span className="text-[10px] font-mono text-zinc-500 uppercase">{m.label}</span>
+                          <span className="text-xs font-mono font-bold text-emerald-400 truncate">{m.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-3 border-t border-zinc-800/80">
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {project.technologies.slice(0, 3).map((t) => (
+                      <span
+                        key={t}
+                        className="px-2 py-0.5 rounded bg-zinc-950 font-mono text-[10px] text-zinc-300 border border-zinc-800"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                    {project.technologies.length > 3 && (
+                      <span className="px-1.5 py-0.5 rounded bg-zinc-950 font-mono text-[10px] text-zinc-500 border border-zinc-800">
+                        +{project.technologies.length - 3}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <Link
+                      to={`/projects/${project.id}`}
+                      className="inline-flex items-center gap-1.5 text-sky-400 group-hover:text-sky-300 font-medium transition-colors"
+                    >
+                      <span>System Specs</span>
+                      <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
+
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1 rounded text-zinc-400 hover:text-white transition-colors"
+                        title="GitHub Repository"
+                      >
+                        <GithubIcon className="h-3.5 w-3.5" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </SpotlightCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 3. Engineering Pillars & Core Competencies */}
-      <section id="specializations" className="snap-page-section min-h-[calc(100vh-3.5rem)] flex flex-col justify-center border-b border-zinc-800/80 py-12 lg:py-16">
+      <section id="specializations" className="snap-page-section content-visibility-auto min-h-[calc(100vh-3.5rem)] flex flex-col justify-center border-b border-zinc-800/80 py-12 lg:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full">
           <div className="mb-8 pb-4 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
@@ -338,7 +445,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* 4. Scientific Publication Spotlight */}
-      <section id="research" className="snap-page-section min-h-[calc(100vh-3.5rem)] flex flex-col justify-center border-b border-zinc-800/80 py-12 lg:py-16">
+      <section id="research" className="snap-page-section content-visibility-auto min-h-[calc(100vh-3.5rem)] flex flex-col justify-center border-b border-zinc-800/80 py-12 lg:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full">
           <div className="mb-6">
             <span className="font-mono text-xs uppercase tracking-wider text-sky-400 font-semibold mb-1 block">
@@ -371,20 +478,76 @@ export const Home: React.FC = () => {
               <div className="text-zinc-400">
                 Classification Accuracy: <strong className="text-emerald-400">97.2% (MLP)</strong> on 21 human subjects
               </div>
-              <Link
-                to="/research"
-                className="inline-flex items-center gap-1.5 text-sky-400 hover:text-sky-300"
-              >
-                <span>Full Paper &amp; BibTeX</span>
-                <ArrowRight className="h-3 w-3" />
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link
+                  to="/blog/eeg-emotion-recognition-schizophrenia-ias19"
+                  className="inline-flex items-center gap-1.5 text-sky-400 hover:text-sky-300 font-semibold"
+                >
+                  <span>Read Paper Breakdown</span>
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+                <span className="text-zinc-700">|</span>
+                <Link
+                  to="/research"
+                  className="inline-flex items-center gap-1 text-zinc-400 hover:text-white"
+                >
+                  <span>BibTeX Citation</span>
+                </Link>
+              </div>
             </div>
+          </div>
+
+          {/* Additional Research & Field Notes Grid */}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Link
+              to="/blog/deterministic-life-safety-arbitration-ros2-gorules"
+              className="group p-5 rounded-xl border border-zinc-800 bg-zinc-950/70 hover:bg-zinc-900/60 hover:border-sky-500/40 transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between text-xs font-mono text-zinc-400 mb-2">
+                  <span className="text-emerald-400 font-semibold">PNRR Age-IT (Spoke 3)</span>
+                  <span>Robotics &amp; Real-Time</span>
+                </div>
+                <h4 className="text-sm font-bold text-white group-hover:text-sky-300 transition-colors mb-2">
+                  Deterministic Life-Safety Arbitration in ROS2 via GoRules JDM
+                </h4>
+                <p className="text-xs text-zinc-400 line-clamp-2 mb-3">
+                  Microsecond decision tables (&lt; 12 µs), priority inheritance, and zero-allocation safety supervisory runtimes for the Probot CARE eldercare robot.
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-1 text-xs font-mono text-sky-400 group-hover:text-sky-300">
+                <span>Read Robotics Research Note</span>
+                <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Link>
+
+            <Link
+              to="/blog/zero-trust-mtls-constrained-iot-esp32"
+              className="group p-5 rounded-xl border border-zinc-800 bg-zinc-950/70 hover:bg-zinc-900/60 hover:border-sky-500/40 transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between text-xs font-mono text-zinc-400 mb-2">
+                  <span className="text-sky-400 font-semibold">Edge Cryptography</span>
+                  <span>Zero-Trust Architecture</span>
+                </div>
+                <h4 className="text-sm font-bold text-white group-hover:text-sky-300 transition-colors mb-2">
+                  Hardening Constrained Telemetry: Zero-Trust mTLS v1.3 on ESP32
+                </h4>
+                <p className="text-xs text-zinc-400 line-clamp-2 mb-3">
+                  Surviving TLS 1.3 memory exhaustion on 320 KB SRAM, FreeRTOS mbedTLS hardware crypto, and 42 ms session ticket resumption.
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-1 text-xs font-mono text-sky-400 group-hover:text-sky-300">
+                <span>Read Cryptographic Architecture</span>
+                <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Link>
           </div>
         </div>
       </section>
 
       {/* 6. Real Hardware Homelab Environment */}
-      <section id="homelab" className="snap-page-section min-h-[calc(100vh-3.5rem)] flex flex-col justify-center py-12 lg:py-16 bg-zinc-900/20">
+      <section id="homelab" className="snap-page-section content-visibility-auto min-h-[calc(100vh-3.5rem)] flex flex-col justify-center py-12 lg:py-16 bg-zinc-900/20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full">
           <div className="mb-8 pb-4 border-b border-zinc-800">
             <span className="font-mono text-xs uppercase tracking-wider text-sky-400 font-semibold mb-1 block">
