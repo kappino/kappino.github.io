@@ -7,8 +7,7 @@ import { GithubIcon, LinkedinIcon } from '@/components/common/Icons';
 import { TerminalWidget } from '@/components/interactive/TerminalWidget';
 import { ArchitectureFlow } from '@/components/interactive/ArchitectureFlow';
 import { SidebarNav } from '@/components/interactive/SidebarNav';
-
-const SECTION_IDS = ['hero', 'architecture', 'specializations', 'research', 'homelab'];
+import { SpotlightCard } from '@/components/common/SpotlightCard';
 
 export const Home: React.FC = () => {
   const featuredPublication = publications[0];
@@ -22,67 +21,8 @@ export const Home: React.FC = () => {
   useEffect(() => {
     document.documentElement.classList.add('snap-active');
 
-    let isLocked = false;
-    let lockTimeout: ReturnType<typeof setTimeout> | null = null;
-
-    const handleWheel = (e: WheelEvent) => {
-      if (window.innerWidth < 1024) return;
-      if (Math.abs(e.deltaY) < 30) return;
-
-      const target = e.target as HTMLElement | null;
-      if (target && target.closest('.overflow-y-auto')) {
-        return;
-      }
-
-      if (isLocked) {
-        e.preventDefault();
-        return;
-      }
-
-      const scrollPos = window.scrollY + 100;
-      const offsets = SECTION_IDS.map((id) => {
-        const el = document.getElementById(id);
-        return el ? el.offsetTop - 56 : 0;
-      });
-
-      let currentIdx = 0;
-      for (let i = 0; i < offsets.length; i++) {
-        if (scrollPos >= offsets[i] - 60) {
-          currentIdx = i;
-        }
-      }
-
-      if (e.deltaY > 0 && currentIdx < SECTION_IDS.length - 1) {
-        e.preventDefault();
-        isLocked = true;
-        const nextId = SECTION_IDS[currentIdx + 1];
-        const nextEl = document.getElementById(nextId);
-        if (nextEl) {
-          nextEl.scrollIntoView({ behavior: 'smooth' });
-        }
-        lockTimeout = setTimeout(() => {
-          isLocked = false;
-        }, 650);
-      } else if (e.deltaY < 0 && currentIdx > 0) {
-        e.preventDefault();
-        isLocked = true;
-        const prevId = SECTION_IDS[currentIdx - 1];
-        const prevEl = document.getElementById(prevId);
-        if (prevEl) {
-          prevEl.scrollIntoView({ behavior: 'smooth' });
-        }
-        lockTimeout = setTimeout(() => {
-          isLocked = false;
-        }, 650);
-      }
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: false });
-
     return () => {
       document.documentElement.classList.remove('snap-active');
-      window.removeEventListener('wheel', handleWheel);
-      if (lockTimeout) clearTimeout(lockTimeout);
     };
   }, []);
 
@@ -251,7 +191,11 @@ export const Home: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Domain 1: Zero-Trust & Network Hardening */}
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 flex flex-col justify-between hover:border-sky-500/40 hover:bg-zinc-900/70 transition-all group">
+            <SpotlightCard
+              className="p-5"
+              spotlightColor="rgba(56, 189, 248, 0.15)"
+              borderColor="rgba(56, 189, 248, 0.45)"
+            >
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="h-9 w-9 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 group-hover:scale-105 transition-transform">
@@ -280,10 +224,14 @@ export const Home: React.FC = () => {
                   <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
-            </div>
+            </SpotlightCard>
 
             {/* Domain 2: Autonomous Robotics & ROS2 */}
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 flex flex-col justify-between hover:border-emerald-500/40 hover:bg-zinc-900/70 transition-all group">
+            <SpotlightCard
+              className="p-5"
+              spotlightColor="rgba(16, 185, 129, 0.15)"
+              borderColor="rgba(16, 185, 129, 0.45)"
+            >
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="h-9 w-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
@@ -312,10 +260,14 @@ export const Home: React.FC = () => {
                   <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
-            </div>
+            </SpotlightCard>
 
             {/* Domain 3: Embedded Firmware & Real-Time Kernels */}
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 flex flex-col justify-between hover:border-amber-500/40 hover:bg-zinc-900/70 transition-all group">
+            <SpotlightCard
+              className="p-5"
+              spotlightColor="rgba(245, 158, 11, 0.15)"
+              borderColor="rgba(245, 158, 11, 0.45)"
+            >
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="h-9 w-9 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
@@ -344,10 +296,14 @@ export const Home: React.FC = () => {
                   <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
-            </div>
+            </SpotlightCard>
 
             {/* Domain 4: Biomedical Signal ML & Systems */}
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 flex flex-col justify-between hover:border-purple-500/40 hover:bg-zinc-900/70 transition-all group">
+            <SpotlightCard
+              className="p-5"
+              spotlightColor="rgba(168, 85, 247, 0.15)"
+              borderColor="rgba(168, 85, 247, 0.45)"
+            >
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="h-9 w-9 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform">
@@ -376,7 +332,7 @@ export const Home: React.FC = () => {
                   <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
-            </div>
+            </SpotlightCard>
           </div>
         </div>
       </section>

@@ -4,6 +4,7 @@ import { ExternalLink, ArrowRight, Cpu, Shield, Bot, Microscope, Terminal } from
 import { GithubIcon } from '@/components/common/Icons';
 import { Project } from '@/types';
 import { Badge } from '@/components/common/Badge';
+import { SpotlightCard } from '@/components/common/SpotlightCard';
 
 interface ProjectCardProps {
   project: Project;
@@ -25,7 +26,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const CategoryIcon = meta.icon;
 
   return (
-    <article className="group flex flex-col justify-between rounded-xl border border-slate-800 bg-slate-900/40 p-6 transition-all duration-200 hover:border-slate-700 hover:bg-slate-900/70 shadow-sm hover:shadow-md">
+    <SpotlightCard className="p-6">
       <div>
         {/* Card Header: Category & Date */}
         <div className="flex items-center justify-between gap-2 mb-3">
@@ -115,6 +116,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           </div>
         </div>
       </div>
-    </article>
+    </SpotlightCard>
   );
 };

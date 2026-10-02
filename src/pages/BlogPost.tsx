@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm';
 import { ArrowLeft, Clock, Calendar, Loader2, User } from 'lucide-react';
 import { BlogPost } from '@/types';
 import { loadBlogPostBySlug } from '@/utils/blogLoader';
+import { CodeBlockWithCopy } from '@/components/common/CodeBlockWithCopy';
 
 export const BlogPostView: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -103,8 +104,13 @@ export const BlogPostView: React.FC = () => {
         </header>
 
         {/* Article Body */}
-        <article className="prose prose-invert max-w-none prose-headings:font-bold prose-headings:text-white prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-5 prose-a:text-sky-400 prose-a:underline hover:prose-a:text-sky-300 prose-code:text-sky-300 prose-code:bg-slate-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-xs prose-pre:bg-slate-950 prose-pre:border prose-pre:border-slate-800 prose-pre:p-4 prose-pre:rounded-xl prose-ul:list-disc prose-ul:pl-6 prose-ul:text-slate-300 prose-li:mb-2 prose-blockquote:border-l-2 prose-blockquote:border-sky-500/50 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-400">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        <article className="prose prose-invert max-w-none prose-headings:font-bold prose-headings:text-white prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-p:text-slate-300 prose-p:leading-relaxed prose-p:mb-5 prose-a:text-sky-400 prose-a:underline hover:prose-a:text-sky-300 prose-code:text-sky-300 prose-code:bg-slate-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-xs prose-ul:list-disc prose-ul:pl-6 prose-ul:text-slate-300 prose-li:mb-2 prose-blockquote:border-l-2 prose-blockquote:border-sky-500/50 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-400">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              pre: CodeBlockWithCopy as any,
+            }}
+          >
             {post.content}
           </ReactMarkdown>
         </article>

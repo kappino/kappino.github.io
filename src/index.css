@@ -62,7 +62,7 @@ html.snap-active {
 
 .snap-page-section {
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-snap-stop: normal;
 }
 
 .snap-page-footer {

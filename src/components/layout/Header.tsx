@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Shield, Terminal, BookOpen, Briefcase, Mail, Home } from 'lucide-react';
+import { Menu, X, Shield, Terminal, BookOpen, Briefcase, Mail, Home, Search } from 'lucide-react';
 import { personalInfo } from '@/data/personal';
+import { CommandPalette } from '@/components/interactive/CommandPalette';
 
 const NAV_ITEMS = [
   { path: '/', label: 'Home', icon: Home },
@@ -14,7 +15,19 @@ const NAV_ITEMS = [
 
 export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
@@ -58,11 +71,25 @@ export const Header: React.FC = () => {
           })}
         </nav>
 
-        {/* Direct Email / Action */}
-        <div className="flex items-center gap-3">
+        {/* Search & Direct Action */}
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setPaletteOpen(true)}
+            className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-400 hover:text-zinc-200 transition-colors"
+            title="Quick search & commands (Ctrl+K)"
+            aria-label="Quick search & commands"
+          >
+            <Search className="h-3.5 w-3.5 text-sky-400" />
+            <span className="hidden sm:inline text-[11px] text-zinc-400">Search</span>
+            <kbd className="hidden sm:inline-block text-[9px] bg-zinc-800 px-1 py-0.5 rounded border border-zinc-700 text-zinc-400">
+              Ctrl K
+            </kbd>
+          </button>
+
           <Link
             to="/contact"
-            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-300 transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-300 transition-colors"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
             <span>get in touch</span>
@@ -71,7 +98,7 @@ export const Header: React.FC = () => {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-1.5 rounded text-zinc-400 hover:text-white hover:bg-zinc-900 border border-zinc-800 transition-colors"
+            className="md:hidden p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 border border-zinc-800 transition-colors"
             aria-label="Toggle Navigation Menu"
             aria-expanded={mobileMenuOpen}
           >
@@ -103,6 +130,9 @@ export const Header: React.FC = () => {
           })}
         </nav>
       )}
+
+      {/* Global Interactive Command Palette */}
+      <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </header>
   );
 };

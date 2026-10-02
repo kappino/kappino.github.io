@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Terminal, ShieldAlert, CheckCircle2, Layers, Shield } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Terminal, ShieldAlert, CheckCircle2, Layers, Shield, Copy, Check } from 'lucide-react';
 import { projects } from '@/data/projects';
 import { GithubIcon } from '@/components/common/Icons';
 import { VerificationTerminal } from '@/components/interactive/VerificationTerminal';
@@ -7,6 +8,7 @@ import { MisuseCaseDiagram } from '@/components/interactive/MisuseCaseDiagram';
 
 export const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const [diagramCopied, setDiagramCopied] = useState(false);
   const project = projects.find((p) => p.id === id);
 
   if (!project) {
@@ -122,9 +124,35 @@ export const ProjectDetail: React.FC = () => {
         {project.architectureDiagram && (
           <section className="mb-12">
             <div className="rounded-xl border border-zinc-800 bg-zinc-950 overflow-hidden shadow-md">
-              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-zinc-800 bg-zinc-900/70 font-mono text-xs text-zinc-400">
-                <Terminal className="h-3.5 w-3.5 text-sky-400" />
-                <span>architecture_diagram.txt</span>
+              <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-zinc-900/70 font-mono text-xs text-zinc-400">
+                <div className="flex items-center gap-2">
+                  <Terminal className="h-3.5 w-3.5 text-sky-400" />
+                  <span>architecture_diagram.txt</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!project.architectureDiagram) return;
+                    navigator.clipboard.writeText(project.architectureDiagram).then(() => {
+                      setDiagramCopied(true);
+                      setTimeout(() => setDiagramCopied(false), 2000);
+                    });
+                  }}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-mono text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
+                  title="Copy architecture diagram"
+                >
+                  {diagramCopied ? (
+                    <>
+                      <Check className="h-3 w-3 text-emerald-400" />
+                      <span className="text-emerald-400 font-semibold">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3 w-3 text-zinc-400" />
+                      <span>Copy</span>
+                    </>
+                  )}
+                </button>
               </div>
               <div className="p-4 sm:p-6 overflow-x-auto">
                 <pre className="font-mono text-xs sm:text-[13px] text-sky-300/90 leading-relaxed">
