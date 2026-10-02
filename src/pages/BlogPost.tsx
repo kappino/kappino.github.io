@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -24,7 +24,7 @@ import {
 import { GithubIcon, LinkedinIcon } from '@/components/common/Icons';
 import { personalInfo } from '@/data/personal';
 import { BlogPost } from '@/types';
-import { loadBlogPostBySlug, loadAllBlogPosts } from '@/utils/blogLoader';
+import { loadBlogPostBySlug, loadAllBlogPosts, BlogLanguage } from '@/utils/blogLoader';
 import { CodeBlockWithCopy } from '@/components/common/CodeBlockWithCopy';
 import { MermaidDiagram } from '@/components/common/MermaidDiagram';
 
@@ -72,22 +72,31 @@ function extractTableOfContents(markdown: string): TocItem[] {
 
 export const BlogPostView: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [lang, setLang] = useState<BlogLanguage>(() => {
+    const urlLang = searchParams.get('lang');
+    if (urlLang === 'it' || urlLang === 'en') return urlLang;
+    const stored = localStorage.getItem('kappino_blog_lang') as BlogLanguage | null;
+    return stored === 'en' ? 'en' : 'it';
+  });
+
   const [post, setPost] = useState<BlogPost | null>(null);
   const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeHeading, setActiveHeading] = useState<string>('');
+  const activeHeadingRef = useRef<string>('');
   const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
     if (slug) {
-      Promise.all([loadBlogPostBySlug(slug), loadAllBlogPosts()])
+      Promise.all([loadBlogPostBySlug(slug, lang), loadAllBlogPosts(lang)])
         .then(([loadedPost, posts]) => {
           if (isMounted) {
             setPost(loadedPost);
             setAllPosts(posts);
             setLoading(false);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         })
         .catch(() => {
@@ -97,7 +106,24 @@ export const BlogPostView: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [slug]);
+  }, [slug, lang]);
+
+  const handleLanguageChange = (newLang: BlogLanguage) => {
+    if (newLang === lang) return;
+    setLoading(true);
+    setLang(newLang);
+    try {
+      localStorage.setItem('kappino_blog_lang', newLang);
+    } catch {}
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set('lang', newLang);
+        return next;
+      },
+      { replace: true }
+    );
+  };
 
   // Extract Table of Contents
   const postContent = post?.content;
@@ -118,32 +144,67 @@ export const BlogPostView: React.FC = () => {
     return { prevPost: prev, nextPost: next };
   }, [post, allPosts]);
 
-  // Non-blocking IntersectionObserver for Table of Contents active highlight (0 scroll lag)
+  // Active heading tracking on scroll (rock-solid, 120 FPS, passive & debounced via RAF)
   useEffect(() => {
     if (toc.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveHeading(entry.target.id);
-            break;
+    // Set first heading as active initially if none active
+    const firstId = toc[0].id;
+    if (!activeHeadingRef.current || !toc.some((t) => t.id === activeHeadingRef.current)) {
+      activeHeadingRef.current = firstId;
+      setActiveHeading(firstId);
+    }
+
+    let rafId = 0;
+
+    const handleScroll = () => {
+      if (rafId) return;
+
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+
+        // If user scrolled to the bottom of the page, activate the last heading
+        const scrollPosition = window.scrollY + window.innerHeight;
+        const pageHeight = document.documentElement.scrollHeight;
+        if (scrollPosition >= pageHeight - 60) {
+          const lastId = toc[toc.length - 1].id;
+          if (lastId && lastId !== activeHeadingRef.current) {
+            activeHeadingRef.current = lastId;
+            setActiveHeading(lastId);
+          }
+          return;
+        }
+
+        // Active heading is the latest heading whose top offset is <= threshold (140px)
+        const threshold = 140;
+        let currentId = toc[0].id;
+
+        for (let i = 0; i < toc.length; i++) {
+          const el = document.getElementById(toc[i].id);
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            if (rect.top <= threshold) {
+              currentId = toc[i].id;
+            } else {
+              break;
+            }
           }
         }
-      },
-      {
-        rootMargin: '-80px 0px -70% 0px',
-        threshold: 0,
-      }
-    );
 
-    toc.forEach((item) => {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    });
+        if (currentId && currentId !== activeHeadingRef.current) {
+          activeHeadingRef.current = currentId;
+          setActiveHeading(currentId);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Run initial scroll check
+    handleScroll();
 
     return () => {
-      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, [toc]);
 
@@ -204,13 +265,43 @@ export const BlogPostView: React.FC = () => {
           <div className="flex items-center gap-2">
             <Link to="/blog" className="inline-flex items-center gap-1.5 text-zinc-400 hover:text-sky-400 transition-colors">
               <ArrowLeft className="h-3.5 w-3.5" />
-              <span>Dispatches</span>
+              <span>{lang === 'it' ? 'Articoli' : 'Dispatches'}</span>
             </Link>
             <ChevronRight className="h-3 w-3 text-zinc-600" />
             <span className="text-sky-400/90 font-medium">{post.category}</span>
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Language Switcher (IT / EN) */}
+            <div className="inline-flex items-center rounded-lg bg-zinc-900 border border-zinc-800 p-0.5 text-xs font-mono mr-1">
+              <button
+                type="button"
+                onClick={() => handleLanguageChange('it')}
+                className={`px-2.5 py-1 rounded-md transition-all font-semibold ${
+                  lang === 'it'
+                    ? 'bg-sky-500 text-zinc-950 shadow-sm'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+                title="Versione Italiana"
+                aria-label="Versione Italiana"
+              >
+                IT
+              </button>
+              <button
+                type="button"
+                onClick={() => handleLanguageChange('en')}
+                className={`px-2.5 py-1 rounded-md transition-all font-semibold ${
+                  lang === 'en'
+                    ? 'bg-sky-500 text-zinc-950 shadow-sm'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+                title="English Version"
+                aria-label="English Version"
+              >
+                EN
+              </button>
+            </div>
+
             <button
               type="button"
               onClick={handleCopyLink}
@@ -220,12 +311,12 @@ export const BlogPostView: React.FC = () => {
               {copiedLink ? (
                 <>
                   <Check className="h-3.5 w-3.5 text-emerald-400" />
-                  <span className="text-emerald-400">Link Copied!</span>
+                  <span className="text-emerald-400">{lang === 'it' ? 'Copiato!' : 'Link Copied!'}</span>
                 </>
               ) : (
                 <>
                   <Share2 className="h-3.5 w-3.5 text-zinc-400" />
-                  <span>Share</span>
+                  <span>{lang === 'it' ? 'Condividi' : 'Share'}</span>
                 </>
               )}
             </button>
@@ -414,7 +505,7 @@ export const BlogPostView: React.FC = () => {
 
             {/* Article Tags */}
             <div className="flex flex-wrap items-center gap-2 pt-6 mt-12 border-t border-zinc-800/80">
-              <span className="text-xs font-mono text-zinc-500 mr-1">Topics:</span>
+              <span className="text-xs font-mono text-zinc-500 mr-1">{lang === 'it' ? 'Argomenti:' : 'Topics:'}</span>
               {post.tags.map((tag) => (
                 <Link
                   key={tag}
@@ -486,12 +577,12 @@ export const BlogPostView: React.FC = () => {
               <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {prevPost ? (
                   <Link
-                    to={`/blog/${prevPost.slug}`}
+                    to={`/blog/${prevPost.slug}?lang=${lang}`}
                     className="group p-5 rounded-xl border border-zinc-800 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-zinc-700 transition-all flex flex-col justify-between"
                   >
                     <div className="flex items-center gap-1.5 text-xs font-mono text-zinc-500 mb-2">
                       <ArrowLeft className="h-3 w-3" />
-                      <span>Previous Dispatch</span>
+                      <span>{lang === 'it' ? 'Articolo Precedente' : 'Previous Dispatch'}</span>
                     </div>
                     <span className="text-sm font-semibold text-zinc-200 group-hover:text-sky-300 transition-colors line-clamp-2">
                       {prevPost.title}
@@ -503,11 +594,11 @@ export const BlogPostView: React.FC = () => {
 
                 {nextPost ? (
                   <Link
-                    to={`/blog/${nextPost.slug}`}
+                    to={`/blog/${nextPost.slug}?lang=${lang}`}
                     className="group p-5 rounded-xl border border-zinc-800 bg-zinc-900/30 hover:bg-zinc-900/60 hover:border-zinc-700 transition-all flex flex-col justify-between text-right sm:text-right"
                   >
                     <div className="flex items-center justify-end gap-1.5 text-xs font-mono text-zinc-500 mb-2">
-                      <span>Next Dispatch</span>
+                      <span>{lang === 'it' ? 'Articolo Successivo' : 'Next Dispatch'}</span>
                       <ArrowRight className="h-3 w-3" />
                     </div>
                     <span className="text-sm font-semibold text-zinc-200 group-hover:text-sky-300 transition-colors line-clamp-2">
@@ -526,9 +617,37 @@ export const BlogPostView: React.FC = () => {
             {/* Table of Contents Card */}
             {toc.length > 0 && (
               <div className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5 backdrop-blur-sm shadow-xl">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-sky-400 font-semibold pb-3 mb-3 border-b border-zinc-800/80">
-                  <ListTree className="h-3.5 w-3.5 text-sky-400" />
-                  <span>On This Page</span>
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-800/80">
+                  <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-sky-400 font-semibold">
+                    <ListTree className="h-3.5 w-3.5 text-sky-400" />
+                    <span>{lang === 'it' ? 'Indice' : 'On This Page'}</span>
+                  </div>
+                  <div className="inline-flex items-center rounded-lg bg-zinc-950 border border-zinc-800 p-0.5 text-[11px] font-mono">
+                    <button
+                      type="button"
+                      onClick={() => handleLanguageChange('it')}
+                      className={`px-2 py-0.5 rounded font-semibold transition-all ${
+                        lang === 'it'
+                          ? 'bg-sky-500 text-zinc-950 shadow-sm'
+                          : 'text-zinc-400 hover:text-white'
+                      }`}
+                      title="Italiano"
+                    >
+                      IT
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleLanguageChange('en')}
+                      className={`px-2 py-0.5 rounded font-semibold transition-all ${
+                        lang === 'en'
+                          ? 'bg-sky-500 text-zinc-950 shadow-sm'
+                          : 'text-zinc-400 hover:text-white'
+                      }`}
+                      title="English"
+                    >
+                      EN
+                    </button>
+                  </div>
                 </div>
 
                 <nav className="space-y-1.5 max-h-[60vh] overflow-y-auto pr-1">

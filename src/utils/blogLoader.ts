@@ -1,6 +1,8 @@
 import fm from 'front-matter';
 import { BlogPost } from '../types';
 
+export type BlogLanguage = 'it' | 'en';
+
 interface BlogPostFrontmatter {
   title: string;
   date: string;
@@ -18,7 +20,7 @@ export async function fetchBlogIndex(): Promise<string[]> {
   return res.json();
 }
 
-export async function loadBlogPost(filename: string): Promise<BlogPost> {
+export async function loadBlogPost(filename: string, customSlug?: string): Promise<BlogPost> {
   const url = `/blog/${filename}`;
   const res = await fetch(url);
   if (!res.ok) {
@@ -27,7 +29,7 @@ export async function loadBlogPost(filename: string): Promise<BlogPost> {
   const markdown = await res.text();
   const { attributes: data, body: content } = fm<BlogPostFrontmatter>(markdown);
 
-  const slug = filename.replace('.md', '');
+  const slug = customSlug || filename.replace(/\.it\.md$|\.md$/, '');
   const wordCount = content.split(/\s+/).length;
   const readTime = Math.ceil(wordCount / 200);
 
@@ -43,11 +45,22 @@ export async function loadBlogPost(filename: string): Promise<BlogPost> {
   };
 }
 
-export async function loadAllBlogPosts(): Promise<BlogPost[]> {
+export async function loadAllBlogPosts(lang: BlogLanguage = 'en'): Promise<BlogPost[]> {
   try {
     const filenames = await fetchBlogIndex();
     const results = await Promise.allSettled(
-      filenames.map((f) => loadBlogPost(f))
+      filenames.map(async (f) => {
+        const slug = f.replace(/\.it\.md$|\.md$/, '');
+        if (lang === 'it') {
+          const itFilename = `${slug}.it.md`;
+          try {
+            return await loadBlogPost(itFilename, slug);
+          } catch {
+            return await loadBlogPost(f, slug);
+          }
+        }
+        return await loadBlogPost(f, slug);
+      })
     );
 
     const posts = results
@@ -61,14 +74,25 @@ export async function loadAllBlogPosts(): Promise<BlogPost[]> {
   }
 }
 
-export async function loadBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+export async function loadBlogPostBySlug(slug: string, lang: BlogLanguage = 'en'): Promise<BlogPost | null> {
   try {
     const filenames = await fetchBlogIndex();
-    const filename = `${slug}.md`;
-    if (!filenames.includes(filename)) {
+    const baseFilename = `${slug}.md`;
+    if (!filenames.includes(baseFilename)) {
       return null;
     }
-    return await loadBlogPost(filename);
+
+    if (lang === 'it') {
+      const itFilename = `${slug}.it.md`;
+      try {
+        return await loadBlogPost(itFilename, slug);
+      } catch {
+        // Fallback to English
+        return await loadBlogPost(baseFilename, slug);
+      }
+    }
+
+    return await loadBlogPost(baseFilename, slug);
   } catch {
     return null;
   }

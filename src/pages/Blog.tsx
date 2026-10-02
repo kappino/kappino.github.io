@@ -8,19 +8,27 @@ import {
   X,
 } from 'lucide-react';
 import { BlogPost } from '@/types';
-import { loadAllBlogPosts } from '@/utils/blogLoader';
+import { loadAllBlogPosts, BlogLanguage } from '@/utils/blogLoader';
 import { SpotlightCard } from '@/components/common/SpotlightCard';
 
 const DOMAIN_FILTERS = [
-  { id: 'all', label: 'All Dispatches' },
-  { id: 'Robotics', label: 'Robotics & Real-Time' },
-  { id: 'Security', label: 'Security & PKI' },
-  { id: 'Biomedical', label: 'Biomedical ML' },
-  { id: 'Systems', label: 'Systems & Agents' },
+  { id: 'all', labelEn: 'All Dispatches', labelIt: 'Tutti gli Articoli' },
+  { id: 'Robotics', labelEn: 'Robotics & Real-Time', labelIt: 'Robotica & Real-Time' },
+  { id: 'Security', labelEn: 'Security & PKI', labelIt: 'Sicurezza & PKI' },
+  { id: 'Biomedical', labelEn: 'Biomedical ML', labelIt: 'Biomedical ML' },
+  { id: 'Systems', labelEn: 'Systems & Agents', labelIt: 'Sistemi & Agenti' },
 ];
 
 export const Blog: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const [lang, setLang] = useState<BlogLanguage>(() => {
+    const urlLang = searchParams.get('lang');
+    if (urlLang === 'it' || urlLang === 'en') return urlLang;
+    const stored = localStorage.getItem('kappino_blog_lang') as BlogLanguage | null;
+    return stored === 'en' ? 'en' : 'it';
+  });
+
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,7 +37,7 @@ export const Blog: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true;
-    loadAllBlogPosts()
+    loadAllBlogPosts(lang)
       .then((loaded) => {
         if (isMounted) {
           setPosts(loaded);
@@ -42,14 +50,35 @@ export const Blog: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [lang]);
+
+  const handleLanguageChange = (newLang: BlogLanguage) => {
+    if (newLang === lang) return;
+    setLoading(true);
+    setLang(newLang);
+    try {
+      localStorage.setItem('kappino_blog_lang', newLang);
+    } catch {}
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set('lang', newLang);
+        return next;
+      },
+      { replace: true }
+    );
+  };
 
   const handleSelectCategory = (catId: string) => {
-    if (catId === 'all') {
-      setSearchParams({});
-    } else {
-      setSearchParams({ category: catId });
-    }
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (catId === 'all') {
+        next.delete('category');
+      } else {
+        next.set('category', catId);
+      }
+      return next;
+    });
   };
 
   const filteredPosts = useMemo(() => {
@@ -80,17 +109,51 @@ export const Blog: React.FC = () => {
   return (
     <div className="py-12 sm:py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        {/* Editorial Masthead */}
-        <div className="mb-10 pb-8 border-b border-zinc-800/80">
-          <span className="font-mono text-xs uppercase tracking-widest text-sky-400 font-semibold mb-2 block">
-            Technical Dispatches &amp; Research Notes
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-3 font-sans">
-            Engineering Notes &amp; Research
-          </h1>
-          <p className="text-sm sm:text-base text-zinc-300 max-w-2xl leading-relaxed font-normal">
-            In-depth blueprints, mathematical formulations, and system postmortems across robotics, edge cryptography, and clinical signal processing.
-          </p>
+        {/* Editorial Masthead with Language Switcher */}
+        <div className="mb-10 pb-8 border-b border-zinc-800/80 flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+          <div>
+            <span className="font-mono text-xs uppercase tracking-widest text-sky-400 font-semibold mb-2 block">
+              {lang === 'it' ? 'Note Tecniche & Report di Ricerca' : 'Technical Dispatches & Research Notes'}
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-3 font-sans">
+              {lang === 'it' ? 'Note di Ingegneria & Ricerca' : 'Engineering Notes & Research'}
+            </h1>
+            <p className="text-sm sm:text-base text-zinc-300 max-w-2xl leading-relaxed font-normal">
+              {lang === 'it'
+                ? 'Architetture hardware/software, formulazioni matematiche e postmortem di sistema tra robotica, crittografia edge ed elaborazione del segnale clinico.'
+                : 'In-depth blueprints, mathematical formulations, and system postmortems across robotics, edge cryptography, and clinical signal processing.'}
+            </p>
+          </div>
+
+          {/* Language Switcher */}
+          <div className="inline-flex items-center rounded-lg bg-zinc-900 border border-zinc-800 p-0.5 text-xs font-mono self-start flex-shrink-0">
+            <button
+              type="button"
+              onClick={() => handleLanguageChange('it')}
+              className={`px-3 py-1.5 rounded-md transition-all font-semibold ${
+                lang === 'it'
+                  ? 'bg-sky-500 text-zinc-950 shadow-sm'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+              title="Versione Italiana"
+              aria-label="Versione Italiana"
+            >
+              IT
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLanguageChange('en')}
+              className={`px-3 py-1.5 rounded-md transition-all font-semibold ${
+                lang === 'en'
+                  ? 'bg-sky-500 text-zinc-950 shadow-sm'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+              title="English Version"
+              aria-label="English Version"
+            >
+              EN
+            </button>
+          </div>
         </div>
 
         {/* Search & Domain Filter Bar */}
@@ -102,7 +165,11 @@ export const Blog: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search dispatches by title, concept, or protocol..."
+              placeholder={
+                lang === 'it'
+                  ? 'Cerca per titolo, concetto o protocollo...'
+                  : 'Search dispatches by title, concept, or protocol...'
+              }
               className="w-full pl-10 pr-9 py-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-sky-500/60 focus:ring-1 focus:ring-sky-500/40 transition-all font-sans"
             />
             {searchQuery && (
@@ -119,8 +186,9 @@ export const Blog: React.FC = () => {
 
           {/* Clean Domain Tabs */}
           <div className="flex flex-wrap items-center gap-2">
-            {DOMAIN_FILTERS.map(({ id, label }) => {
+            {DOMAIN_FILTERS.map(({ id, labelEn, labelIt }) => {
               const isActive = activeCategory === id;
+              const label = lang === 'it' ? labelIt : labelEn;
               return (
                 <button
                   key={id}
@@ -143,13 +211,19 @@ export const Blog: React.FC = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 text-zinc-400 gap-3">
             <Loader2 className="h-6 w-6 animate-spin text-sky-400" />
-            <span className="font-mono text-xs">Loading articles...</span>
+            <span className="font-mono text-xs">
+              {lang === 'it' ? 'Caricamento articoli...' : 'Loading articles...'}
+            </span>
           </div>
         ) : filteredPosts.length === 0 ? (
           <div className="py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30 p-8">
-            <h3 className="text-sm font-semibold text-white mb-2">No dispatches match your query</h3>
+            <h3 className="text-sm font-semibold text-white mb-2">
+              {lang === 'it' ? 'Nessun articolo corrisponde ai filtri' : 'No dispatches match your query'}
+            </h3>
             <p className="text-xs text-zinc-400 max-w-sm mx-auto mb-4">
-              Try adjusting your search terms or resetting filters to browse all engineering articles.
+              {lang === 'it'
+                ? 'Prova a modificare i termini di ricerca o azzerare i filtri per esplorare tutti gli articoli.'
+                : 'Try adjusting your search terms or resetting filters to browse all engineering articles.'}
             </p>
             <button
               type="button"
@@ -159,7 +233,7 @@ export const Blog: React.FC = () => {
               }}
               className="px-3.5 py-1.5 rounded-lg bg-zinc-800 text-xs font-mono text-sky-400 hover:text-white transition-colors"
             >
-              Reset Filters
+              {lang === 'it' ? 'Reimposta Filtri' : 'Reset Filters'}
             </button>
           </div>
         ) : (
@@ -178,14 +252,14 @@ export const Blog: React.FC = () => {
                       <span>·</span>
                       <div className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        <span>{post.readTime} min read</span>
+                        <span>{post.readTime} {lang === 'it' ? 'min lettura' : 'min read'}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Title */}
                   <h2 className="text-xl sm:text-2xl font-bold text-white group-hover:text-sky-300 transition-colors leading-snug mb-3">
-                    <Link to={`/blog/${post.slug}`}>
+                    <Link to={`/blog/${post.slug}?lang=${lang}`}>
                       {post.title}
                     </Link>
                   </h2>
@@ -199,10 +273,10 @@ export const Blog: React.FC = () => {
                 {/* Footer Action */}
                 <div className="pt-3 border-t border-zinc-800/80 flex items-center justify-between text-xs font-mono">
                   <Link
-                    to={`/blog/${post.slug}`}
+                    to={`/blog/${post.slug}?lang=${lang}`}
                     className="inline-flex items-center gap-1.5 font-medium text-sky-400 group-hover:text-sky-300 transition-colors"
                   >
-                    <span>Read full dispatch</span>
+                    <span>{lang === 'it' ? 'Leggi articolo completo' : 'Read full dispatch'}</span>
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </Link>
 
