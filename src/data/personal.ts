@@ -3,7 +3,7 @@ import { PersonalInfo } from '../types';
 export const personalInfo: PersonalInfo = {
   name: 'Crescenzo Esposito',
   handle: 'kappino',
-  title: 'MSc in Computer Science | Cybersecurity | @UNISA',
+  title: 'Systems & Security Engineer | Embedded, Robotics & Applied Cryptography',
   affiliations: [
     {
       role: 'Graduate Student (M.Sc. Cybersecurity)',
@@ -21,7 +21,7 @@ export const personalInfo: PersonalInfo = {
   available: true,
   statusNote: 'Open for R&D opportunities, security engineering, and systems research',
   intro:
-    'MSc student in Computer Science (Cybersecurity) at the University of Salerno. Former Graduate Researcher at UniParthenope (Age-IT project) focused on rule-based decision engines and ROS2 integration for the CARE assistive robot. In parallel, designed an IoT security architecture for medical telemetry, mitigating sensor spoofing through mTLS, HMAC, and an Ethereum smart contract for data immutability. Core focus sits at the intersection of embedded systems, security, and robotics.',
+    'MSc student in Computer Science (Cybersecurity) at the University of Salerno. Former Graduate Researcher at UniParthenope (PNRR Age-IT project) focused on rule-based decision engines and ROS2 for assistive robotics. Research background in clinical biomedical signal processing (IAS-19) and embedded IoT security (mTLS, HMAC). Core focus sits at the intersection of embedded systems, security, and autonomous runtimes.',
   philosophy:
     "I prefer working close to the machine. Whether it's verifying an mTLS 1.3 handshake on bare-metal ESP32, inspecting memory boundaries in POSIX C, or tuning an artifact-rejection pipeline for EEG clinical data, my work focuses on measurable security and deterministic execution over marketing abstractions.",
   socials: {
@@ -31,39 +31,39 @@ export const personalInfo: PersonalInfo = {
   homelab: [
     {
       name: 'pve-host',
-      role: 'Bare-Metal Proxmox VE Hypervisor',
-      specs: 'Debian 12 kernel, GTX 1070 8GB GPU passthrough, Tailscale WireGuard Exit Node',
+      role: 'Hypervisor & Isolated Virtualization Lab',
+      specs: 'Proxmox VE on Debian 12 kernel, KVM/LXC virtualization, GPU passthrough testbed, Tailscale WireGuard mesh node',
       software: ['Proxmox VE', 'KVM', 'LXC', 'Tailscale WireGuard', 'GPU Passthrough'],
     },
     {
-      name: 'npm-reverse-proxy',
+      name: 'ingress-gateway',
       role: 'Zero-Expose Ingress Gateway',
-      specs: 'Centralized HTTPS reverse proxy, Let\'s Encrypt SSL, Tailscale Serve',
-      software: ['Nginx Proxy Manager', 'Certbot', 'OpenResty', 'DuckDNS'],
+      specs: 'Centralized HTTPS reverse proxy, automated SSL/TLS certificates, internal TLS routing without open WAN ports',
+      software: ['Nginx Proxy Manager', 'Certbot', 'OpenResty', 'Let\'s Encrypt'],
     },
     {
-      name: 'ct105-pihole',
-      role: 'Internal DNS & Telemetry Sinkhole',
-      specs: 'LXC Debian container, local split-DNS and ad-blocking sinkhole',
+      name: 'dns-telemetry-sinkhole',
+      role: 'Internal Split-DNS & Telemetry Sinkhole',
+      specs: 'LXC container, split-horizon DNS, query logging, and local network ad/telemetry sinkholing',
       software: ['Pi-hole', 'FTL DNS Engine', 'Unbound', 'Custom DNS Rewrites'],
     },
     {
-      name: 'ct107-aegis-core',
-      role: 'Proactive AI Engine & Service Bus',
-      specs: 'FastAPI async layer, SQLite in WAL mode, 24/7 Systemd timers',
+      name: 'service-bus-runtime',
+      role: 'Asynchronous Service Bus & Daemon Testbed',
+      specs: 'FastAPI async runtime, SQLite in WAL mode, systemd daemon isolation for background workers',
       software: ['Python 3.11', 'FastAPI', 'Uvicorn', 'SQLite (WAL Mode)', 'Systemd Timers'],
     },
     {
-      name: 'ct108-immich',
-      role: 'Self-Hosted Asset & Machine Learning Engine',
-      specs: 'Debian 12 LXC, PostgreSQL pgvector, Redis caching, GPU-assisted ML microservices',
-      software: ['Immich Server', 'PostgreSQL (pgvector)', 'Redis', 'Machine Learning Microservices', 'Hardware Transcoding'],
+      name: 'compute-storage-node',
+      role: 'Local Vector & Machine Learning Compute',
+      specs: 'Debian 12 LXC container, pgvector indexing, Redis caching, GPU-assisted local model evaluation',
+      software: ['PostgreSQL (pgvector)', 'Redis', 'Machine Learning Microservices', 'Hardware Transcoding'],
     },
     {
-      name: 'home-assistant-vm',
-      role: 'Smart Home & LLM Assist Hub',
-      specs: 'Home Assistant OS VM, Gemini Tool Calling integration, local automation',
-      software: ['Home Assistant OS', 'Google Generative AI (Gemini)', 'WebSocket API', 'Matter/Zigbee'],
+      name: 'iot-automation-hub',
+      role: 'Embedded Devices & Telemetry Gateway',
+      specs: 'Home Assistant OS VM, local MQTT broker integration, WebSocket API for embedded node coordination',
+      software: ['Home Assistant OS', 'Mosquitto MQTT', 'WebSocket API', 'Matter/Zigbee'],
     },
   ],
 };

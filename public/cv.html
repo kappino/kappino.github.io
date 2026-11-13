@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV - Crescenzo Esposito | Junior Software & Security Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #0284c7;
+      --accent-soft: #f0f9ff;
+      --accent-border: #bae6fd;
+      --accent-dark: #0369a1;
+      --text-main: #334155;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-color: #e2e8f0;
+      --bg-box: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-variant-ligatures: none !important;
+      font-feature-settings: "liga" 0 !important;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+      color: var(--text-main);
+      background: #cbd5e1;
+      line-height: 1.44;
+      font-size: 8.8pt;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      margin: 15px auto;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+      padding: 11mm 14mm 9mm;
+      overflow: hidden;
+      page-break-after: always;
+      position: relative;
+    }
+
+    @media print {
+      body {
+        background: none;
+      }
+
+      .page {
+        margin: 0;
+        box-shadow: none;
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+    }
+
+    .header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+
+    .header-name {
+      font-size: 22pt;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .header-title {
+      font-size: 10.2pt;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      margin: 2px 0 6px;
+    }
+
+    .contact-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      font-size: 8.1pt;
+    }
+
+    .contact-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-main);
+    }
+
+    .contact-item svg {
+      width: 12px;
+      height: 12px;
+      fill: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .contact-item a {
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .contact-item a:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    .section-title {
+      font-size: 9.3pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--primary);
+      margin: 10px 0 6px;
+      border-bottom: 1.5px solid var(--accent-border);
+      padding-bottom: 2px;
+    }
+
+    .summary-text {
+      font-size: 8.6pt;
+      text-align: justify;
+      background: var(--bg-box);
+      border-left: 3px solid var(--accent);
+      padding: 6px 10px;
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 9px;
+      line-height: 1.42;
+    }
+
+    .entry {
+      margin-bottom: 9px;
+    }
+
+    .entry-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 1px;
+    }
+
+    .entry-role {
+      font-size: 9.3pt;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .entry-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.3pt;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      padding: 1px 5px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .entry-company {
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+
+    .entry-sub {
+      font-size: 7.8pt;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .bullet-list {
+      list-style: square;
+      padding-left: 18px;
+      margin: 3px 0 2px;
+    }
+
+    .bullet-list li {
+      font-size: 8.4pt;
+      line-height: 1.41;
+      text-align: justify;
+      margin-bottom: 2.5px;
+    }
+
+    .bullet-list strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.6pt;
+    }
+
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .box-card {
+      background: var(--bg-box);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 9px;
+    }
+
+    .box-card-title {
+      font-size: 8.1pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3.5px;
+    }
+
+    .tag {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      color: var(--primary);
+      font-size: 7.2pt;
+      font-weight: 600;
+      padding: 2px 5.5px;
+      border-radius: 4px;
+    }
+
+    .tag.highlight {
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+
+    .box-text {
+      font-size: 7.7pt;
+      line-height: 1.4;
+    }
+
+    .privacy-text {
+      margin-top: 10px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border-color);
+      font-size: 7.1pt;
+      color: var(--text-muted);
+      line-height: 1.3;
+      text-align: justify;
+    }
+
+    .page-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7pt;
+      color: var(--text-light);
+      position: absolute;
+      bottom: 3.8mm;
+      right: 14mm;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============ PAGINA 1 ============ -->
+  <div class="page">
+
+    <div class="header">
+      <div class="header-name">Crescenzo Esposito</div>
+      <div class="header-title">Junior Software & Security Engineer</div>
+      <div class="contact-bar">
+        <span class="contact-item"><svg viewBox="0 0 24 24">
+            <path
+              d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+          </svg>Napoli (NA), Italia</span>
+        <span class="contact-item"><svg viewBox="0 0 24 24">
+            <path
+              d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+          </svg><a href="mailto:crescenzo.esposito@outlook.it">crescenzo.esposito@outlook.it</a></span>
+        <span class="contact-item"><svg viewBox="0 0 24 24">
+            <path
+              d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76c-.87 0-1.58-.71-1.58-1.58s.71-1.58 1.58-1.58 1.58.71 1.58 1.58-.71 1.58-1.58 1.58m1.39 9.74v-8.37H5.07v8.37h2.78z" />
+          </svg><a href="https://linkedin.com/in/crescenzo-esposito" target="_blank"
+            rel="noopener noreferrer">linkedin.com/in/crescenzo-esposito</a></span>
+        <span class="contact-item"><svg viewBox="0 0 24 24">
+            <path
+              d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 14.42 22 12A10 10 0 0 0 12 2z" />
+          </svg><a href="https://github.com/kappino" target="_blank"
+            rel="noopener noreferrer">github.com/kappino</a></span>
+        <span class="contact-item"><svg viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+          </svg><a href="https://kappino.github.io" target="_blank"
+            rel="noopener noreferrer">kappino.github.io</a></span>
+      </div>
+    </div>
+
+    <div class="summary-text">
+      Laureato in Informatica (108/110) e studente magistrale in Cybersecurity all'Università di Salerno (conclusione prevista 2027). Esperienza pratica su sviluppo software e sicurezza di sistemi IoT e robotici: motore decisionale a regole e scheduler per un robot assistivo (progetto CARE, con Protom Robotics), firmware C/C++ su STM32 con ChibiOS e hardening di gateway IoT con mTLS e HMAC. Primo autore di un paper scientifico a IAS-19 (Springer LNNS), finalista al Best Student Paper Award. Orientato a ruoli junior in sviluppo software, embedded e sicurezza.
+    </div>
+
+    <div class="section-title">Esperienza Professionale & Ricerca Applicata</div>
+    <div class="entry">
+      <div class="entry-header-row">
+        <span class="entry-role">Graduate Research Assistant (Borsa di ricerca)</span>
+        <span class="entry-date">Mar. 2025 – Ott. 2025</span>
+      </div>
+      <div class="entry-company">Università degli Studi di Napoli Parthenope</div>
+      <div class="entry-sub">Progetto CARE (PNRR “Age-IT”) — Collaborazione industriale con Protom Robotics (Napoli)</div>
+      <ul class="bullet-list">
+        <li><strong>Ricerca preliminare:</strong> analisi e valutazione tecnica di hardware e sensoristica prima della fase implementativa del robot assistivo.</li>
+        <li><strong>Motore di regole:</strong> migrazione da <code>durable_rules</code> a <strong>GoRules</strong>, svolta da zero: dalla modellazione logica delle condizioni all'integrazione di uno schema JDM modulare configurabile via editor visuale, con alimentazione dati da database applicativo.</li>
+        <li><strong>Scheduler proattivo:</strong> sviluppo del sistema di orchestrazione temporale per le azioni verso LLM (API OpenAI), gestione delle priorità e logica di riesecuzione in caso di rifiuto dell'assistito (es. mancata assunzione farmaco o misurazione); escalation automatica al caregiver dopo N tentativi. Modulo integrato nel package ROS2 <code>care_planner</code>.</li>
+        <li><strong>Attività di laboratorio (Robot Pepper):</strong> parallelamente a CARE, ammodernamento del client di controllo su PC (Python 3.12 e ROS2) comunicante via Wi-Fi con il robot Pepper (NAOqi) del laboratorio; superata la dipendenza dallo stack legacy Python 2.7 sul PC, eliminando l'esecuzione di script ML tramite <code>subprocess</code>.</li>
+      </ul>
+    </div>
+
+    <div class="section-title">Progetti Ingegneristici</div>
+    <div class="entry">
+      <div class="entry-header-row">
+        <span class="entry-role">SortEdge Bin — Firmware & Edge AI su STM32G474RE</span>
+        <span class="entry-date">Set. 2026</span>
+      </div>
+      <div class="entry-company">Neapolis Innovation Summer Campus (NISC26), STMicroelectronics — Arzano (NA)</div>
+      <div class="entry-sub">Prototipo di smart bin per smistamento automatizzato dei rifiuti. Team di 8 persone (ruolo: Team Leader).</div>
+      <ul class="bullet-list">
+        <li><strong>Architettura Firmware:</strong> sviluppo del firmware su scheda Nucleo STM32G474RE (Cortex-M4 @ 170 MHz) basato su RTOS <strong>ChibiOS 21.11</strong>: gestione thread concorrenti real-time, shell diagnostica seriale, pilotaggio PWM a 50 Hz per servomotori e rendering grafico SPI con uGFX.</li>
+        <li><strong>Trasmissione Immagini (ESP32-CAM / STM32):</strong> definizione del protocollo seriale (USART @ 115200 baud) con rilevamento degli errori tramite <strong>CRC-32</strong> e ritrasmissione per trasferire i frame acquisiti dalla camera alla scheda Nucleo; riscrittura del firmware ESP32 per l'invio affidabile dei pacchetti immagine.</li>
+        <li><strong>Edge AI on-device (STM32):</strong> esecuzione dell'inferenza neurale direttamente sulla Nucleo (runtime ST.AI compilato in C, latenza ~13 ms) per classificare i rifiuti dai frame ricevuti; modello pre-addestrato con fine-tuning eseguito su immagini acquisite dal team.</li>
+        <li><strong>Coordinamento tecnico:</strong> leadership e assegnazione dei task, modellazione e stampa 3D di parti meccaniche, lista dei componenti da richiedere a inventario e configurazione toolchain (PlatformIO / flashing).</li>
+      </ul>
+    </div>
+
+    <span class="page-number">Pag. 1 / 2</span>
+  </div>
+
+  <!-- ============ PAGINA 2 ============ -->
+  <div class="page">
+
+    <div class="section-title" style="margin-top:0">Progetti di Sicurezza Informatica</div>
+    <div class="entry">
+      <div class="entry-header-row">
+        <span class="entry-role">Hardening & Sicurezza di un Gateway IoT Sanitario (ESP32)</span>
+        <span class="entry-date">2026</span>
+      </div>
+      <div class="entry-company">Progetto per l'insegnamento di IoT Security — Università degli Studi di Salerno</div>
+      <ul class="bullet-list">
+        <li><strong>Vettore d'attacco (PoC):</strong> analisi del meccanismo di filtraggio basato su MAC address nel gateway assistivo; realizzazione in laboratorio di un rogue ESP32 per validare attacchi di MAC spoofing e iniezione di telemetria cardiaca contraffatta.</li>
+        <li><strong>Mitigazione Gateway:</strong> implementazione di mutua autenticazione <strong>mTLS</strong> verso broker Mosquitto containerizzato (Docker), con PKI dedicata e certificati X.509 distribuiti a client e server.</li>
+        <li><strong>Autenticazione Payload BLE:</strong> sigillatura di integrità e autenticità tramite <strong>HMAC-SHA256</strong>, validata mediante smartwatch Android (telemetria reale) e test con payload falsificati tramite nRF Connect.</li>
+        <li><strong>Integrità e Timestamping:</strong> notarizzazione dei digest delle misurazioni su Smart Contract Solidity (rete locale Ganache), garantendo la rilevabilità di alterazioni del database.</li>
+      </ul>
+    </div>
+
+    <div class="section-title">Ricerca Scientifica & Pubblicazioni</div>
+    <div class="entry">
+      <div class="entry-header-row">
+        <span class="entry-role">Primo Autore — IAS-19, Springer Nature (LNNS)</span>
+        <span class="entry-date">Springer 2026</span>
+      </div>
+      <div class="entry-company">Tesi di Laurea Triennale & Progetto SPECTRA — Relatrice: Prof.ssa Mariacarla Staffa</div>
+      <div class="entry-sub">“Emotion Recognition by EEG and Physiological Data in Patients with Schizophrenia: A Study with Wearable Devices” — Finalista Best Student Paper Award. DOI: <a href="https://doi.org/10.1007/978-3-032-33874-7_13" target="_blank" rel="noopener noreferrer" style="color:var(--accent-dark); text-decoration:underline;">10.1007/978-3-032-33874-7_13</a></div>
+      <ul class="bullet-list">
+        <li><strong>Acquisizione clinica:</strong> raccolta dati sperimentale su soggetti reali in collaborazione con gli psichiatri dell’Università degli Studi di Napoli Federico II. Campione di 21 partecipanti (gruppo di controllo, pazienti resistenti e responsivi al trattamento) con casco EEG wireless Emotiv Epoc X a 14 canali; acquisiti anche dati biometrici Empatica (EDA, HR, temperatura) e video facciali, non analizzati nello studio.</li>
+        <li><strong>Pre-processing del segnale:</strong> implementazione ed esecuzione della pipeline: filtraggio e rimozione artefatti in MATLAB (EEGLAB, algoritmo PICARD-ICA), estrazione feature spettrali in Python (PSD, Frontal Brain Asymmetry su bande alfa e beta) e analisi statistica ANOVA tra gruppi.</li>
+        <li><strong>Modellazione Machine Learning:</strong> addestramento e validazione di modelli (MLP, Random Forest, SVM, KNN) con scikit-learn e 5-fold cross-validation sulle finestre temporali; accuratezza fino al 97% nella discriminazione dei tre gruppi (studio preliminare su campione clinico).</li>
+      </ul>
+    </div>
+
+    <div class="section-title">Istruzione e Formazione</div>
+    <div class="entry">
+      <div class="entry-header-row">
+        <span class="entry-role">Laurea Magistrale in Informatica (LM-18) — Curriculum: Cybersecurity</span>
+        <span class="entry-date">Feb. 2025 – In corso (Prev. 2027)</span>
+      </div>
+      <div class="entry-company">Università degli Studi di Salerno — Fisciano (SA)</div>
+      <ul class="bullet-list">
+        <li><strong>Insegnamenti caratterizzanti:</strong> Crittografia Applicata, Cloud & Network Security, Malware Analysis, IoT Security, Sistemi Distribuiti.</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header-row">
+        <span class="entry-role">Laurea Triennale in Scienze e Tecnologie Informatiche (L-31)</span>
+        <span class="entry-date">Set. 2020 – Feb. 2025</span>
+      </div>
+      <div class="entry-company">Università degli Studi di Napoli Parthenope — Napoli &nbsp;|&nbsp; <strong style="color:var(--primary);">Votazione: 108/110</strong></div>
+      <ul class="bullet-list">
+        <li><strong>Esami di rilievo:</strong> Architettura dei Calcolatori (<strong>30 e lode</strong>), Ingegneria del Software (<strong>30 e lode</strong>), Algoritmi e Strutture Dati (<strong>30</strong>), Calcolo Parallelo e Distribuito (<strong>30</strong>).</li>
+        <li><strong>Tesi Sperimentale:</strong> Ricerca pubblicata su Springer Nature (dettagli nella sezione “Ricerca Scientifica & Pubblicazioni”).</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header-row">
+        <span class="entry-role">iOS Developer Foundation & Advanced Course</span>
+        <span class="entry-date">2023</span>
+      </div>
+      <div class="entry-company">Apple Developer Academy / Università Parthenope — Napoli</div>
+      <ul class="bullet-list">
+        <li>Sviluppo nativo in Swift e SwiftUI su iOS e watchOS. Progettazione dell'applicazione <strong>Virtual Pong</strong>: utilizzo di Apple Watch come motion controller con modelli CoreML per il riconoscimento del gesto atletico da telemetria inerziale 6-DoF. Progetto vincitore del <strong>Best App Award “A. Petrosino”</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="section-title">Competenze Tecniche & Infrastruttura</div>
+    <div class="two-col-grid">
+      <div class="box-card">
+        <div class="box-card-title">Linguaggi & Embedded</div>
+        <div class="tag-cloud">
+          <span class="tag highlight">C/C++</span><span class="tag highlight">Python</span><span class="tag">MATLAB</span>
+          <span class="tag highlight">STM32 (Cortex-M4)</span><span class="tag highlight">ChibiOS/RT</span><span class="tag">ESP32</span>
+          <span class="tag">PlatformIO</span><span class="tag">ROS2</span><span class="tag">Swift (base)</span>
+        </div>
+      </div>
+      <div class="box-card">
+        <div class="box-card-title">Sicurezza & Protocolli</div>
+        <div class="tag-cloud">
+          <span class="tag highlight">TLS / mTLS</span><span class="tag highlight">PKI X.509</span><span class="tag highlight">HMAC-SHA256</span>
+          <span class="tag">MQTT (Mosquitto)</span><span class="tag">BLE</span><span class="tag">CRC-32</span>
+          <span class="tag">Solidity (base)</span>
+        </div>
+      </div>
+      <div class="box-card">
+        <div class="box-card-title">Strumenti & Sistemi</div>
+        <div class="tag-cloud">
+          <span class="tag highlight">Git (branch, PR)</span><span class="tag highlight">Linux (Ubuntu, Mint, openSUSE)</span>
+          <span class="tag">Docker</span><span class="tag">Proxmox VE</span><span class="tag">scikit-learn</span><span class="tag">EEGLAB</span>
+        </div>
+        <div class="box-text" style="margin-top:4px"><strong>Homelab su Proxmox VE:</strong> container LXC, virtual machines Linux, segmentazione VLAN, reverse proxy e gestione certificati TLS.</div>
+      </div>
+      <div class="box-card">
+        <div class="box-card-title">Lingue & Riconoscimenti</div>
+        <div class="box-text">
+          <strong>Italiano:</strong> Madrelingua &nbsp;|&nbsp; <strong>Inglese:</strong> B2 Professionale<br>
+          <strong>Riconoscimento:</strong> Best Student Paper Finalist (IAS-19) & Best App Award (Apple Academy).
+        </div>
+      </div>
+    </div>
+
+    <div class="privacy-text">
+      Autorizzo il trattamento dei miei dati personali presenti nel curriculum vitae ai sensi del Regolamento UE 2016/679 (GDPR) e del D.Lgs. 196/2003.
+    </div>
+
+    <span class="page-number">Pag. 2 / 2</span>
+  </div>
+
+</body>
+
+</html>

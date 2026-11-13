@@ -3,34 +3,34 @@ import { Project } from '../types';
 export const projects: Project[] = [
   {
     id: 'proj-agy-telegram',
-    title: 'agy-telegram: Autonomous AI Agent Mobile Cockpit & Gateway',
+    title: 'agy-telegram: Asynchronous Mobile Gateway & Cockpit for AI Agents',
     category: 'systems',
-    tagline: 'Zero-attack-surface bidirectional mobile gateway for Google Antigravity with instant tmux buffer injection and Human-in-the-Loop approvals.',
+    tagline: 'Outbound-only mobile bridge in Python and tmux: zero exposed listening ports, Unix domain sockets, and instant tmux buffer injection.',
     description:
-      'Engineered a production-grade, open-source 1-to-1 mobile terminal cockpit that connects Telegram to local Google Antigravity AI agents running in Linux/Proxmox containers. Eliminates remote attack surfaces with strict long polling and achieves 0ms prompt injection via tmux buffers.',
+      'An open-source asynchronous mobile cockpit connecting Telegram to local AI coding agents running in Linux/Proxmox environments. Operates via outbound long-polling with zero inbound listening ports, local Unix domain socket IPC, and prompt injection directly into tmux buffers.',
     problemStatement:
-      'Operating privileged autonomous coding and sysadmin agents from mobile devices historically required fragile SSH connections, risky open firewall ports, or loss of interactive Human-in-the-Loop command approvals.',
+      'Operating privileged coding and sysadmin agents remotely from mobile devices typically required fragile SSH shells, open firewall ports, or sacrificing interactive Human-in-the-Loop approvals.',
     threatModelOrChallenge:
-      'Defended against unauthorized remote execution by enforcing strict 1-to-1 user ID whitelisting and zero inbound listening ports (HTTPS outbound long-polling only). Eliminated race conditions between real-time tool state updates and inline command approval prompts.',
+      'Eliminated exposed external attack surfaces by relying exclusively on HTTPS outbound long-polling (no open ports or NAT forwarding). Enforced security boundaries via local user ID whitelisting, Unix socket permissions, and sanitization of raw ANSI escape sequences.',
     securityStandards: [
-      'NIST SP 800-207 (Zero Trust Control Planes)',
-      'RFC 8446 (TLS 1.3 Outbound Encrypted Telemetry)',
-      'CIS Linux Benchmark (Least Privilege & Daemon Isolation)',
-      'OWASP Top 10 for LLM Applications (Human-in-the-Loop Mitigation)',
+      'Outbound Long-Polling Architecture (Zero Inbound Listening Ports)',
+      'Least Privilege Execution & User ID Whitelisting',
+      'Unix Domain Socket IPC File Permissions (/tmp/agy-sentinel.sock)',
+      'Input Sanitization & Telegram HTML Escaping',
     ],
     architectureSpecs: [
       'Pure Asynchronous Python (AsyncIO, python-telegram-bot v21+)',
-      'Zero-Latency Input Injection via Tmux Internal Buffers (set-buffer & paste-buffer)',
+      'Sub-Millisecond Input Injection via Tmux Internal Buffers (set-buffer & paste-buffer)',
       'Structured Telemetry Streaming from Antigravity audit logs (transcript.jsonl)',
       'Interactive Inline Telegram Keyboards with State Persistence Guards',
-      'Proactive Push Hub with Local Unix Domain Socket IPC (/tmp/agy-sentinel.sock)',
+      'Local Unix Domain Socket IPC for Proactive Notifications (/tmp/agy-sentinel.sock)',
       'Robust HTML Sanitizer with Syntax-Highlighted Code Blocks and Tag-Boundary Splitting',
     ],
     keyResults: [
-      '0 Open Inbound Ports: 100% resilient against external network port scans.',
-      '0ms Typing Latency: Instant prompt paste for complex multi-thousand-character instructions.',
-      '100% Terminal Parity: Full Human-in-the-Loop interactive approval directly on mobile.',
-      'Zero Markdown Parse Crashes: Flawless Telegram HTML conversion across thousands of agent turns.',
+      'Zero Inbound Listening Ports: No NAT traversal or open firewall ports required.',
+      'Sub-Millisecond Input Injection: Instant tmux buffer paste for large terminal commands.',
+      'Human-in-the-Loop Controls: Interactive inline approval callbacks directly from mobile.',
+      'Zero Markdown Parse Crashes: Resilient Telegram HTML conversion across thousands of agent turns.',
     ],
     technologies: [
       'Python',
@@ -40,23 +40,22 @@ export const projects: Project[] = [
       'AsyncIO',
       'Linux / Proxmox VE',
       'Systemd',
-      'Splunk SIEM',
     ],
     githubUrl: 'https://github.com/kappino/agy-telegram',
     date: '2026-09',
     featured: true,
     metrics: [
-      { label: 'Inbound Ports', value: '0' },
+      { label: 'Inbound Ports', value: '0 (Outbound Only)' },
       { label: 'Input Latency', value: '< 5ms' },
-      { label: 'Approval UX', value: '1-Tap' },
-      { label: 'Uptime', value: '99.9%' },
+      { label: 'Approval UX', value: '1-Tap Inline' },
+      { label: 'Transport', value: 'Long-Polling' },
     ],
   },
   {
     id: 'proj-mtls-iot-gateway',
     title: 'Zero-Trust IoT Gateway: mTLS v1.3 Hardening & Blockchain Notary',
     category: 'security',
-    tagline: 'Cryptographic edge-to-cloud channel hardening with ESP32, private PKI, and EVM proof of existence.',
+    tagline: 'Cryptographic edge-to-cloud channel hardening with ESP32, private PKI, and non-repudiation audit logging.',
     description:
       'Engineered an end-to-end Zero-Trust telemetry pipeline for resource-constrained medical IoT devices, defending against packet tampering, rogue device spoofing, and MITM attacks on untrusted local networks.',
     problemStatement:
@@ -64,11 +63,10 @@ export const projects: Project[] = [
     threatModelOrChallenge:
       'Defended against rogue node spoofing, packet tampering, and replay attacks on untrusted Wi-Fi. Forced bidirectional certificate verification (mTLS v1.3) with clientAuth extensions, ensuring rogue nodes without private key access are dropped during the TLS handshake before processing any payload.',
     securityStandards: [
-      'NIST SP 800-207 (Zero Trust Architecture)',
-      'MITRE ATT&CK for Enterprise & ICS',
-      'GDPR Art. 9 (Processing of Special Categories of Data / Biometrics)',
+      'NIST SP 800-207 (Zero Trust Principles)',
       'RFC 8446 (TLS v1.3 Protocol Specification)',
-      'FIPS 198-1 (HMAC-SHA256 Cryptographic Authentication)',
+      'FIPS 198-1 (HMAC-SHA256 Authentication)',
+      'GDPR Privacy-by-Design (Zero Plaintext Biometrics On-Chain)',
     ],
     misuseCases: [
       {
@@ -314,17 +312,17 @@ Immutable Hash (BC):  8f4b23c...e719a
   },
   {
     id: 'proj-posix-sockets',
-    title: 'Concurrent C POSIX Network Architecture & Advisory Locking Datastore',
+    title: 'Concurrent POSIX C Multi-Process Server & Advisory Locking Datastore',
     category: 'systems',
-    tagline: 'Multi-tier TCP/IP networking, concurrent POSIX sockets, stream-safe I/O primitives, and flock binary datastore in C.',
+    tagline: 'Multi-process TCP/IP networking, concurrent POSIX sockets, stream-safe I/O primitives, and flock binary datastore in C11.',
     description:
-      'Engineered a distributed client-server architecture in pure C (C11) orchestrating digital health certification issuance, ASL quarantine revocation, and point-of-entry verification across multi-process TCP/IP socket streams with atomic BSD advisory file locking.',
+      'Developed a distributed client-server architecture in pure C (C11) as an advanced systems programming coursework. Coordinates certificate issuance, health authority revocation, and point-of-entry verification across multi-process TCP/IP socket streams with atomic BSD advisory file locking.',
     problemStatement:
       'Handling concurrent multi-client transactions across unbuffered TCP streams without message boundary fragmentation, race conditions during in-place record updates, or memory exhaustion on Unix servers.',
     threatModelOrChallenge:
-      'Defended against race conditions and dirty reads on shared binary records (file.dat), TCP stream fragmentation across slow networks, and signal interruption (EINTR) desynchronization during socket I/O. Addressed via atomic BSD advisory locks (flock) and loop-safe full_read/full_write primitives.',
+      'Addressed race conditions and dirty reads on shared binary records (file.dat), TCP stream fragmentation across slow networks, and signal interruption (EINTR) desynchronization during socket I/O. Solved via atomic BSD advisory locks (flock) and loop-safe full_read/full_write primitives.',
     securityStandards: [
-      'POSIX.1-2008 (IEEE Std 1003.1 Socket API)',
+      'POSIX.1-2008 (IEEE Std 1003.1 Socket & Process API)',
       'BSD Advisory File Locking (flock Specification)',
       'ISO/IEC 9899:2011 (C11 Memory & Concurrency Safety)',
       'Valgrind Memcheck Leak-Free Verification',
@@ -332,9 +330,9 @@ Immutable Hash (BC):  8f4b23c...e719a
     misuseCases: [
       {
         id: 'mc-race-conditions',
-        threatName: 'Race Conditions & Datastore Corruption',
-        threatActor: 'Concurrent Client Operations',
-        mitreId: 'CWE-362 / CWE-591',
+        threatName: 'Race Conditions & Concurrent Write Corruption',
+        threatActor: 'Concurrent Worker Processes',
+        mitreId: 'CWE-362 (Race Condition)',
         targetUseCase: 'Datastore Record Modification',
         layer: 'Storage',
         countermeasure: 'BSD Advisory Locking (flock)',
@@ -343,9 +341,9 @@ Immutable Hash (BC):  8f4b23c...e719a
       },
       {
         id: 'mc-tcp-fragmentation',
-        threatName: 'TCP Fragmentation & Signal Desync',
+        threatName: 'TCP Stream Fragmentation & Partial I/O Desync',
         threatActor: 'Network Delay / OS Signal (EINTR)',
-        mitreId: 'CWE-400 (Stream Starvation)',
+        mitreId: 'Stream Framing Bug',
         targetUseCase: 'Binary Socket I/O',
         layer: 'Transport',
         countermeasure: 'Loop-Safe full_read / full_write',
@@ -354,9 +352,9 @@ Immutable Hash (BC):  8f4b23c...e719a
       },
       {
         id: 'mc-slowloris-hang',
-        threatName: 'Connection Starvation (Slowloris)',
-        threatActor: 'Stalled / Misbehaving Client',
-        mitreId: 'CWE-400 (Resource Exhaustion)',
+        threatName: 'Worker Starvation by Slow Clients',
+        threatActor: 'Slow / Stalled TCP Client',
+        mitreId: 'CWE-400 (Resource Starvation)',
         targetUseCase: 'Point-of-Entry Venue Scans',
         layer: 'Application',
         countermeasure: 'Multi-Process Concurrency (fork)',

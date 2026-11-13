@@ -45,13 +45,13 @@ export const Contact = () => {
         {/* Header */}
         <div className="mb-14">
           <span className="font-mono text-xs uppercase tracking-widest text-sky-400 font-semibold mb-2 block">
-            Direct Communications &amp; Cryptographic Identity
+            Direct Communications &amp; Inquiries
           </span>
           <h1 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-4">
             Get in Touch
           </h1>
           <p className="text-sm sm:text-base text-zinc-300 max-w-2xl leading-relaxed">
-            Open for technical roles, systems security research, and engineering collaborations in Zero-Trust Infrastructure, Linux Daemons, and Robotics.
+            Open for R&amp;D opportunities, systems security engineering, robotics research, and technical collaboration.
           </p>
         </div>
 
@@ -70,11 +70,11 @@ export const Contact = () => {
                 Available for engineering appointments, technical consultations, and research collaborations.
               </p>
               <div className="space-y-1.5 pt-3 border-t border-zinc-800/80">
-                <div className="text-[11px] font-mono text-zinc-500 uppercase">Core Competencies:</div>
+                <div className="text-[11px] font-mono text-zinc-500 uppercase">Core Focus Areas:</div>
                 <div className="text-xs text-zinc-300 space-y-1 font-mono">
-                  <div>▹ Cybersecurity &amp; Zero-Trust PKI (mTLS v1.3)</div>
+                  <div>▹ Embedded Security &amp; Applied PKI (mTLS v1.3)</div>
                   <div>▹ Robotics &amp; Deterministic Runtimes (ROS2 / C++)</div>
-                  <div>▹ Linux Kernel Internals, Daemons &amp; Networking</div>
+                  <div>▹ Systems Programming, Daemons &amp; Concurrency (POSIX C)</div>
                 </div>
               </div>
             </div>
@@ -141,12 +141,12 @@ export const Contact = () => {
                   <span>Security &amp; Verification</span>
                 </div>
                 <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                  Signed Artifacts
+                  Signed Commits
                 </span>
               </div>
 
               <p className="text-xs text-zinc-400 leading-relaxed font-sans">
-                Source code releases, firmware builds, and git artifacts are cryptographically signed. Technical communications or inquiries regarding testbed access can be routed via direct email.
+                Source code repositories, firmware releases, and git commits are cryptographically signed. Technical communications or inquiries regarding testbed access can be routed via direct email.
               </p>
 
               <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-400">
@@ -155,12 +155,12 @@ export const Contact = () => {
               </div>
             </div>
 
-            {/* Zero-Trust Notice */}
+            {/* Privacy Notice */}
             <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-400 flex items-start gap-3">
               <ShieldCheck className="h-4 w-4 text-sky-400 mt-0.5 flex-shrink-0" />
               <div>
-                <strong className="text-white block font-medium mb-0.5">Zero-Trust Direct Channel</strong>
-                Direct communications adhere to Zero-Trust principles: no third-party tracking cookies or analytical pixels are embedded.
+                <strong className="text-white block font-medium mb-0.5">Privacy-First Architecture</strong>
+                This site operates with strict client-side privacy: zero analytics pixels, zero third-party tracking cookies, and no telemetry trackers.
               </div>
             </div>
           </div>

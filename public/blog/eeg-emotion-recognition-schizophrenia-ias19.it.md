@@ -62,7 +62,7 @@ flowchart LR
 ```
 
 ### La Coorte del Trial Clinico
-Il protocollo clinico ha coinvolto **19 soggetti**:
+Il protocollo clinico ha coinvolto **21 soggetti**:
 - Pazienti diagnosticati con schizofrenia cronica resistente al trattamento secondo i criteri DSM-5, arruolati in regime di degenza clinica.
 - Controlli sani abbinati per età, genere e livello di istruzione.
 - La stimolazione audiovisiva ha impiegato clip validate e standardizzate tratte dal repository **IAPS/IADS**, bilanciate attraverso i quadranti di valenza (piacere/dispiacere) e arousal (calma/eccitazione).

@@ -119,7 +119,7 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
   ),
   cv: (
     <div className="font-mono text-xs space-y-2 text-zinc-300">
-      <p className="text-zinc-500">Executing: curl -sSL -O https://kappino.me/esposito_crescenzo_cv.pdf</p>
+      <p className="text-zinc-500">Executing: curl -sSL -O https://kappino.me/crescenzo_esposito_cv.pdf</p>
       <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 space-y-1.5 text-[11px]">
         <div className="flex items-center justify-between text-zinc-400">
           <span>% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span>
@@ -132,12 +132,19 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
         </div>
         <div className="flex items-center gap-2 pt-1 text-zinc-300">
           <span className="text-emerald-400 font-bold">[HTTP/2 200 OK]</span>
-          <span>Content-Type: application/pdf (esposito_crescenzo_cv.pdf)</span>
+          <span>Content-Type: application/pdf (crescenzo_esposito_cv.pdf)</span>
         </div>
       </div>
-      <div className="flex items-center gap-2 pt-0.5 text-sky-400 text-xs font-mono">
-        <span className="h-1.5 w-1.5 rounded-full bg-sky-400 animate-ping" />
-        <span>Opening Curriculum Vitae in a new tab in 2 seconds...</span>
+      <div className="flex items-center justify-between pt-0.5 text-xs font-mono">
+        <span className="text-emerald-400 font-semibold">[SAVED] crescenzo_esposito_cv.pdf</span>
+        <a
+          href="/crescenzo_esposito_cv.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-mono transition-colors"
+        >
+          <span>Open PDF ↗</span>
+        </a>
       </div>
     </div>
   ),
@@ -180,6 +187,7 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
   ]);
   const [activeCommand, setActiveCommand] = useState<string>('status');
   const [inputVal, setInputVal] = useState('');
+  const [viewState, setViewState] = useState<'normal' | 'collapsed' | 'expanded'>('normal');
   const cvTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const terminalBufferRef = useRef<HTMLDivElement | null>(null);
 
@@ -219,10 +227,10 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
       resolvedKey = 'status';
     } else if (raw === 'cv' || raw.includes('curl') || raw.includes('resume') || raw.includes('download')) {
       resolvedKey = 'cv';
-      // Automatically open CV PDF in a new tab after 2 seconds
+      // Automatically open CV PDF in a new tab when explicitly invoked via terminal
       cvTimeoutRef.current = setTimeout(() => {
-        window.open('/esposito_crescenzo_cv.pdf', '_blank', 'noopener,noreferrer');
-      }, 2000);
+        window.open('/crescenzo_esposito_cv.pdf', '_blank', 'noopener,noreferrer');
+      }, 1800);
     } else if (raw === 'agy' || raw.includes('telegram') || raw.includes('cockpit') || raw.includes('agent')) {
       resolvedKey = 'agy';
     } else if (raw === 'bio' || raw.includes('kappino') || raw.includes('whoami')) {
@@ -315,29 +323,48 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
             <span className="hidden sm:inline">Clear</span>
           </button>
 
-          {/* Modern Circular Window Controls: Arrow Down, Arrow Up, Close with hover red */}
+          {/* Modern Circular Window Controls: Arrow Down (Minimize/Restore), Arrow Up (Maximize/Restore), Close */}
           <div className="flex items-center gap-1.5 ml-1 sm:ml-2 pl-2 border-l border-white/10">
-            {/* Minimize: Decorative */}
-            <div
-              className="w-5 h-5 rounded-full bg-zinc-800/80 text-zinc-400 flex items-center justify-center border border-white/10 shadow-sm"
-              aria-hidden="true"
+            {/* Minimize: Interactive */}
+            <button
+              type="button"
+              onClick={() => setViewState((prev) => (prev === 'collapsed' ? 'normal' : 'collapsed'))}
+              className={`w-5 h-5 rounded-full flex items-center justify-center border shadow-sm transition-all ${
+                viewState === 'collapsed'
+                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30'
+                  : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white border-white/10'
+              }`}
+              title={viewState === 'collapsed' ? 'Restore Terminal' : 'Minimize / Collapse Buffer'}
+              aria-label={viewState === 'collapsed' ? 'Restore Terminal' : 'Minimize Terminal'}
             >
-              <ChevronDown className="h-3 w-3" />
-            </div>
+              <ChevronDown className={`h-3 w-3 transition-transform ${viewState === 'collapsed' ? 'rotate-180' : ''}`} />
+            </button>
 
-            {/* Maximize: Decorative */}
-            <div
-              className="w-5 h-5 rounded-full bg-zinc-800/80 text-zinc-400 flex items-center justify-center border border-white/10 shadow-sm"
-              aria-hidden="true"
+            {/* Maximize: Interactive */}
+            <button
+              type="button"
+              onClick={() => setViewState((prev) => (prev === 'expanded' ? 'normal' : 'expanded'))}
+              className={`w-5 h-5 rounded-full flex items-center justify-center border shadow-sm transition-all ${
+                viewState === 'expanded'
+                  ? 'bg-sky-500/20 text-sky-300 border-sky-500/40 hover:bg-sky-500/30'
+                  : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white border-white/10'
+              }`}
+              title={viewState === 'expanded' ? 'Restore Size' : 'Maximize Console Height'}
+              aria-label={viewState === 'expanded' ? 'Restore Size' : 'Maximize Height'}
             >
-              <ChevronUp className="h-3 w-3" />
-            </div>
+              <ChevronUp className={`h-3 w-3 transition-transform ${viewState === 'expanded' ? 'rotate-180' : ''}`} />
+            </button>
 
             {/* Close: Circular button with white icon, turning red on hover */}
             <button
-              onClick={clearHistory}
+              type="button"
+              onClick={() => {
+                clearHistory();
+                setViewState('normal');
+              }}
               className="group/close w-5 h-5 rounded-full bg-zinc-800/80 hover:bg-[#da4453] text-zinc-300 hover:text-white flex items-center justify-center transition-all duration-150 border border-white/10 hover:border-red-500/50 shadow-sm"
               title="Close / Reset Buffer"
+              aria-label="Close / Reset Buffer"
             >
               <X className="h-3 w-3 transition-transform group-hover/close:scale-110" />
             </button>
@@ -346,62 +373,77 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
       </div>
 
       {/* Terminal Screen / Buffer */}
-      <div
-        ref={terminalBufferRef}
-        className="p-4 sm:p-5 text-xs space-y-4 min-h-[220px] max-h-[360px] overflow-y-auto bg-black/40 backdrop-blur-md"
-      >
-        {history.length === 0 && (
-          <div className="text-zinc-600 text-xs italic">
-            Session reset. Type 'help' or click a command below to inspect live modules.
-          </div>
-        )}
-
-        {history.map((item, idx) => (
-          <div key={`${item.command}-${idx}`} className="space-y-1.5">
-            <div className="flex items-center gap-1.5 text-xs">
-              <span className="text-emerald-400 font-bold">kappino@portfolio</span>
-              <span className="text-zinc-500">:</span>
-              <span className="text-sky-400 font-semibold">~</span>
-              <span className="text-zinc-400">$</span>
-              <span className="text-zinc-100 font-medium ml-1">{item.command}</span>
-            </div>
-            <div className="pl-3.5 border-l-2 border-zinc-800/80 text-zinc-300">
-              {item.output}
-            </div>
-          </div>
-        ))}
-
-        {/* Linux Bash Input line */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            runCommand(inputVal);
-          }}
-          className="flex items-center gap-1.5 pt-2 border-t border-zinc-800/60"
+      {viewState !== 'collapsed' ? (
+        <div
+          ref={terminalBufferRef}
+          className={`p-4 sm:p-5 text-xs space-y-4 overflow-y-auto bg-black/40 backdrop-blur-md transition-all duration-200 ${
+            viewState === 'expanded' ? 'min-h-[340px] max-h-[500px]' : 'min-h-[180px] max-h-[290px]'
+          }`}
         >
-          <span className="text-emerald-400 font-bold text-xs">kappino@portfolio</span>
-          <span className="text-zinc-500">:</span>
-          <span className="text-sky-400 font-semibold text-xs">~</span>
-          <span className="text-zinc-400 font-bold">$</span>
-          <input
-            type="text"
-            value={inputVal}
-            onChange={(e) => setInputVal(e.target.value)}
-            placeholder="status, mtls, ros2, homelab, bio..."
-            aria-label="Terminal command input"
-            className="flex-1 bg-transparent text-white placeholder-zinc-600 focus:outline-none text-xs ml-1 font-mono"
-            autoComplete="off"
-            spellCheck="false"
-          />
-          <button
-            type="submit"
-            className="p-1 rounded bg-white/10 hover:bg-white/20 text-zinc-300 hover:text-white transition-colors"
-            title="Execute"
+          {history.length === 0 && (
+            <div className="text-zinc-600 text-xs italic">
+              Session reset. Type 'help' or click a command below to inspect live modules.
+            </div>
+          )}
+
+          {history.map((item, idx) => (
+            <div key={`${item.command}-${idx}`} className="space-y-1.5">
+              <div className="flex items-center gap-1.5 text-xs">
+                <span className="text-emerald-400 font-bold">kappino@portfolio</span>
+                <span className="text-zinc-500">:</span>
+                <span className="text-sky-400 font-semibold">~</span>
+                <span className="text-zinc-400">$</span>
+                <span className="text-zinc-100 font-medium ml-1">{item.command}</span>
+              </div>
+              <div className="pl-3.5 border-l-2 border-zinc-800/80 text-zinc-300">
+                {item.output}
+              </div>
+            </div>
+          ))}
+
+          {/* Linux Bash Input line */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              runCommand(inputVal);
+            }}
+            className="flex items-center gap-1.5 pt-2 border-t border-zinc-800/60"
           >
-            <CornerDownLeft className="h-3 w-3" />
+            <span className="text-emerald-400 font-bold text-xs">kappino@portfolio</span>
+            <span className="text-zinc-500">:</span>
+            <span className="text-sky-400 font-semibold text-xs">~</span>
+            <span className="text-zinc-400 font-bold">$</span>
+            <input
+              type="text"
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              placeholder="status, mtls, ros2, homelab, bio..."
+              aria-label="Terminal command input"
+              className="flex-1 bg-transparent text-white placeholder-zinc-600 focus:outline-none text-xs ml-1 font-mono"
+              autoComplete="off"
+              spellCheck="false"
+            />
+            <button
+              type="submit"
+              className="p-1 rounded bg-white/10 hover:bg-white/20 text-zinc-300 hover:text-white transition-colors"
+              title="Execute"
+            >
+              <CornerDownLeft className="h-3 w-3" />
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div className="px-4 py-2.5 bg-black/40 border-b border-white/5 text-[11px] font-mono text-zinc-500 flex items-center justify-between">
+          <span>Terminal minimized. Click any command below or arrow to expand.</span>
+          <button
+            type="button"
+            onClick={() => setViewState('normal')}
+            className="text-sky-400 hover:text-sky-300 text-xs underline"
+          >
+            Expand ↗
           </button>
-        </form>
-      </div>
+        </div>
+      )}
 
       {/* Quick Interactive Command Pills */}
       <div className="px-3.5 py-2 bg-zinc-900/40 backdrop-blur-md border-t border-white/5 flex flex-wrap items-center justify-between gap-2">
@@ -420,7 +462,10 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
           ].map(({ id, label }) => (
             <button
               key={id}
-              onClick={() => runCommand(id)}
+              onClick={() => {
+                if (viewState === 'collapsed') setViewState('normal');
+                runCommand(id);
+              }}
               className={`px-2.5 py-0.5 rounded-md text-[11px] font-mono transition-all ${
                 activeCommand === id && history.length > 0 && history[history.length - 1]?.command.toLowerCase().includes(id)
                   ? 'bg-sky-500/25 text-sky-300 border border-sky-400/40 font-semibold shadow-sm'
