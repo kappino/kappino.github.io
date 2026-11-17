@@ -343,8 +343,26 @@ export const TerminalWidget = () => {
           }`}
         >
           {history.length === 0 && (
-            <div className="text-zinc-600 text-xs italic">
-              {terminalIsLive ? "Type 'help' or run 'status' to check the service." : "Session reset. Type 'help' or choose a command to browse examples."}
+            <div className="space-y-4 text-zinc-300">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <pre aria-hidden="true" className="shrink-0 select-none text-[0.7rem] leading-none text-sky-300">{`+------+
+| >_   |
++------+`}</pre>
+                <div className="min-w-0">
+                  <p className="font-semibold tracking-wide text-zinc-100">kappino.me</p>
+                  <p className="mt-0.5 text-xs text-zinc-400">{terminalIsLive ? 'Portfolio terminal' : 'Terminal demo'}</p>
+                </div>
+              </div>
+              <p className="max-w-[50ch] text-zinc-300">
+                {terminalIsLive
+                  ? 'Pick a shortcut below or type a command at the prompt.'
+                  : 'Pick a shortcut below to explore the demo.'}
+              </p>
+              <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-1 border-l border-sky-300/30 pl-3 text-zinc-400 sm:gap-x-5">
+                <dt className="text-sky-200">help</dt><dd>See what you can run</dd>
+                <dt className="text-sky-200">status</dt><dd>{terminalIsLive ? 'Check the live service' : 'View example diagnostics'}</dd>
+                {terminalIsLive && <><dt className="text-sky-200">projects</dt><dd>List portfolio projects</dd></>}
+              </dl>
             </div>
           )}
 
