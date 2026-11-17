@@ -2,6 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .site-shell {
+    @apply mx-auto w-full max-w-[74rem] px-5 sm:px-8 lg:px-10;
+  }
+
+  .editorial-page {
+    @apply pb-16 pt-10 sm:pb-24 sm:pt-16;
+  }
+
+  .editorial-heading {
+    @apply mb-8 border-b border-zinc-800 pb-8 sm:mb-10;
+  }
+
+  .editorial-title {
+    @apply text-4xl font-semibold leading-[1.04] tracking-[-0.055em] text-white sm:text-6xl;
+  }
+
+  .editorial-section-title {
+    @apply text-3xl font-semibold leading-tight tracking-[-0.04em] text-white sm:text-4xl;
+  }
+
+  .editorial-intro {
+    @apply mt-4 max-w-[65ch] text-base leading-relaxed text-zinc-300 sm:text-lg;
+  }
+
+  .editorial-label {
+    @apply font-mono text-[0.72rem] font-medium uppercase tracking-[0.13em] text-sky-300;
+  }
+
+  .editorial-link {
+    @apply inline-flex items-center gap-2 text-sm font-medium text-sky-300 transition-colors hover:text-white;
+  }
+
+  .editorial-button {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-100 transition-colors hover:border-sky-300/60 hover:bg-zinc-800;
+  }
+
+  .editorial-button-primary {
+    @apply border-sky-300 bg-sky-300 text-zinc-950 hover:border-sky-200 hover:bg-sky-200;
+  }
+
+  .editorial-card {
+    @apply rounded-2xl border border-zinc-800 bg-zinc-900/70 transition-colors hover:border-zinc-600 hover:bg-zinc-900;
+  }
+
+  .editorial-row {
+    @apply flex items-center justify-between gap-5 px-1 py-5 transition-colors hover:bg-zinc-900/70 sm:px-3;
+  }
+
+  .editorial-filters {
+    @apply mb-6 flex flex-wrap gap-2;
+  }
+
+  .editorial-filter {
+    @apply rounded-full border border-zinc-800 px-3.5 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white aria-pressed:border-sky-300/60 aria-pressed:bg-sky-300/10 aria-pressed:text-sky-200;
+  }
+
+  .editorial-disclosure {
+    @apply min-w-0 rounded-xl border border-zinc-800 bg-zinc-900/40;
+  }
+
+  .editorial-disclosure > summary {
+    @apply flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 font-medium text-zinc-100 sm:px-5;
+  }
+
+  .editorial-disclosure > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .editorial-disclosure > summary > svg {
+    @apply shrink-0 text-sky-300 transition-transform;
+  }
+
+  .editorial-disclosure[open] > summary > svg {
+    @apply rotate-180;
+  }
+
+  .editorial-disclosure-body {
+    @apply min-w-0 border-t border-zinc-800 p-4 sm:p-5;
+  }
+
+}
+
 @layer base {
   :root {
     color-scheme: dark;
@@ -34,7 +117,7 @@
 
   body {
     min-height: 100vh;
-    overflow-x: clip; /* clip prevents horizontal bleed without breaking root-level scroll-snap */
+    overflow-x: clip;
   }
 
   /* Modern Web Typography: Balanced headlines and runt-free paragraphs */
@@ -92,36 +175,6 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* Subtle engineering grid & glow */
-.bg-grid-cyber {
-  background-size: 36px 36px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-}
-
-/* Performance: Off-screen Content-Visibility Optimization */
-.content-visibility-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 500px;
-}
-
-/* Root-level Snap Scroll when on Home page */
-html.snap-active {
-  scroll-snap-type: y mandatory;
-  scroll-padding-top: 3.5rem;
-}
-
-.snap-page-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: normal;
-}
-
-.snap-page-footer {
-  scroll-snap-align: end;
-  scroll-snap-stop: normal;
 }
 
 /* KaTeX Math Typography & Overflow Handling */

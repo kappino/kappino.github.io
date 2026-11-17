@@ -1,137 +1,63 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
+import { ArrowUpRight, ChevronDown, Copy } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Award, Clock, Copy, Check, BookOpen, FileText } from 'lucide-react';
-import { Publication } from '@/types';
-import { Badge } from '@/components/common/Badge';
+import { personalInfo } from '@/data/personal';
+import type { Publication } from '@/types';
 
-interface PublicationCardProps {
-  publication: Publication;
-}
+export function PublicationCard({ publication }: { publication: Publication }) {
+  const [copyStatus, setCopyStatus] = useState('');
+  const publicationDate = publication.publishedOn && new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  }).format(new Date(publication.publishedOn));
 
-export const PublicationCard: React.FC<PublicationCardProps> = ({ publication }) => {
-  const [copied, setCopied] = useState(false);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  useEffect(() => () => { if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current); }, []);
-
-  const handleCopyBibtex = () => {
-    navigator.clipboard.writeText(publication.bibtex).then(() => {
-      setCopied(true);
-      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
-      copyTimeoutRef.current = setTimeout(() => setCopied(false), 2500);
-    }).catch(() => { /* clipboard access denied */ });
-  };
+  async function copyCitation() {
+    try {
+      await navigator.clipboard.writeText(publication.bibtex);
+      setCopyStatus('Citation copied');
+    } catch {
+      setCopyStatus('Select and copy the citation below');
+    }
+  }
 
   return (
-    <article className="rounded-xl border border-slate-800 bg-slate-900/40 p-6 sm:p-8 backdrop-blur-sm transition-all hover:border-slate-700/80 shadow-md">
-      {/* Badges Bar & Direct Link */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <Badge variant="warning" size="md">
-            <Award className="h-3.5 w-3.5" />
-            <span>Best Student Paper Finalist</span>
-          </Badge>
-          <Badge variant="accent" size="md">
-            <Clock className="h-3.5 w-3.5" />
-            <span>{publication.status}</span>
-          </Badge>
-          <span className="font-mono text-xs text-slate-400">
-            {publication.series} · {publication.year}
-          </span>
-        </div>
+    <article className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5 sm:p-8">
+      <p className="editorial-label mb-3">
+        {publication.status} · {publicationDate ? <time dateTime={publication.publishedOn}>{publicationDate}</time> : publication.year}
+      </p>
+      <h3 className="max-w-[42ch] text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">{publication.title}</h3>
+      <p className="mt-4 text-sm leading-relaxed text-zinc-300">{publication.authors.map((author, index) => <span key={author}>{index > 0 && ', '}{author === personalInfo.name ? <strong className="text-white">{author}</strong> : author}</span>)}</p>
+      <p className="mt-1 text-sm text-zinc-400">{publication.conference}{publication.conferenceLocationAndYear && ' · ' + publication.conferenceLocationAndYear}</p>
 
-        <Link
-          to="/blog/eeg-emotion-recognition-schizophrenia-ias19"
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-sky-500/15 border border-sky-500/40 text-xs font-mono font-semibold text-sky-300 hover:text-white hover:bg-sky-500/25 transition-colors shadow-sm"
-        >
-          <FileText className="h-3.5 w-3.5 text-sky-400" />
-          <span>Read Paper Breakdown</span>
-        </Link>
+      <p className="mt-2 text-sm text-zinc-400">{publication.series}</p>
+      <p className="mt-4 text-sm font-semibold text-sky-300">{publication.statusNote}</p>
+      <div className="mt-6 flex flex-wrap gap-3">
+        {publication.doiUrl && (
+          <a href={publication.doiUrl} className="editorial-button editorial-button-primary" target="_blank" rel="noreferrer">
+            Read on Springer <ArrowUpRight size={16} aria-hidden="true" />
+          </a>
+        )}
+        <Link to="/blog/eeg-emotion-recognition-schizophrenia-ias19" className="editorial-button">Technical article</Link>
       </div>
 
-      {/* Title */}
-      <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 leading-snug">
-        {publication.title}
-      </h3>
-
-      {/* Authors list */}
-      <div className="text-xs sm:text-sm text-slate-300 mb-4">
-        <span className="text-slate-500 font-mono">Authors: </span>
-        {publication.authors.map((author, index) => (
-          <span key={author}>
-            <strong className={author.includes('Esposito') ? 'text-sky-300 font-semibold underline decoration-sky-500/50' : 'text-slate-300 font-normal'}>
-              {author}
-            </strong>
-            {index < publication.authors.length - 1 && ', '}
-          </span>
-        ))}
-      </div>
-
-      {/* Venue & Editorial Notice */}
-      <div className="mb-6 rounded-lg bg-slate-950/80 border border-slate-800/80 p-4 text-xs text-slate-300">
-        <div className="font-medium text-white flex items-center gap-2 mb-1">
-          <BookOpen className="h-3.5 w-3.5 text-sky-400" />
-          <span>{publication.conference}</span>
-        </div>
-        <p className="text-slate-400">
-          {publication.statusNote}
-          {publication.isbn && <span className="block font-mono mt-0.5 text-slate-500">ISBN: {publication.isbn}</span>}
-        </p>
-      </div>
-
-      {/* Clinical / Performance Metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-        {publication.metrics.map((m, idx) => (
-          <div key={idx} className="p-3 rounded-lg bg-slate-950/60 border border-slate-800/70">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-1">
-              {m.label}
-            </div>
-            <div className="text-sm font-mono font-bold text-slate-100 mb-0.5">
-              {m.value}
-            </div>
-            {m.detail && (
-              <div className="text-[11px] text-slate-400 leading-tight">
-                {m.detail}
-              </div>
-            )}
+      <div className="mt-7 space-y-3">
+        <details className="editorial-disclosure">
+          <summary>Abstract summary <ChevronDown size={17} aria-hidden="true" /></summary>
+          <div className="editorial-disclosure-body space-y-3 text-sm leading-relaxed text-zinc-300">
+            <p>{publication.abstract}</p>
+            {publication.doiUrl && <a className="editorial-link" href={publication.doiUrl + '#Abs1'}>Read the original abstract <ArrowUpRight size={16} aria-hidden="true" /></a>}
           </div>
-        ))}
-      </div>
-
-      {/* Abstract */}
-      <div className="border-t border-slate-800/80 pt-4 mb-6">
-        <h4 className="text-xs font-mono uppercase tracking-wider text-sky-400 font-semibold mb-2">
-          Abstract
-        </h4>
-        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-          {publication.abstract}
-        </p>
-      </div>
-
-      {/* BibTeX Citation Accordion / Box */}
-      <div className="rounded-lg bg-slate-950/90 border border-slate-800/80 p-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="font-mono text-xs text-slate-400">BibTeX Citation</span>
-          <button
-            onClick={handleCopyBibtex}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-colors"
-          >
-            {copied ? (
-              <>
-                <Check className="h-3 w-3 text-emerald-400" />
-                <span className="text-emerald-400">Copied!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="h-3 w-3" />
-                <span>Copy Citation</span>
-              </>
-            )}
-          </button>
-        </div>
-        <pre className="overflow-x-auto text-[11px] font-mono text-slate-400 p-2 bg-slate-950 rounded border border-slate-900 leading-relaxed">
-          {publication.bibtex}
-        </pre>
+        </details>
+        <details className="editorial-disclosure">
+          <summary>BibTeX citation <ChevronDown size={17} aria-hidden="true" /></summary>
+          <div className="editorial-disclosure-body">
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              <button type="button" onClick={copyCitation} className="editorial-button"><Copy size={16} aria-hidden="true" /> Copy BibTeX</button>
+              <span role="status" className="text-sm text-zinc-400">{copyStatus}</span>
+            </div>
+            <pre className="overflow-x-auto rounded-lg bg-zinc-950 p-4 text-xs leading-relaxed text-zinc-300">{publication.bibtex}</pre>
+          </div>
+        </details>
       </div>
     </article>
   );
-};
+}

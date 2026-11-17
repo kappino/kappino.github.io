@@ -4,6 +4,7 @@ export const personalInfo: PersonalInfo = {
   name: 'Crescenzo Esposito',
   handle: 'kappino',
   title: 'Systems & Security Engineer | Embedded, Robotics & Applied Cryptography',
+  cvUrl: '/crescenzo_esposito_cv.pdf',
   affiliations: [
     {
       role: 'Graduate Student (M.Sc. Cybersecurity)',

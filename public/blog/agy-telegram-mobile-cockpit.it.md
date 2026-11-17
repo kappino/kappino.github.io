@@ -1,9 +1,10 @@
 ---
-title: "Costruzione di una Mobile Cockpit Open-Source per Google Antigravity"
+title: "Una console Telegram per agenti di coding locali"
 date: "2026-09-28"
 category: "Sistemi & Sicurezza"
+topic: "Systems"
 tags: ["Google Antigravity", "Python", "Telegram", "AsyncIO", "DevOps", "Open Source"]
-excerpt: "Come abbiamo ingegnerizzato un gateway mobile sicuro e terminal mirror a superficie di attacco zero per Google Antigravity, sfruttando Python AsyncIO, buffer Tmux e approvazione Human-in-the-Loop."
+excerpt: "Approvazioni da mobile e output del terminale attraverso un bridge Python con connessioni in uscita."
 author: "Crescenzo Esposito"
 ---
 

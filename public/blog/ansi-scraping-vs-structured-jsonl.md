@@ -1,9 +1,10 @@
 ---
-title: "ANSI Scraping vs Structured JSONL Streams in Remote AI Agent Telemetry"
+title: "Terminal scraping vs. structured JSONL"
 date: "2026-09-28"
 category: "Async Architecture"
+topic: "Systems"
 tags: ["Google Antigravity", "Python", "AsyncIO", "JSONL", "Terminal", "DevOps"]
-excerpt: "A technical deep dive into why scraping raw ANSI escape sequences from virtual terminal panes fails for AI agents, and how tailing structured audit logs yields 100% clean Markdown."
+excerpt: "What ANSI output loses and how structured logs preserve the events a remote client needs."
 author: "Crescenzo Esposito"
 ---
 

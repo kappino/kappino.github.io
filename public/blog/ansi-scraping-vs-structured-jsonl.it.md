@@ -1,9 +1,10 @@
 ---
-title: "Scraping ANSI vs Stream Strutturati JSONL nella Telemetria Remota di Agenti IA"
+title: "Scraping del terminale o log JSONL?"
 date: "2026-09-28"
 category: "Architettura Asincrona"
+topic: "Systems"
 tags: ["Google Antigravity", "Python", "AsyncIO", "JSONL", "Terminal", "DevOps"]
-excerpt: "Un'analisi tecnica approfondita sul perché estrarre sequenze di escape ANSI grezze dai terminali fallisce con gli agenti IA, e come il monitoraggio di log di audit strutturati garantisca Markdown al 100% pulito."
+excerpt: "Cosa si perde leggendo l’output ANSI e quali eventi conserva un log strutturato."
 author: "Crescenzo Esposito"
 ---
 

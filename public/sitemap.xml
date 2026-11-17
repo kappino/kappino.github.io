@@ -40,6 +40,9 @@
 
   <!-- Featured Engineering Projects -->
   <url>
+    <loc>https://kappino.me/projects/proj-tnes</loc>
+  </url>
+  <url>
     <loc>https://kappino.me/projects/proj-agy-telegram</loc>
     <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>

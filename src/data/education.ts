@@ -23,18 +23,8 @@ export const education: EducationItem[] = [
       focus: 'Processed clinical 14-channel wireless EEG data in MATLAB (PICARD ICA) and developed Scikit-learn classifiers (MLP, Random Forest) for emotion recognition in schizophrenia patients.',
     },
     highlights: [
-      'Thesis research resulted in a first-author paper selected as a Best Student Paper Award Finalist at IAS-19 (in press, Springer LNNS).',
+      'Thesis research resulted in a first-author paper published by Springer LNNS and selected as a Best Student Paper Award finalist at IAS-19.',
       'Solid foundations in Operating Systems, Concurrent Programming (C POSIX), Algorithms & Data Structures, and Computer Networks.',
-    ],
-  },
-  {
-    id: 'edu-maturita-scientifica',
-    degree: 'High School Diploma in Scientific Studies',
-    institution: 'Liceo Statale Ischia',
-    location: 'Ischia (NA), Italy',
-    period: 'Sep 2012 — Jun 2017',
-    highlights: [
-      'High school scientific diploma with emphasis on mathematics, physics, and computing principles.',
     ],
   },
 ];
@@ -52,15 +42,16 @@ export const certifications: Certification[] = [
     issuer: 'Apple Developer Academy Network / UniParthenope',
     date: '2022',
   },
-  {
-    id: 'cert-cambridge-b2',
-    name: 'B2 First Certificate in English',
-    issuer: 'Cambridge Assessment English',
-    date: '2018',
-  },
 ];
 
 export const awards: AwardItem[] = [
+  {
+    id: 'award-tnes',
+    title: 'Winner · Hack the Route',
+    issuer: 'Consorzio CLARA · The Big Hack 2026',
+    date: '2026',
+    description: 'Team 0’PACKET won Challenge 04 with TNES, a networking and cybersecurity training prototype.',
+  },
   {
     id: 'award-ias19-finalist',
     title: 'Finalist - Best Student Paper Award',

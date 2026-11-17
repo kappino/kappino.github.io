@@ -1,9 +1,71 @@
 import { Project } from '../types';
 
+export const PROJECT_CATEGORIES: Record<Project['category'], string> = {
+  security: 'Security',
+  robotics: 'Robotics',
+  embedded: 'Embedded',
+  research: 'Research',
+  systems: 'Systems',
+};
+
 export const projects: Project[] = [
+  {
+    id: 'proj-tnes',
+    title: 'TNES · Hack the Route',
+    category: 'systems',
+    tagline: 'A gateway between an Unreal Engine training game and Cisco Modeling Labs.',
+    contribution: 'Co-developed the FastAPI gateway integration with Cisco Modeling Labs and reviewed the API connections between Unreal and the lab.',
+    recognition: 'Winner · Hack the Route · The Big Hack 2026',
+    description: 'A networking and cybersecurity training prototype built by team 0’PACKET in Unreal Engine 5.',
+    problemStatement: 'When a player connected two ports in the 3D office, the game needed to tell whether the corresponding connection worked in the Cisco lab.',
+    threatModelOrChallenge: 'The gateway maps game identifiers to CML nodes and interfaces. Unreal distinguishes a local simulation response from a connection confirmed by the remote lab.',
+    architectureSpecs: [
+      'Unreal sends the selected devices and ports to the Python gateway over HTTPS.',
+      'FastAPI resolves the identifiers and uses the CML API to read lab topology and confirm the connection.',
+      'The gateway bridges console sessions to virtual devices and synchronizes lab startup with the selected scenario.',
+    ],
+    keyResults: [
+      'Team 0’PACKET won Challenge 04, Hack the Route, at The Big Hack 2026.',
+      'The backend repository records 14 of 14 room checks passing across three lab scenarios.',
+    ],
+    technologies: ['Python', 'FastAPI', 'Cisco CML', 'Unreal Engine 5'],
+    githubUrl: 'https://github.com/kappino/cisco-cyber-office',
+    clientUrl: 'https://github.com/FeroneAntonio/clara-unreal',
+    walkthrough: {
+      title: 'From a click in Unreal to proof in CML',
+      steps: [
+        {
+          title: 'Map the selected port',
+          detail: 'Unreal checks that the office lab is ready and that the selected game port maps to a lab interface. While an update is in progress, it keeps only the latest pending state for that port.',
+        },
+        {
+          title: 'Check what the gateway actually confirmed',
+          detail: 'The client accepts a confirmed CML link only when a live response matches the expected node and connection state and includes a link ID. The legacy rack endpoint can echo the requested state without supplying that ID. The client then checks the IOS administrative state with a separate readback and reports that outcome without claiming the CML link was rewired.',
+        },
+        {
+          title: 'Check the effect on connectivity',
+          detail: 'The backend end-to-end test exercises the cable endpoint directly. It disconnects and reconnects the workstation link and checks that ping fails and then recovers. This covers the lab effect. The Unreal confirmation logic is visible separately in the client source.',
+        },
+      ],
+    },
+    referenceLinks: [
+      { label: 'CML integration notes', href: 'https://github.com/kappino/cisco-cyber-office/blob/main/docs/CML_INTEGRAZIONE.md' },
+      { label: 'Unreal link confirmation and IOS readback', href: 'https://github.com/FeroneAntonio/clara-unreal/blob/main/Source/ClaraDayOne/ClaraStoryGateway.cpp#L168-L263' },
+      { label: 'Legacy rack endpoint response', href: 'https://github.com/kappino/cisco-cyber-office/blob/main/backend/main.py#L335-L352' },
+      { label: 'End-to-end cable and connectivity check', href: 'https://github.com/kappino/cisco-cyber-office/blob/main/tests/cml/e2e_cml.py#L86-L98' },
+      { label: 'Lab checks and test scope', href: 'https://github.com/kappino/cisco-cyber-office/tree/main/tests/cml' },
+      { label: 'Team credits and demo walkthrough', href: 'https://antonioferone.it/journal/tnes-big-hack-2026/' },
+    ],
+    demoUrl: 'https://www.youtube.com/watch?v=Fb0JmIhDriw',
+    date: '2026-11',
+    featured: true,
+  },
   {
     id: 'proj-agy-telegram',
     title: 'agy-telegram: Asynchronous Mobile Gateway & Cockpit for AI Agents',
+    displayTitle: 'agy-telegram',
+    articleSlug: 'agy-telegram-mobile-cockpit',
+    contribution: 'Built an open-source Telegram client for local coding agents, with mobile approvals and an outbound-only connection.',
     category: 'systems',
     tagline: 'Outbound-only mobile bridge in Python and tmux: zero exposed listening ports, Unix domain sockets, and instant tmux buffer injection.',
     description:
@@ -54,6 +116,9 @@ export const projects: Project[] = [
   {
     id: 'proj-mtls-iot-gateway',
     title: 'Zero-Trust IoT Gateway: mTLS v1.3 Hardening & Blockchain Notary',
+    displayTitle: 'Secure IoT gateway',
+    articleSlug: 'zero-trust-mtls-constrained-iot-esp32',
+    contribution: 'Built ESP32 firmware and a certificate-based MQTT gateway for resource-constrained telemetry.',
     category: 'security',
     tagline: 'Cryptographic edge-to-cloud channel hardening with ESP32, private PKI, and non-repudiation audit logging.',
     description:
@@ -89,7 +154,7 @@ export const projects: Project[] = [
         layer: 'Transport',
         countermeasure: 'Mutual TLS v1.3 (X.509 clientAuth)',
         countermeasureDetail: 'Forced bidirectional handshake with 4096-bit offline Root CA and IP SAN certificate matching on port 8883.',
-        verifiedOutcome: '100% rejection rate of unauthenticated sessions in < 210ms.',
+        verifiedOutcome: 'The documented test rejected unauthenticated sessions before processing application data.',
       },
       {
         id: 'mc-db-tamper',
@@ -189,11 +254,10 @@ Immutable Hash (BC):  8f4b23c...e719a
       'Offline Private PKI: 4096-bit RSA Root CA, intermediate server cert with IP SAN, and isolated clientAuth certificates generated via OpenSSL.',
       'Embedded Cryptography: C++ firmware on PlatformIO utilizing mbedTLS with optimized dynamic buffer allocation to fit 320KB RAM constraints on ESP32.',
       'Access Control Matrix: Mosquitto MQTT broker configured with require_certificate true and strict Access Control Lists (ACLs) keyed directly to certificate Common Names (CN).',
-      'Non-Repudiation Layer: Solidity smart contract (HealthNotary.sol) anchoring cryptographic fingerprints on-chain without exposing cleartext health data (GDPR-compliant).',
+      'Non-Repudiation Layer: Solidity smart contract (HealthNotary.sol) anchoring cryptographic fingerprints on-chain without writing the raw health readings on-chain.',
     ],
     keyResults: [
-      '100% rejection rate against active Evil-ESP32 ARP-spoofing and packet-injection PoC testbeds.',
-      'Deterministic TLS handshake completion in < 210ms on bare-metal ESP32-S3.',
+      'The example output shows rejection of a connection without valid client authentication.',
       'Zero cleartext biometric or patient records exposed on-chain.',
     ],
     technologies: ['C++', 'ESP32', 'mbedTLS', 'OpenSSL', 'mTLS v1.3', 'Mosquitto MQTT', 'Solidity', 'Docker', 'Zero-Trust'],
@@ -208,14 +272,17 @@ Immutable Hash (BC):  8f4b23c...e719a
   {
     id: 'proj-care-decision-planner',
     title: 'CARE Decision Planner: Real-Time Rule Inference & ROS2 Coordination',
+    displayTitle: 'CARE Decision Planner',
+    articleSlug: 'deterministic-life-safety-arbitration-ros2-gorules',
+    contribution: 'Implemented decision tables and priority handling in ROS2 for an assistive robot built under PNRR Age-IT.',
     category: 'robotics',
     tagline: 'Deterministic decision-making runtime and ROS2 package for the Probot CARE assistive healthcare robot.',
     description:
       'Architected the central decision engine for an autonomous assistive healthcare robot deployed in aged-care environments under the Italian National Recovery Plan (PNRR Age-IT, Spoke 3).',
     problemStatement:
-      'Assistive robots in eldercare must resolve concurrent, competing goals (e.g. scheduled medication, vital sign telemetry, battery patrol, social interaction) while guaranteeing medical explainability and zero operational deadlocks.',
+      'Assistive robots in eldercare must resolve concurrent, competing goals (e.g. scheduled medication, vital sign telemetry, battery patrol, social interaction) while preserving a traceable decision policy.',
     threatModelOrChallenge:
-      'Legacy pattern-matching engines (Rete algorithm) presented unpredictable execution order and black-box logic difficult to certify for clinical use. Solved by architecting an auditable JSON Decision Model (GoRules JDM) with deterministic priority resolution.',
+      'Moved project rules from a Rete-based implementation to GoRules JDM tables, so the conditions and actions could be reviewed separately from ROS2 message handling.',
     architectureDiagram: `  [Biomedical Telemetry / Sensors]           [Caregiver Escalation Policy]
                  |                                         ^
                  v                                         | (Timeout / Urgent)
@@ -228,15 +295,15 @@ Immutable Hash (BC):  8f4b23c...e719a
                  +================================ [Priority Resolver]
                                                    (Health > Patrol)`,
     architectureSpecs: [
-      'Inference Runtime: GoRules JDM decision tables evaluated in microsecond timescales, providing auditable decision logging for medical staff.',
+      'Inference Runtime: GoRules JDM decision tables used to make the reminder policy inspectable.',
       'Temporal Priority Resolver: Deterministic state engine prioritizing medical emergencies and timed medication alerts over routine navigation or patrol routines.',
       'Escalation State Machine: Finite state machine governing patient reminder timeouts, configurable snooze intervals, and automated caregiver phone/alert escalation.',
       'ROS2 Package: Custom care_planner package communicating over ROS2 topics and services, serializing event schemas to decoupled JSON payloads.',
     ],
     keyResults: [
-      'Zero deadlock events during stress simulation of 50 concurrent patient reminder scenarios.',
+      'Implemented reminder acknowledgements, snooze and caregiver escalation as explicit outcomes in the CARE planner prototype.',
       'Official technical contribution to Deliverable D3.3 of the PNRR Age-IT national research program.',
-      'Complete architectural decoupling from specific physical robot chassis.',
+      'Kept rule evaluation separate from robot-specific integrations through ROS2 messages.',
     ],
     technologies: ['Python', 'ROS2', 'GoRules (JDM)', 'durable_rules', 'Docker', 'Linux', 'AAL Robotics'],
     date: '2025-09',
@@ -250,36 +317,33 @@ Immutable Hash (BC):  8f4b23c...e719a
   {
     id: 'proj-spectra-eeg',
     title: 'SPECTRA: Clinical EEG Signal Processing & Supervised ML Classification',
+    displayTitle: 'SPECTRA · Wearable EEG',
+    articleSlug: 'eeg-emotion-recognition-schizophrenia-ias19',
+    contribution: 'Developed a signal-cleaning and classification pipeline for data from a 14-channel wearable EEG.',
     category: 'research',
-    tagline: 'End-to-end biomedical signal processing and supervised classification pipeline evaluated on 21 clinical subjects.',
+    tagline: 'Wearable EEG preprocessing and feature extraction for an exploratory study of emotional responses.',
     description:
       'Conducted clinical research and implemented an automated artifact-rejection and classification pipeline analyzing 14-channel EEG data from patients across the schizophrenia spectrum.',
     problemStatement:
       'Wearable electroencephalography in clinical environments suffers from massive signal noise: ocular blinks, cranial muscle artifacts, and 50 Hz power-line interference degrade machine learning diagnostic viability.',
     threatModelOrChallenge:
       'Extracting clean neurological feature vectors without destroying spectral markers of emotional response. Addressed by chaining PICARD Independent Component Analysis with narrow notch filtering and frontal asymmetry calculation.',
-    architectureDiagram: ` [14-Ch Wireless EEG] ──> [1-45 Hz Bandpass] ──> [PICARD ICA Artifact Drop]
-      (256 Hz)                 (Notch 50 Hz)           (Ocular & Muscular)
-                                                               |
-                                                               v
- [Supervised Classifier] <── [PSD Frequency Bands] <── [Feature Extraction]
-   (MLP 97.2% / RF 95.6%)      (Theta, Alpha, Beta)          (FBA Indices)`,
+    architectureDiagram: `Wearable EEG → MATLAB preprocessing → Python feature extraction → Group classification`,
     architectureSpecs: [
-      'Acquisition: 14-channel wireless telemetry recorded at 256 Hz via the Emotiv Epoc X system during visual/auditory emotional stimulation.',
-      'Preprocessing Pipeline: MATLAB pipeline executing 1-45 Hz Butterworth bandpass filtering, 50 Hz notch attenuation, baseline drift removal, and PICARD-ICA decomposition.',
-      'Feature Engineering: Power Spectral Density (PSD) calculation across Theta (4-8 Hz), Alpha (8-12 Hz), and Beta (12-30 Hz) bands + Frontal Brain Asymmetry (FBA) ratio.',
-      'Model Evaluation: Scikit-learn Multi-Layer Perceptron (MLP) and Random Forest classifiers evaluated with stratified k-fold cross-validation.',
+      'Protocol: a cognitive test followed by three two-minute video clips.',
+      'Pipeline: MATLAB for preprocessing and Python for feature extraction.',
+      'Analysis: alpha and beta activity and frontal brain asymmetry in relation to valence and arousal.',
     ],
     keyResults: [
-      'Achieved 97.2% test accuracy (MLP) distinguishing emotional responses among clinical groups.',
-      'Selected as Best Student Paper Award Finalist at IAS-19; forthcoming in Springer LNNS series.',
+      'The published abstract reports up to 95% accuracy in classifying healthy controls and participants with treatment-responsive or treatment-resistant schizophrenia. The study used a small sample and a limited set of stimuli.',
+      'Selected as a Best Student Paper Award finalist at IAS-19 and published in Springer’s Lecture Notes in Networks and Systems.',
     ],
-    technologies: ['Python', 'MATLAB', 'Scikit-learn', 'Signal Processing', 'EEGLAB', 'PICARD-ICA', 'MLP'],
+    referenceLinks: [{ label: 'Published abstract and results', href: 'https://link.springer.com/chapter/10.1007/978-3-032-33874-7_13#Abs1' }],
+    technologies: ['Python', 'MATLAB', 'Signal Processing', 'EEG'],
     date: '2025-05',
     featured: true,
     metrics: [
-      { label: 'Classification Top', value: '97.2% Accuracy' },
-      { label: 'Patient Cohort', value: '21 Clinical Subjects' },
+      { label: 'Group classification', value: 'Up to 95% accuracy' },
       { label: 'Telemetry Channels', value: '14 @ 256 Hz' },
     ],
   },
@@ -527,4 +591,11 @@ Enter health card code to verify: ABC12345
     date: '2025-10',
     featured: false,
   },
+];
+
+const projectPriority = ['proj-mtls-iot-gateway', 'proj-tnes', 'proj-care-decision-planner', 'proj-spectra-eeg'];
+
+export const orderedProjects = [
+  ...projectPriority.map((id) => projects.find((project) => project.id === id)).filter((project) => project !== undefined),
+  ...projects.filter((project) => !projectPriority.includes(project.id)),
 ];

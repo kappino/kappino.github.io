@@ -1,140 +1,62 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Shield, Terminal, BookOpen, Briefcase, Mail, Home, Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+import { Menu, Search, X } from 'lucide-react';
 import { personalInfo } from '@/data/personal';
 import { CommandPalette } from '@/components/interactive/CommandPalette';
 
-const NAV_ITEMS = [
-  { path: '/', label: 'Home', icon: Home },
-  { path: '/projects', label: 'Projects', icon: Terminal },
-  { path: '/research', label: 'Research', icon: Shield },
-  { path: '/experience', label: 'Experience', icon: Briefcase },
-  { path: '/blog', label: 'Blog', icon: BookOpen },
-  { path: '/contact', label: 'Contact', icon: Mail },
+const navigation = [
+  { path: '/projects', label: 'Projects' },
+  { path: '/blog', label: 'Articles' },
+  { path: '/research', label: 'Research' },
+  { path: '/experience', label: 'Experience' },
+  { path: '/contact', label: 'Contact' },
 ];
 
-export const Header: React.FC = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const navLinkClass = 'rounded-md px-2.5 py-2 text-sm text-zinc-300 transition-colors hover:text-white aria-[current=page]:font-semibold aria-[current=page]:text-sky-300';
+
+export function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        setPaletteOpen((prev) => !prev);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setPaletteOpen((open) => !open);
       }
+      if (event.key === 'Escape') setMenuOpen(false);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const isActive = (path: string) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
-  };
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Minimal Brand Identifier */}
-        <Link
-          to="/"
-          className="group flex items-center gap-2 font-mono text-xs transition-colors focus:outline-none"
-        >
-          <span className="font-bold text-white group-hover:text-sky-400 transition-colors">
-            {personalInfo.handle}
-          </span>
-          <span className="text-zinc-600">/</span>
-          <span className="text-zinc-400 font-normal hidden sm:inline">
-            cybersecurity &amp; systems
-          </span>
+    <header className="sticky top-0 z-50 border-b border-zinc-800/90 bg-zinc-950/95 backdrop-blur-md">
+      <div className="site-shell flex h-16 items-center justify-between gap-5">
+        <Link to="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5 rounded text-sm font-semibold text-white hover:text-sky-200" aria-label={personalInfo.handle + ' home'}>
+          <span aria-hidden="true" className="h-2.5 w-2.5 rotate-45 rounded-[2px] bg-sky-300" />
+          {personalInfo.handle}
         </Link>
-
-        {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-1 font-mono text-xs">
-          {NAV_ITEMS.map(({ path, label }) => {
-            const active = isActive(path);
-            return (
-              <Link
-                key={path}
-                to={path}
-                className={`px-3 py-1.5 rounded transition-colors ${
-                  active
-                    ? 'text-sky-400 bg-sky-500/10 font-medium'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
-                }`}
-              >
-                {label}
-              </Link>
-            );
-          })}
+        <nav aria-label="Main navigation" className="hidden items-center gap-2 md:flex">
+          {navigation.map(({ path, label }) => (
+            <NavLink key={path} to={path} className={navLinkClass}>{label}</NavLink>
+          ))}
         </nav>
-
-        {/* Search & Direct Action */}
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => setPaletteOpen(true)}
-            className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-400 hover:text-zinc-200 transition-colors"
-            title="Quick search & commands (Ctrl+K)"
-            aria-label="Quick search & commands"
-          >
-            <Search className="h-3.5 w-3.5 text-sky-400" />
-            <span className="hidden sm:inline text-[11px] text-zinc-400">Search</span>
-            <kbd className="hidden sm:inline-block text-[9px] bg-zinc-800 px-1 py-0.5 rounded border border-zinc-700 text-zinc-400">
-              Ctrl K
-            </kbd>
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={() => { setMenuOpen(false); setPaletteOpen(true); }} aria-label="Search site" title="Search site (Ctrl+K)" className="flex h-10 w-10 items-center justify-center rounded-md text-zinc-300 hover:bg-zinc-900 hover:text-white">
+            <Search size={19} aria-hidden="true" />
           </button>
-
-          <Link
-            to="/contact"
-            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-300 transition-colors"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            <span>get in touch</span>
-          </Link>
-
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 border border-zinc-800 transition-colors"
-            aria-label="Toggle Navigation Menu"
-            aria-expanded={mobileMenuOpen}
-          >
-            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          <button type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-label={menuOpen ? 'Close menu' : 'Open menu'} className="flex h-10 w-10 items-center justify-center rounded-md text-zinc-300 hover:bg-zinc-900 hover:text-white md:hidden">
+            {menuOpen ? <X size={21} aria-hidden="true" /> : <Menu size={21} aria-hidden="true" />}
           </button>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <nav aria-label="Mobile Navigation" className="md:hidden border-b border-zinc-800 bg-zinc-950 px-4 py-3 space-y-1 font-mono text-xs">
-          {NAV_ITEMS.map(({ path, label, icon: Icon }) => {
-            const active = isActive(path);
-            return (
-              <Link
-                key={path}
-                to={path}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-2.5 px-3 py-2 rounded transition-colors ${
-                  active
-                    ? 'text-sky-400 bg-sky-500/10 font-medium'
-                    : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
-                }`}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                <span>{label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-      )}
-
-      {/* Global Interactive Command Palette */}
+      <nav id="mobile-navigation" aria-label="Mobile navigation" hidden={!menuOpen} className="site-shell pb-3 md:hidden">
+        {navigation.map(({ path, label }) => (
+          <NavLink key={path} to={path} onClick={() => setMenuOpen(false)} className={'block ' + navLinkClass}>{label}</NavLink>
+        ))}
+      </nav>
       <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </header>
   );
-};
-
-export default Header;
+}

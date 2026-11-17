@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Terminal as TerminalIcon, CornerDownLeft, Trash2, HelpCircle, ChevronDown, ChevronUp, X, Plus } from 'lucide-react';
+import { consoleEndpoint, terminalIsLive } from '@/utils/consoleEndpoint';
 
 interface CommandOutput {
   command: string;
@@ -11,13 +12,13 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
     <div className="font-mono text-xs space-y-1.5 text-zinc-300">
       <p className="text-zinc-500">Executing: testbed --diagnostics --all</p>
       <div className="space-y-1 pl-2 border-l border-zinc-800 text-[11px]">
-        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">mTLS 1.3 Engine:</span> X.509 clientAuth ready (208ms handshake)</p>
-        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">ROS2 Decision Core:</span> GoRules JDM runtime evaluated (1.4ms)</p>
-        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">EEG Signal ML:</span> 97.2% classification accuracy (IAS-19)</p>
+        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">mTLS 1.3 Engine:</span> X.509 client certificate validated</p>
+        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">ROS2 Decision Core:</span> GoRules decision tables and priority resolution</p>
+        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">EEG Signal ML:</span> up to 95% group classification accuracy (IAS-19)</p>
         <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">agy-telegram:</span> Mobile agent gateway online (0 inbound ports)</p>
         <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">Physical Nodes:</span> Proxmox host &amp; STM32/ESP32 bench online</p>
       </div>
-      <p className="text-sky-400 text-[10px] pt-0.5">:: Click a pill below or type commands to inspect live packets and logs.</p>
+      <p className="text-sky-400 text-[10px] pt-0.5">:: Use the commands below to browse example output.</p>
     </div>
   ),
   agy: (
@@ -44,7 +45,7 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
       <p className="text-zinc-400">|-- [Root CA] 4096-bit RSA (Offline HSM)</p>
       <p className="text-zinc-400">|-- [Server Intermediate] IP SAN: 203.0.113.1 (TLS_AES_256_GCM_SHA384)</p>
       <p className="text-zinc-400">`-- [Client Cert] esp32_client.crt (clientAuth extension: verified)</p>
-      <p className="text-emerald-400 font-bold mt-1">[OK] esp32_client.crt: VERIFICATION SUCCESSFUL (Handshake: 208ms)</p>
+      <p className="text-emerald-400 font-bold mt-1">[OK] esp32_client.crt: VERIFICATION SUCCESSFUL</p>
       <p className="text-zinc-500 text-[11px]">Result: All unauthorized packets dropped at TLS layer before application memory.</p>
     </div>
   ),
@@ -60,23 +61,23 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
         <p className="pl-4">"override_action": "CANCEL_PATROL_AND_NAVIGATE_BEDSIDE"</p>
         <p>{'}'}</p>
       </div>
-      <p className="text-emerald-400 text-[11px]">[OK] GoRules JDM Decision Table evaluated in 1.4ms. Zero operational deadlock.</p>
+      <p className="text-emerald-400 text-[11px]">[OK] Example decision: apply the reminder escalation policy.</p>
     </div>
   ),
   spectra: (
     <div className="font-mono text-xs space-y-1.5 text-zinc-300">
-      <p className="text-zinc-500">Executing: python evaluate_spectra_model.py --dataset clinical_21_subjects</p>
+      <p className="text-zinc-500">Source: IAS-19 published abstract</p>
       <div className="p-3 rounded bg-zinc-900 border border-zinc-800 space-y-2">
         <div className="flex items-center justify-between text-xs">
-          <span>Multi-Layer Perceptron (MLP) Accuracy:</span>
-          <span className="text-emerald-400 font-bold font-mono">97.2%</span>
+          <span>Reported group classification accuracy:</span>
+          <span className="text-emerald-400 font-bold font-mono">Up to 95%</span>
         </div>
         <div className="w-full bg-zinc-800 rounded-full h-2">
-          <div className="bg-emerald-400 h-2 rounded-full" style={{ width: '97.2%' }}></div>
+          <div className="bg-emerald-400 h-2 rounded-full" style={{ width: '95%' }}></div>
         </div>
         <div className="flex items-center justify-between text-xs text-zinc-400 pt-1">
-          <span>Random Forest Baseline: 95.6%</span>
-          <span>14 EEG Channels @ 256 Hz</span>
+          <span>Exploratory study</span>
+          <span>Limited sample and stimuli</span>
         </div>
       </div>
       <p className="text-amber-400 font-semibold text-xs">[AWARD] Best Student Paper Award Finalist · IAS-19 (Springer LNNS Series)</p>
@@ -161,7 +162,7 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
   help: (
     <div className="font-mono text-xs space-y-1 text-zinc-300">
       <p className="text-zinc-400 font-semibold mb-1">Available Commands:</p>
-      <p><span className="text-sky-400 font-bold">status</span>   :: Diagnostics &amp; live testbed health.</p>
+      <p><span className="text-sky-400 font-bold">status</span>   :: Example diagnostic output.</p>
       <p><span className="text-sky-400 font-bold">cv</span>       :: Fetch and download Curriculum Vitae via curl.</p>
       <p><span className="text-sky-400 font-bold">agy</span>      :: agy-telegram mobile agent cockpit &amp; gateway.</p>
       <p><span className="text-sky-400 font-bold">mtls</span>     :: Simulate X.509 handshake verification and certificate checking.</p>
@@ -174,12 +175,8 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
   ),
 };
 
-interface TerminalWidgetProps {
-  externalTriggerCommand?: string | null;
-}
-
-export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) => {
-  const [history, setHistory] = useState<CommandOutput[]>([
+export const TerminalWidget = () => {
+  const [history, setHistory] = useState<CommandOutput[]>(terminalIsLive ? [] : [
     {
       command: 'status',
       output: COMMAND_OUTPUTS.status,
@@ -187,13 +184,16 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
   ]);
   const [activeCommand, setActiveCommand] = useState<string>('status');
   const [inputVal, setInputVal] = useState('');
+  const [pending, setPending] = useState(false);
   const [viewState, setViewState] = useState<'normal' | 'collapsed' | 'expanded'>('normal');
   const cvTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const requestRef = useRef<AbortController | null>(null);
   const terminalBufferRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     return () => {
       if (cvTimeoutRef.current) clearTimeout(cvTimeoutRef.current);
+      requestRef.current?.abort();
     };
   }, []);
 
@@ -207,11 +207,58 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
   }, [history]);
 
   const clearHistory = () => {
+    requestRef.current?.abort();
+    requestRef.current = null;
+    setPending(false);
     setHistory([]);
     setInputVal('');
   };
 
+  async function runLiveCommand(command: string) {
+    if (requestRef.current) return;
+    const controller = new AbortController();
+    requestRef.current = controller;
+    setPending(true);
+    const timeout = setTimeout(() => controller.abort('timeout'), 4000);
+    let output: string;
+    try {
+      const response = await fetch(consoleEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command }),
+        signal: controller.signal,
+      });
+      const result = await response.json();
+      output = response.ok && typeof result.output === 'string'
+        ? result.output
+        : typeof result.error === 'string' ? result.error : 'Unexpected console response.';
+    } catch {
+      output = controller.signal.reason === 'timeout'
+        ? 'Console request timed out. Try again.'
+        : 'Console service unavailable. Try again later.';
+    } finally {
+      clearTimeout(timeout);
+    }
+    if (requestRef.current !== controller) return;
+    requestRef.current = null;
+    setPending(false);
+    setHistory((previous) => [...previous.slice(-49), { command, output: <pre className="whitespace-pre-wrap break-words">{output}</pre> }]);
+  }
+
   function runCommand(cmd: string) {
+    if (terminalIsLive) {
+      const command = cmd.trim();
+      if (!command) return;
+      if (/^(clear|cls)$/i.test(command)) {
+        clearHistory();
+        return;
+      }
+      if (requestRef.current) return;
+      setInputVal('');
+      setActiveCommand(command.toLowerCase());
+      void runLiveCommand(command);
+      return;
+    }
     // Strip query strings or trailing args for clean command routing (e.g. "cv?t=123" -> "cv")
     const cleanCmd = cmd.split('?')[0].trim();
     const raw = cleanCmd.toLowerCase();
@@ -263,15 +310,6 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
     setInputVal('');
   }
 
-  useEffect(() => {
-    if (externalTriggerCommand) {
-      const timer = setTimeout(() => {
-        runCommand(externalTriggerCommand);
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [externalTriggerCommand]);
-
   return (
     <div className="w-full rounded-2xl border border-white/10 bg-zinc-950/75 backdrop-blur-xl overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.65)] ring-1 ring-white/5 font-mono">
       {/* Modern KDE Plasma / Konsole Window Titlebar */}
@@ -300,7 +338,7 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
         <div className="hidden md:flex items-center gap-1.5 text-[11px] text-zinc-400 font-sans">
           <span className="font-semibold text-zinc-300">Konsole</span>
           <span className="text-zinc-600">—</span>
-          <span className="text-zinc-500 font-mono text-[10px]">bash 5.2</span>
+          <span className="text-zinc-500 font-mono text-[10px]">{terminalIsLive ? 'portfolio' : 'demo'}</span>
         </div>
 
         {/* Right: Actions & Modern Window Controls */}
@@ -376,13 +414,13 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
       {viewState !== 'collapsed' ? (
         <div
           ref={terminalBufferRef}
-          className={`p-4 sm:p-5 text-xs space-y-4 overflow-y-auto bg-black/40 backdrop-blur-md transition-all duration-200 ${
+          className={`p-4 sm:p-5 text-xs space-y-4 overflow-auto break-words bg-black/40 backdrop-blur-md transition-all duration-200 ${
             viewState === 'expanded' ? 'min-h-[340px] max-h-[500px]' : 'min-h-[180px] max-h-[290px]'
           }`}
         >
           {history.length === 0 && (
             <div className="text-zinc-600 text-xs italic">
-              Session reset. Type 'help' or click a command below to inspect live modules.
+              {terminalIsLive ? "Type 'help' or run 'status' to check the service." : "Session reset. Type 'help' or choose a command to browse examples."}
             </div>
           )}
 
@@ -400,6 +438,7 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
               </div>
             </div>
           ))}
+          {pending && <p role="status" className="text-zinc-400">Waiting for the console service…</p>}
 
           {/* Linux Bash Input line */}
           <form
@@ -417,14 +456,16 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
               type="text"
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
-              placeholder="status, mtls, ros2, homelab, bio..."
+              placeholder={terminalIsLive ? 'help, status, projects…' : 'status, mtls, ros2, homelab, bio…'}
+              maxLength={100}
               aria-label="Terminal command input"
-              className="flex-1 bg-transparent text-white placeholder-zinc-600 focus:outline-none text-xs ml-1 font-mono"
+              className="min-w-0 flex-1 bg-transparent text-white placeholder-zinc-600 focus:outline-none text-xs ml-1 font-mono"
               autoComplete="off"
               spellCheck="false"
             />
             <button
               type="submit"
+              disabled={pending}
               className="p-1 rounded bg-white/10 hover:bg-white/20 text-zinc-300 hover:text-white transition-colors"
               title="Execute"
             >
@@ -451,7 +492,7 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
           <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider mr-1 hidden sm:inline">
             Run:
           </span>
-          {[
+          {(terminalIsLive ? ['status', 'projects', 'articles', 'whoami', 'ls'].map((id) => ({ id, label: id })) : [
             { id: 'status', label: 'status' },
             { id: 'cv', label: 'curl cv.pdf' },
             { id: 'agy', label: 'agy' },
@@ -459,9 +500,10 @@ export const TerminalWidget = ({ externalTriggerCommand }: TerminalWidgetProps) 
             { id: 'ros2', label: 'ros2' },
             { id: 'spectra', label: 'spectra' },
             { id: 'homelab', label: 'homelab' },
-          ].map(({ id, label }) => (
+          ]).map(({ id, label }) => (
             <button
               key={id}
+              disabled={pending}
               onClick={() => {
                 if (viewState === 'collapsed') setViewState('normal');
                 runCommand(id);

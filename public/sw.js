@@ -2,7 +2,7 @@
 // Provides offline capability, stale-while-revalidate caching for static assets,
 // and instant page load resilience.
 
-const CACHE_NAME = 'kappino-v1';
+const CACHE_NAME = 'kappino-v2';
 const CORE_ASSETS = [
   '/',
   '/index.html',

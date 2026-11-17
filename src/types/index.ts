@@ -35,6 +35,13 @@ export interface MisuseCase {
 export interface Project {
   id: string;
   title: string;
+  displayTitle?: string;
+  contribution?: string;
+  recognition?: string;
+  clientUrl?: string;
+  referenceLinks?: { label: string; href: string }[];
+  walkthrough?: { title: string; steps: { title: string; detail: string }[] };
+  articleSlug?: string;
   category: 'security' | 'robotics' | 'embedded' | 'research' | 'systems';
   tagline: string;
   shortDescription?: string;
@@ -61,9 +68,11 @@ export interface Publication {
   title: string;
   authors: string[];
   conference: string;
+  conferenceLocationAndYear?: string;
   series: string;
   isbn?: string;
   year: number;
+  publishedOn?: string;
   status: string;
   statusNote: string;
   abstract: string;
@@ -80,10 +89,11 @@ export interface ExperienceItem {
   location: string;
   period: string;
   badge?: string;
+  relatedLink?: { label: string; href: string };
   description: string;
   highlights: string[];
   technologies: string[];
-  type: 'research' | 'industry' | 'training';
+  type: 'research' | 'industry' | 'training' | 'hackathon';
 }
 
 export interface EducationItem {
@@ -125,6 +135,7 @@ export interface PersonalInfo {
   name: string;
   handle: string;
   title: string;
+  cvUrl: string;
   affiliations: {
     role: string;
     org: string;
@@ -148,6 +159,7 @@ export interface BlogPost {
   title: string;
   date: string;
   category: string;
+  topic?: string;
   tags: string[];
   excerpt: string;
   readTime: number;

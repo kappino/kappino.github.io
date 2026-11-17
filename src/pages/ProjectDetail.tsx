@@ -1,340 +1,158 @@
-import { useState, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import {
-  ArrowLeft,
-  ArrowRight,
-  ExternalLink,
-  CheckCircle2,
-  Layers,
-  Shield,
-  Copy,
-  Check,
-  BookOpen,
-} from 'lucide-react';
-import { projects } from '@/data/projects';
+import { Fragment, type ReactNode } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, ChevronDown } from 'lucide-react';
+import { CodeBlockWithCopy } from '@/components/common/CodeBlockWithCopy';
 import { GithubIcon } from '@/components/common/Icons';
-import { VerificationTerminal } from '@/components/interactive/VerificationTerminal';
 import { MisuseCaseDiagram } from '@/components/interactive/MisuseCaseDiagram';
+import { VerificationTerminal } from '@/components/interactive/VerificationTerminal';
+import { orderedProjects as projects, PROJECT_CATEGORIES } from '@/data/projects';
 
-const PROJECT_ARTICLE_MAP: Record<string, { title: string; url: string }> = {
-  'proj-agy-telegram': {
-    title: 'Mobile Cockpit & Gateway for Google Antigravity',
-    url: '/blog/agy-telegram-mobile-cockpit',
-  },
-  'proj-mtls-iot-gateway': {
-    title: 'Zero-Trust mTLS v1.3 with Hardware Crypto on ESP32',
-    url: '/blog/zero-trust-mtls-constrained-iot-esp32',
-  },
-  'proj-care-decision-planner': {
-    title: 'Deterministic Life-Safety Arbitration in ROS2 via GoRules JDM',
-    url: '/blog/deterministic-life-safety-arbitration-ros2-gorules',
-  },
-  'proj-spectra-eeg': {
-    title: 'Schizophrenia Emotion Recognition via 14-Channel EEG (IAS-19)',
-    url: '/blog/eeg-emotion-recognition-schizophrenia-ias19',
-  },
-};
+function ProjectDisclosure({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <details className="editorial-disclosure">
+      <summary>{title} <ChevronDown size={17} aria-hidden="true" /></summary>
+      <div className="editorial-disclosure-body">{children}</div>
+    </details>
+  );
+}
 
-export const ProjectDetail: React.FC = () => {
+export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
-  const [diagramCopied, setDiagramCopied] = useState(false);
-  const project = projects.find((p) => p.id === id);
-
-  const { prevProject, nextProject } = useMemo(() => {
-    const currentIndex = projects.findIndex((p) => p.id === id);
-    if (currentIndex === -1) return { prevProject: null, nextProject: null };
-    const prev = currentIndex > 0 ? projects[currentIndex - 1] : null;
-    const next = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null;
-    return { prevProject: prev, nextProject: next };
-  }, [id]);
+  const index = projects.findIndex((project) => project.id === id);
+  const project = projects[index];
 
   if (!project) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-28 text-center">
-        <h1 className="text-2xl font-bold text-white mb-4">Project Not Found</h1>
-        <p className="text-zinc-400 mb-8 text-sm">
-          The requested technical specification does not exist or has been relocated.
-        </p>
-        <Link
-          to="/projects"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900 border border-zinc-800 text-sm text-sky-400 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Return to Projects Index</span>
-        </Link>
+      <div className="site-shell editorial-page">
+        <h1 className="editorial-title">Project not found</h1>
+        <Link to="/projects" className="editorial-link mt-6"><ArrowLeft size={16} aria-hidden="true" /> All projects</Link>
       </div>
     );
   }
 
-  const relatedArticle = project ? PROJECT_ARTICLE_MAP[project.id] : null;
+  const articleSlug = project.articleSlug;
+  const previous = projects[index - 1];
+  const next = projects[index + 1];
 
   return (
-    <div className="py-16 sm:py-24">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        {/* Back Link */}
-        <div className="mb-8">
-          <Link
-            to="/projects"
-            className="inline-flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-sky-400 transition-colors"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            <span>Index / Projects / {project.id}</span>
-          </Link>
-        </div>
-
-        {/* Technical Header */}
-        <header className="mb-10 pb-8 border-b border-zinc-800">
-          <div className="flex flex-wrap items-center gap-3 text-xs font-mono mb-4 text-zinc-400">
-            <span className="px-2.5 py-0.5 rounded bg-sky-500/10 border border-sky-500/30 text-sky-400 uppercase font-semibold">
-              {project.category}
-            </span>
-            <span>·</span>
-            <span>Release Date: {project.date}</span>
-          </div>
-
-          <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-tight leading-tight mb-4">
-            {project.title}
-          </h1>
-
-          <p className="text-base sm:text-lg text-zinc-300 leading-relaxed mb-6 font-normal">
-            {project.description}
-          </p>
-
-          {/* External Code & Deep-Dive Action Bar */}
-          <div className="flex flex-wrap items-center gap-3">
+    <article className="site-shell editorial-page" key={project.id}>
+      <Link to="/projects" className="editorial-link mb-6"><ArrowLeft size={16} aria-hidden="true" /> All projects</Link>
+      <header className="editorial-heading">
+        <p className="editorial-label mb-3">
+          {PROJECT_CATEGORIES[project.category]} · <time dateTime={project.date}>{project.date}</time>
+        </p>
+        <h1 className="editorial-title max-w-[24ch]">{project.displayTitle ?? project.title}</h1>
+        {project.recognition && <p className="mt-4 font-semibold text-sky-300">{project.recognition}</p>}
+        <p className="editorial-intro">{project.contribution ?? project.description}</p>
+        {(articleSlug || project.githubUrl || project.clientUrl || project.demoUrl) && (
+          <div className="mt-6 flex flex-wrap gap-3">
+            {articleSlug && (
+              <Link to={'/blog/' + articleSlug} className="editorial-button editorial-button-primary">
+                <BookOpen size={16} aria-hidden="true" /> Technical article
+              </Link>
+            )}
             {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-mono text-white transition-colors"
-              >
-                <GithubIcon className="h-4 w-4" />
-                <span>View Source Repository</span>
+              <a href={project.githubUrl} className="editorial-button" target="_blank" rel="noreferrer">
+                <GithubIcon className="h-4 w-4" /> Source code
               </a>
             )}
-
-            {relatedArticle && (
-              <Link
-                to={relatedArticle.url}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/40 text-xs font-mono text-sky-300 hover:text-white transition-colors"
-              >
-                <BookOpen className="h-4 w-4 text-sky-400" />
-                <span>Read Technical Article</span>
-              </Link>
-            )}
-
+            {project.clientUrl && <a href={project.clientUrl} className="editorial-button" target="_blank" rel="noreferrer">Unreal client <ArrowUpRight size={16} aria-hidden="true" /></a>}
             {project.demoUrl && (
-              <a
-                href={project.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-xs font-mono text-zinc-950 font-bold transition-colors"
-              >
-                <ExternalLink className="h-4 w-4" />
-                <span>Live Interactive Demo</span>
+              <a href={project.demoUrl} className="editorial-button" target="_blank" rel="noreferrer">
+                {project.id === 'proj-tnes' ? 'Watch demo' : 'Demo'} <ArrowUpRight size={16} aria-hidden="true" />
               </a>
             )}
           </div>
-        </header>
-
-        {/* Security Standards & Compliance Bar */}
-        {project.securityStandards && project.securityStandards.length > 0 && (
-          <div className="mb-10 p-4 rounded-xl bg-zinc-900/40 border border-zinc-800 flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.5 text-xs font-mono text-zinc-400 font-semibold mr-2">
-              <Shield className="h-3.5 w-3.5 text-sky-400" />
-              <span>Standards &amp; Frameworks:</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {project.securityStandards.map((std) => (
-                <span
-                  key={std}
-                  className="px-2.5 py-1 rounded-md bg-zinc-950 border border-zinc-800 font-mono text-xs text-sky-300 shadow-sm"
-                >
-                  {std}
-                </span>
-              ))}
-            </div>
-          </div>
         )}
+      </header>
 
-        {/* Architecture Diagram (ASCII Specification) */}
-        {project.architectureDiagram && (
-          <section className="mb-12">
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950/90 shadow-xl overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-900/90 border-b border-zinc-800 text-xs font-mono text-zinc-400">
-                <div className="flex items-center gap-2 text-sky-400">
-                  <span className="h-2 w-2 rounded-full bg-sky-400 animate-pulse" />
-                  <span>architecture_diagram.txt</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!project.architectureDiagram) return;
-                    navigator.clipboard.writeText(project.architectureDiagram).then(() => {
-                      setDiagramCopied(true);
-                      setTimeout(() => setDiagramCopied(false), 2000);
-                    });
-                  }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-mono text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 transition-colors"
-                  title="Copy architecture diagram"
-                >
-                  {diagramCopied ? (
-                    <>
-                      <Check className="h-3 w-3 text-emerald-400" />
-                      <span className="text-emerald-400 font-semibold">Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-3 w-3 text-zinc-400" />
-                      <span>Copy</span>
-                    </>
-                  )}
-                </button>
-              </div>
-              <div className="p-4 sm:p-6 overflow-x-auto">
-                <pre className="font-mono text-xs sm:text-[13px] text-sky-300/90 leading-relaxed">
-                  {project.architectureDiagram}
-                </pre>
-              </div>
-            </div>
+      <div className="grid items-start gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
+        <div className="min-w-0 space-y-7">
+          <section aria-labelledby="problem-heading">
+            <h2 id="problem-heading" className="text-2xl font-semibold tracking-tight text-white">The problem</h2>
+            <p className="mt-3 max-w-[68ch] text-base leading-relaxed text-zinc-300">{project.problemStatement}</p>
           </section>
-        )}
-
-        {/* Interactive Verification Terminal (Real Attack & Defense Logs) */}
-        {project.verificationTerminal && (
-          <VerificationTerminal terminal={project.verificationTerminal} />
-        )}
-
-        {/* Problem Statement & Threat Model */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {project.problemStatement && (
-            <div className="p-6 rounded-xl bg-zinc-900/40 border border-zinc-800">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-amber-400 font-semibold mb-2">
-                Problem Statement
-              </h3>
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                {project.problemStatement}
-              </p>
-            </div>
-          )}
-
           {project.threatModelOrChallenge && (
-            <div className="p-6 rounded-xl bg-zinc-900/40 border border-zinc-800">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-rose-400 font-semibold mb-2">
-                Threat Model &amp; Technical Challenge
-              </h3>
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                {project.threatModelOrChallenge}
-              </p>
-            </div>
+            <section aria-labelledby="decision-heading">
+              <h2 id="decision-heading" className="text-2xl font-semibold tracking-tight text-white">Design decision</h2>
+              <p className="mt-3 max-w-[68ch] text-base leading-relaxed text-zinc-300">{project.threatModelOrChallenge}</p>
+            </section>
           )}
         </div>
-
-        {/* Misuse Case Model & Architectural Countermeasures */}
-        {project.misuseCases && project.misuseCases.length > 0 && (
-          <MisuseCaseDiagram cases={project.misuseCases} />
-        )}
-
-        {/* Architectural Specifications */}
-        {project.architectureSpecs && project.architectureSpecs.length > 0 && (
-          <section className="mb-12 rounded-xl bg-zinc-900/40 border border-zinc-800 p-6 sm:p-8">
-            <h2 className="text-xs font-mono uppercase tracking-wider text-sky-400 font-semibold mb-4 flex items-center gap-2">
-              <Layers className="h-4 w-4" />
-              <span>Architectural Implementation Specs</span>
-            </h2>
-            <ul className="space-y-3">
-              {project.architectureSpecs.map((spec) => (
-                <li key={spec} className="flex items-start gap-3 text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                  <span className="text-sky-400 font-bold mt-0.5">▹</span>
-                  <span>{spec}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* Key Verified Results */}
-        {project.keyResults && project.keyResults.length > 0 && (
-          <section className="mb-12">
-            <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-              <span>Verified Results &amp; Benchmarks</span>
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {project.keyResults.map((res) => (
-                <div key={res} className="p-4 rounded-lg bg-zinc-900/40 border border-zinc-800 text-xs sm:text-sm text-zinc-300">
-                  {res}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Technology Stack & Toolchain */}
-        <section className="border-t border-zinc-800 pt-8 pb-12">
-          <h3 className="text-xs font-mono uppercase tracking-wider text-zinc-500 mb-3">
-            Toolchain, Languages &amp; Standards
-          </h3>
-          <div className="flex flex-wrap gap-1.5">
-            {project.technologies.map((t) => (
-              <span
-                key={t}
-                className="px-2.5 py-1 rounded bg-zinc-900 border border-zinc-800 font-mono text-xs text-zinc-300"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        {/* Next / Previous Project Navigation Cards */}
-        <section className="border-t border-zinc-800 pt-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {prevProject ? (
-              <Link
-                to={`/projects/${prevProject.id}`}
-                className="group p-5 rounded-xl border border-zinc-800 bg-zinc-900/30 hover:bg-zinc-900/70 hover:border-zinc-700 transition-all flex flex-col justify-between"
-              >
-                <div className="flex items-center gap-1.5 text-xs font-mono text-zinc-500 mb-2">
-                  <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
-                  <span>Previous System Spec</span>
-                </div>
-                <div className="text-xs font-mono text-sky-400 uppercase tracking-wider mb-1">
-                  {prevProject.category}
-                </div>
-                <span className="text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-1">
-                  {prevProject.title}
-                </span>
-              </Link>
-            ) : (
-              <div />
-            )}
-
-            {nextProject ? (
-              <Link
-                to={`/projects/${nextProject.id}`}
-                className="group p-5 rounded-xl border border-zinc-800 bg-zinc-900/30 hover:bg-zinc-900/70 hover:border-zinc-700 transition-all flex flex-col justify-between text-right"
-              >
-                <div className="flex items-center justify-end gap-1.5 text-xs font-mono text-zinc-500 mb-2">
-                  <span>Next System Spec</span>
-                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-                </div>
-                <div className="text-xs font-mono text-sky-400 uppercase tracking-wider mb-1">
-                  {nextProject.category}
-                </div>
-                <span className="text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors line-clamp-1">
-                  {nextProject.title}
-                </span>
-              </Link>
-            ) : (
-              <div />
-            )}
-          </div>
+        <section aria-labelledby="results-heading" className="rounded-2xl border border-sky-300/20 bg-sky-300/[0.045] p-5 sm:p-6">
+          <h2 id="results-heading" className="text-2xl font-semibold tracking-tight text-white">Results</h2>
+          <ul className="mt-3 divide-y divide-sky-300/15">
+            {project.keyResults.map((result) => <li key={result} className="py-3 text-sm leading-relaxed text-zinc-200">{result}</li>)}
+          </ul>
         </section>
       </div>
-    </div>
-  );
-};
 
-export default ProjectDetail;
+      <section className="mt-12 min-w-0 border-t border-zinc-800 pt-8" aria-labelledby="architecture-heading">
+        <h2 id="architecture-heading" className="editorial-section-title">Architecture</h2>
+        {project.architectureDiagram && <CodeBlockWithCopy>{project.architectureDiagram}</CodeBlockWithCopy>}
+        <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+          {project.architectureSpecs.map((spec) => <li key={spec} className="border-t border-zinc-800 pt-3 text-sm leading-relaxed text-zinc-300">{spec}</li>)}
+        </ul>
+        <p className="mt-7 font-mono text-xs leading-loose text-zinc-400">{project.technologies.join(' · ')}</p>
+
+        <div className="mt-7 space-y-3">
+          {project.securityStandards && project.securityStandards.length > 0 && (
+            <ProjectDisclosure title="Standards and design references">
+              <ul className="list-disc space-y-2 pl-5 text-sm text-zinc-300">
+                {project.securityStandards.map((standard) => <li key={standard}>{standard}</li>)}
+              </ul>
+            </ProjectDisclosure>
+          )}
+          {project.misuseCases && project.misuseCases.length > 0 && (
+            <ProjectDisclosure title="Threat model and countermeasures">
+              <MisuseCaseDiagram cases={project.misuseCases} />
+            </ProjectDisclosure>
+          )}
+          {project.verificationTerminal && (
+            <ProjectDisclosure title="Test output and logs">
+              <p className="mb-4 text-sm text-zinc-400">Static output from the project walkthrough.</p>
+              <VerificationTerminal terminal={project.verificationTerminal} />
+            </ProjectDisclosure>
+          )}
+        </div>
+      </section>
+
+      {project.walkthrough && (
+        <section className="mt-10 border-t border-zinc-800 pt-6" aria-labelledby="project-walkthrough">
+          <h2 id="project-walkthrough" className="editorial-section-title">{project.walkthrough.title}</h2>
+          <ol className="mt-5 list-decimal space-y-4 pl-5 marker:font-semibold marker:text-sky-300">
+            {project.walkthrough.steps.map(({ title, detail }) => (
+              <li key={title} className="pl-2">
+                <h3 className="font-semibold text-white">{title}</h3>
+                <p className="mt-1 max-w-[72ch] text-sm leading-relaxed text-zinc-300">{detail}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {project.referenceLinks && (
+        <section className="mt-8 border-t border-zinc-800 pt-5" aria-labelledby="project-references">
+          <h2 id="project-references" className="mb-3 text-lg font-semibold text-white">Sources &amp; evidence</h2>
+          <ul className="space-y-2">
+            {project.referenceLinks.map(({ label, href }) => <li key={href}><a className="editorial-link" href={href}>{label} <ArrowUpRight size={15} aria-hidden="true" /></a></li>)}
+          </ul>
+        </section>
+      )}
+
+      <nav aria-label="More projects" className="mt-10 grid gap-3 border-t border-zinc-800 pt-5 sm:grid-cols-2">
+        {[previous, next].map((item, position) => (
+          <Fragment key={item?.id ?? position}>
+            {item && (
+              <Link to={'/projects/' + item.id} className={'editorial-row ' + (position === 1 ? 'sm:col-start-2' : '')}>
+                {position === 0 && <ArrowLeft size={18} className="shrink-0 text-sky-300" aria-hidden="true" />}
+                <span className="min-w-0 grow text-sm font-medium text-zinc-200">{item.displayTitle ?? item.title}</span>
+                {position === 1 && <ArrowRight size={18} className="shrink-0 text-sky-300" aria-hidden="true" />}
+              </Link>
+            )}
+          </Fragment>
+        ))}
+      </nav>
+    </article>
+  );
+}

@@ -7,6 +7,7 @@ interface BlogPostFrontmatter {
   title: string;
   date: string;
   category?: string;
+  topic?: string;
   tags?: string[];
   excerpt?: string;
   author?: string;
@@ -38,6 +39,7 @@ export async function loadBlogPost(filename: string, customSlug?: string): Promi
     title: data.title || slug.replace(/-/g, ' '),
     date: data.date || new Date().toISOString().split('T')[0],
     category: data.category || 'Engineering',
+    topic: data.topic,
     tags: Array.isArray(data.tags) ? data.tags : [],
     excerpt: data.excerpt || content.slice(0, 160) + '...',
     readTime: Math.max(1, readTime),

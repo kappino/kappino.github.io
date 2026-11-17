@@ -15,19 +15,17 @@ Personal engineering and academic portfolio for **Crescenzo Esposito** (`kappino
 
 ## Architecture & Highlights
 
-- **Lean & Zero-Debt Core**: No ghost dependencies, no bloated bundles. Production code split across dynamic lazy-loaded routes via `React.lazy()` and `<Suspense>`.
-- **Zero-Trust Client Security**: No API tokens, private keys, or credentials bundled into client artifacts. Form inquiries are handled cleanly without exposing private endpoints.
-- **W3C Semantic Standards**: Clean HTML structure with zero illegal interactive nesting (no `<a>` inside `<a>`). Accessible keyboard navigation.
-- **Dynamic Markdown Blog Engine**: Native parsing of technical `.md` articles with GFM support and automatic read-time calculation.
-- **Academic Research Portal**: Features the **IAS-19** peer-reviewed publication with verified metrics and a 1-click BibTeX citation exporter.
+- Route-level code splitting via `React.lazy()` and `<Suspense>`.
+- Typed project case studies and bilingual Markdown articles with tables, diagrams, and math.
+- IAS-19 publication record with the Springer DOI and copyable BibTeX.
 
 ---
 
 ## Local Development
 
 ### Prerequisites
-- Node.js `>= 18` (v20+ recommended)
-- npm `>= 9`
+- Node.js 24, matching GitHub Actions
+- npm bundled with Node.js
 
 ### Setup & Run
 
@@ -37,10 +35,12 @@ git clone https://github.com/kappino/kappino.github.io.git
 cd kappino.github.io
 
 # Install dependencies
-npm install
+npm ci
 
 # Start development server
 npm run dev
+
+npm run lint
 
 # Compile TypeScript & verify production bundle
 npm run build
@@ -48,6 +48,14 @@ npm run build
 # Preview production build locally
 npm run preview
 ```
+
+## Portfolio console
+
+Run `npm run console` alongside `npm run dev`. Vite forwards the browser's console requests to the Node service on port 4180 on localhost. Try `help`, `status`, `projects` or `articles`.
+
+The service handles a fixed set of portfolio commands. It reads the sitemap and article index from `public/`, and serves the puzzle from a virtual filesystem. The command history lives in the browser tab. There is no shell process or connection to the Proxmox management API.
+
+A GitHub Pages build uses demo mode by default. To connect a deployed service, set `VITE_CONSOLE_API` to its HTTPS endpoint ending in `/api/console` at build time. Run the service with `CONSOLE_ORIGIN=https://kappino.me` and place the HTTPS ingress in front of its loopback listener. Keep the server and the two portfolio indexes together, and apply per-client rate limits at the ingress before exposing it publicly.
 
 ---
 

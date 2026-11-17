@@ -4,7 +4,6 @@ import { Footer } from './Footer';
 import { ScrollToTop } from '../common/ScrollToTop';
 import { BackToTop } from '../common/BackToTop';
 import { CyberGridBackground } from '../common/CyberGridBackground';
-import { ReadingProgressBar } from '../common/ReadingProgressBar';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -21,10 +20,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         Skip to main content
       </a>
 
-      <ReadingProgressBar />
-      {/* Animated dynamic cyber grid & harmonic telemetry waves */}
       <CyberGridBackground />
-
       <ScrollToTop />
       <Header />
       <main id="main-content" tabIndex={-1} className="flex-1 w-full relative z-10 focus:outline-none">

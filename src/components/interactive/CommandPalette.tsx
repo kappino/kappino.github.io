@@ -122,7 +122,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
         icon: FileDown,
         badge: 'PDF',
         action: () => {
-          window.open('/esposito_crescenzo_cv.pdf', '_blank', 'noopener,noreferrer');
+          window.open(personalInfo.cvUrl, '_blank', 'noopener,noreferrer');
           onClose();
         },
       },
