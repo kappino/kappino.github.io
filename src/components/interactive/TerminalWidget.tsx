@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Terminal as TerminalIcon, CornerDownLeft, Trash2, HelpCircle, ChevronDown, ChevronUp, X, Plus } from 'lucide-react';
+import { Terminal as TerminalIcon, CornerDownLeft, Trash2, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { consoleEndpoint, terminalIsLive } from '@/utils/consoleEndpoint';
 
 interface CommandOutput {
@@ -312,110 +312,34 @@ export const TerminalWidget = () => {
 
   return (
     <div className="w-full rounded-2xl border border-white/10 bg-zinc-950/75 backdrop-blur-xl overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.65)] ring-1 ring-white/5 font-mono">
-      {/* Modern KDE Plasma / Konsole Window Titlebar */}
-      <div className="flex items-center justify-between px-3.5 py-2.5 bg-zinc-900/60 backdrop-blur-md border-b border-white/5 select-none">
-        {/* Left: Tab with add button & session pill */}
-        <div className="flex items-center gap-2">
-          {/* Active Konsole Tab */}
-          <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-zinc-800/80 border border-white/10 text-xs text-zinc-200 shadow-sm">
-            <TerminalIcon className="h-3.5 w-3.5 text-sky-400" />
-            <span className="font-semibold text-[11px] tracking-wide">kappino@portfolio: ~</span>
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
-          </div>
-
-          <button
-            type="button"
-            onClick={() => runCommand('help')}
-            className="p-1 rounded-md text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-colors hidden sm:flex items-center justify-center"
-            title="New tab / Help"
-            aria-label="New tab / Help"
-          >
-            <Plus className="h-3.5 w-3.5" />
-          </button>
+      <div className="flex min-w-0 items-center justify-between gap-2 border-b border-sky-300/10 bg-zinc-900/90 px-3 py-2 sm:px-4">
+        <div className="flex min-w-0 items-center gap-2">
+          <TerminalIcon className="h-4 w-4 shrink-0 text-sky-300" aria-hidden="true" />
+          <span className="truncate text-xs font-semibold text-zinc-100">{terminalIsLive ? 'kappino@portfolio' : 'Portfolio demo'}</span>
         </div>
-
-        {/* Center / Ambient Title */}
-        <div className="hidden md:flex items-center gap-1.5 text-[11px] text-zinc-400 font-sans">
-          <span className="font-semibold text-zinc-300">Konsole</span>
-          <span className="text-zinc-600">—</span>
-          <span className="text-zinc-500 font-mono text-[10px]">{terminalIsLive ? 'portfolio' : 'demo'}</span>
-        </div>
-
-        {/* Right: Actions & Modern Window Controls */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => runCommand('help')}
-            className="p-1.5 rounded-md text-zinc-400 hover:text-sky-400 hover:bg-white/5 transition-colors"
-            title="Help"
-            aria-label="Help"
-          >
-            <HelpCircle className="h-3.5 w-3.5" />
+        <div className="flex shrink-0 items-center gap-0.5">
+          <button type="button" onClick={() => { if (viewState === 'collapsed') setViewState('normal'); runCommand('help'); }} className="terminal-control" aria-label="Help" title="Help">
+            <HelpCircle className="h-4 w-4" aria-hidden="true" />
           </button>
-          <button
-            onClick={clearHistory}
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-zinc-200 transition-colors text-[11px] border border-white/5"
-            title="Clear buffer"
-          >
-            <Trash2 className="h-3 w-3" />
-            <span className="hidden sm:inline">Clear</span>
+          <button type="button" onClick={clearHistory} className="terminal-control" aria-label="Clear" title="Clear history">
+            <Trash2 className="h-4 w-4" aria-hidden="true" />
           </button>
-
-          {/* Modern Circular Window Controls: Arrow Down (Minimize/Restore), Arrow Up (Maximize/Restore), Close */}
-          <div className="flex items-center gap-1.5 ml-1 sm:ml-2 pl-2 border-l border-white/10">
-            {/* Minimize: Interactive */}
-            <button
-              type="button"
-              onClick={() => setViewState((prev) => (prev === 'collapsed' ? 'normal' : 'collapsed'))}
-              className={`w-5 h-5 rounded-full flex items-center justify-center border shadow-sm transition-all ${
-                viewState === 'collapsed'
-                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30'
-                  : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white border-white/10'
-              }`}
-              title={viewState === 'collapsed' ? 'Restore Terminal' : 'Minimize / Collapse Buffer'}
-              aria-label={viewState === 'collapsed' ? 'Restore Terminal' : 'Minimize Terminal'}
-            >
-              <ChevronDown className={`h-3 w-3 transition-transform ${viewState === 'collapsed' ? 'rotate-180' : ''}`} />
-            </button>
-
-            {/* Maximize: Interactive */}
-            <button
-              type="button"
-              onClick={() => setViewState((prev) => (prev === 'expanded' ? 'normal' : 'expanded'))}
-              className={`w-5 h-5 rounded-full flex items-center justify-center border shadow-sm transition-all ${
-                viewState === 'expanded'
-                  ? 'bg-sky-500/20 text-sky-300 border-sky-500/40 hover:bg-sky-500/30'
-                  : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white border-white/10'
-              }`}
-              title={viewState === 'expanded' ? 'Restore Size' : 'Maximize Console Height'}
-              aria-label={viewState === 'expanded' ? 'Restore Size' : 'Maximize Height'}
-            >
-              <ChevronUp className={`h-3 w-3 transition-transform ${viewState === 'expanded' ? 'rotate-180' : ''}`} />
-            </button>
-
-            {/* Close: Circular button with white icon, turning red on hover */}
-            <button
-              type="button"
-              onClick={() => {
-                clearHistory();
-                setViewState('normal');
-              }}
-              className="group/close w-5 h-5 rounded-full bg-zinc-800/80 hover:bg-[#da4453] text-zinc-300 hover:text-white flex items-center justify-center transition-all duration-150 border border-white/10 hover:border-red-500/50 shadow-sm"
-              title="Close / Reset Buffer"
-              aria-label="Close / Reset Buffer"
-            >
-              <X className="h-3 w-3 transition-transform group-hover/close:scale-110" />
-            </button>
-          </div>
+          <button type="button" onClick={() => setViewState(viewState === 'expanded' ? 'normal' : 'expanded')} className="terminal-control" aria-label={viewState === 'expanded' ? 'Restore size' : 'Expand output'} aria-pressed={viewState === 'expanded'} title={viewState === 'expanded' ? 'Restore size' : 'Expand output'}>
+            <ChevronUp className={viewState === 'expanded' ? 'h-4 w-4 rotate-180' : 'h-4 w-4'} aria-hidden="true" />
+          </button>
+          <button type="button" onClick={() => setViewState(viewState === 'collapsed' ? 'normal' : 'collapsed')} className="terminal-control" aria-label={viewState === 'collapsed' ? 'Restore terminal' : 'Minimize terminal'} aria-expanded={viewState !== 'collapsed'} title={viewState === 'collapsed' ? 'Restore terminal' : 'Minimize terminal'}>
+            <ChevronDown className={viewState === 'collapsed' ? 'h-4 w-4 rotate-180' : 'h-4 w-4'} aria-hidden="true" />
+          </button>
         </div>
       </div>
 
       {/* Terminal Screen / Buffer */}
       {viewState !== 'collapsed' ? (
+        <>
         <div
           ref={terminalBufferRef}
-          className={`p-4 sm:p-5 text-xs space-y-4 overflow-auto break-words bg-black/40 backdrop-blur-md transition-all duration-200 ${
-            viewState === 'expanded' ? 'min-h-[340px] max-h-[500px]' : 'min-h-[180px] max-h-[290px]'
+          className={`px-3 py-4 sm:p-5 text-xs sm:text-sm leading-relaxed space-y-4 overflow-auto break-words bg-black/40 ${
+            viewState === 'expanded' ? 'h-[clamp(17rem,58dvh,36rem)]' : 'h-[clamp(11rem,29dvh,20rem)]'
           }`}
         >
           {history.length === 0 && (
@@ -431,7 +355,7 @@ export const TerminalWidget = () => {
                 <span className="text-zinc-500">:</span>
                 <span className="text-sky-400 font-semibold">~</span>
                 <span className="text-zinc-400">$</span>
-                <span className="text-zinc-100 font-medium ml-1">{item.command}</span>
+                <span className="min-w-0 break-all text-zinc-100 font-medium ml-1">{item.command}</span>
               </div>
               <div className="pl-3.5 border-l-2 border-zinc-800/80 text-zinc-300">
                 {item.output}
@@ -440,18 +364,18 @@ export const TerminalWidget = () => {
           ))}
           {pending && <p role="status" className="text-zinc-400">Waiting for the console service…</p>}
 
-          {/* Linux Bash Input line */}
+        </div>
+
+          {/* Terminal prompt */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
               runCommand(inputVal);
             }}
-            className="flex items-center gap-1.5 pt-2 border-t border-zinc-800/60"
+            className="flex items-center gap-2 border-t border-zinc-800/80 bg-black/40 px-3 py-2 sm:px-5"
           >
-            <span className="text-emerald-400 font-bold text-xs">kappino@portfolio</span>
-            <span className="text-zinc-500">:</span>
-            <span className="text-sky-400 font-semibold text-xs">~</span>
-            <span className="text-zinc-400 font-bold">$</span>
+            <span className="hidden text-xs font-semibold text-emerald-400 sm:inline" aria-hidden="true">kappino@portfolio:~</span>
+            <span className="font-semibold text-sky-300" aria-hidden="true">$</span>
             <input
               type="text"
               value={inputVal}
@@ -459,20 +383,21 @@ export const TerminalWidget = () => {
               placeholder={terminalIsLive ? 'help, status, projects…' : 'status, mtls, ros2, homelab, bio…'}
               maxLength={100}
               aria-label="Terminal command input"
-              className="min-w-0 flex-1 bg-transparent text-white placeholder-zinc-600 focus:outline-none text-xs ml-1 font-mono"
+              className="min-w-0 flex-1 bg-transparent text-white placeholder-zinc-600 focus:outline-none text-base sm:text-sm font-mono"
               autoComplete="off"
               spellCheck="false"
             />
             <button
               type="submit"
               disabled={pending}
-              className="p-1 rounded bg-white/10 hover:bg-white/20 text-zinc-300 hover:text-white transition-colors"
+              className="terminal-control bg-sky-300/10 text-sky-200 disabled:opacity-50"
               title="Execute"
+              aria-label="Execute"
             >
               <CornerDownLeft className="h-3 w-3" />
             </button>
           </form>
-        </div>
+        </>
       ) : (
         <div className="px-4 py-2.5 bg-black/40 border-b border-white/5 text-[11px] font-mono text-zinc-500 flex items-center justify-between">
           <span>Terminal minimized. Click any command below or arrow to expand.</span>
@@ -508,7 +433,7 @@ export const TerminalWidget = () => {
                 if (viewState === 'collapsed') setViewState('normal');
                 runCommand(id);
               }}
-              className={`px-2.5 py-0.5 rounded-md text-[11px] font-mono transition-all ${
+              className={`min-h-8 px-2.5 py-1 rounded-md text-xs font-mono transition-all ${
                 activeCommand === id && history.length > 0 && history[history.length - 1]?.command.toLowerCase().includes(id)
                   ? 'bg-sky-500/25 text-sky-300 border border-sky-400/40 font-semibold shadow-sm'
                   : 'bg-zinc-800/50 text-zinc-400 border border-white/5 hover:text-white hover:bg-zinc-800'

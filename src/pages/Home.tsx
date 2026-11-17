@@ -13,11 +13,11 @@ const featuredProjects = orderedProjects.slice(0, 3);
 export default function Home() {
   const [consoleOpen, setConsoleOpen] = useState(false);
   return (
-    <div className="site-shell">
-      <section className="grid items-center gap-6 pb-8 pt-7 sm:gap-10 sm:pb-14 sm:pt-16 lg:grid-cols-[1fr_0.82fr] lg:gap-16">
-        <div>
+    <div className="site-shell xl:max-w-[88rem]">
+      <section className="grid items-center gap-6 pb-8 pt-7 sm:gap-10 sm:pb-14 sm:pt-16 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.15fr)] lg:gap-8 xl:gap-12">
+        <div className="min-w-0">
           <p className="editorial-label mb-5">Engineering &amp; research</p>
-          <h1 className="max-w-[12ch] text-[clamp(2.75rem,7vw,6.25rem)] font-semibold leading-[0.94] tracking-[-0.075em] text-white">
+          <h1 className="max-w-[12ch] text-[clamp(2.5rem,6vw,5.75rem)] font-semibold leading-[0.94] tracking-[-0.075em] text-white">
             {personalInfo.name}
           </h1>
           <p className="mt-4 sm:mt-6 max-w-[45ch] text-base leading-relaxed text-zinc-300 sm:text-lg">
@@ -36,7 +36,7 @@ export default function Home() {
 
         <div className="min-w-0">
           <p className="editorial-label mb-3">{terminalIsLive ? 'Portfolio console' : 'Interactive console demo'}</p>
-          <button type="button" className="editorial-button w-full justify-between font-mono sm:hidden" aria-expanded={consoleOpen} aria-controls="home-console" onClick={() => setConsoleOpen(!consoleOpen)}>
+          <button type="button" className="editorial-button w-full flex-wrap justify-between gap-x-3 font-mono sm:hidden" aria-expanded={consoleOpen} aria-controls="home-console" onClick={() => setConsoleOpen(!consoleOpen)}>
             <span>kappino@portfolio:~$</span>
             <span>{consoleOpen ? 'Close terminal' : 'Open terminal'}</span>
           </button>
