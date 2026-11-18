@@ -84,7 +84,8 @@ def train_spectra_classifier(raw_eeg_signals, labels):
     clf = MLPClassifier(hidden_layer_sizes=(128, 64), max_iter=500, random_state=42)
     scores = cross_val_score(clf, features, labels, cv=StratifiedKFold(n_splits=5))
     
-    # Peak Cross-Validated Test Accuracy: 97.2%
+    # Paper: 97.2% group accuracy, 21 participants, stratified five-fold validation.
+    # Participant grouping across folds is unspecified.
     return clf, np.mean(scores)`,
   },
 ];

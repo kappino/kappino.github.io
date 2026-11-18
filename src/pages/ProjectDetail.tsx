@@ -97,7 +97,16 @@ export default function ProjectDetail() {
           {project.id === 'proj-spectra-eeg' && <SpectraResultsFigure />}
           {project.id === 'proj-unireviews' && <UniReviewsIndexFigure />}
           <ul className="mt-3 divide-y divide-sky-300/15">
-            {project.keyResults.map((result) => <li key={result} className="py-3 text-sm leading-relaxed text-zinc-200">{result}</li>)}
+            {project.keyResults.map((result) => (
+              <li key={typeof result === 'string' ? result : result.text} className="py-3 text-sm leading-relaxed text-zinc-200">
+                {typeof result === 'string' ? result : (
+                  <>
+                    <p>{result.text}</p>
+                    <a className="editorial-link mt-2" href={result.evidence.href}>{result.evidence.label} <ArrowUpRight size={14} aria-hidden="true" /></a>
+                  </>
+                )}
+              </li>
+            ))}
           </ul>
         </section>
       </div>

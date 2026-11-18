@@ -204,7 +204,7 @@ export function SpectraResultsFigure({ italian = false }: { italian?: boolean })
         </tbody>
       </table>
       <p className="mb-0 mt-4 text-xs leading-relaxed text-zinc-400">
-        {italian ? 'Scala 0–100%. Paper IAS-19, tabelle 3 e 4. Il raggruppamento dei fold per partecipante non è specificato.' : 'Scale 0–100%. IAS-19 paper, Tables 3 and 4. The paper leaves participant grouping across folds unspecified.'}
+        {italian ? 'Scala 0–100%. Paper IAS-19, tabelle 3 e 4. 21 partecipanti, validazione stratificata a cinque fold. Il raggruppamento per partecipante non è specificato.' : 'Scale 0–100%. IAS-19 paper, Tables 3 and 4. 21 participants, stratified five-fold validation. Participant grouping across folds is unspecified.'}
       </p>
     </figure>
   );

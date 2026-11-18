@@ -54,7 +54,7 @@ export interface Project {
   verificationTerminal?: VerificationTerminal;
   architectureDiagram?: string;
   architectureSpecs: string[];
-  keyResults: string[];
+  keyResults: (string | { text: string; evidence: { label: string; href: string } })[];
   technologies: string[];
   githubUrl?: string;
   githubLabel?: string;

@@ -23,7 +23,7 @@ export const projectFlows: Record<string, Flow> = {
     ['Esse3 API', 'Synchronize the list of passed exams'], ['Review service', 'Check eligibility for the verification badge'], ['Community', 'Publish reviews and discussion replies'], ['University dashboard', 'Aggregate feedback by course and department'],
   ] },
   'proj-munnisc-cestinno': { title: 'Sensing and actuation', steps: [
-    ['Ultrasonic and capacitive sensors', 'Measure distance and detect proximity'], ['STM32 with ChibiOS', 'Poll inputs and coordinate actuation'], ['PWM output', 'Drive the servo that moves the sorting flap'],
+    ['Sensors and image input', 'Read sensor inputs and receive image frames over UART'], ['STM32 with ChibiOS', 'Run local CNN inference and coordinate the sorting state machine'], ['PWM output', 'Drive the servo that moves the sorting flap'],
   ] },
   'proj-posix-sockets': { title: 'Request and storage path', steps: [
     ['Client application', 'Issue, verify, or update a record'], ['TCP service', 'Read the complete request from the stream'], ['Forked worker', 'Handle the request concurrently'], ['Shared binary file', 'Coordinate updates using advisory locks'],

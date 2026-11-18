@@ -14,7 +14,7 @@ Per la tesi triennale ho lavorato su registrazioni EEG acquisite durante una bas
 
 ## Fare due domande diverse
 
-Abbiamo usato le feature EEG per classificare tre gruppi di partecipanti e, in un esperimento separato, tre clip. Nella validazione incrociata riportata nel paper, il miglior MLP ha raggiunto il 97,2% di accuratezza per i gruppi e l’84,6% per le clip. Ogni clip aveva un’etichetta legata allo stimolo. I partecipanti hanno anche valutato la propria risposta, quindi riconoscere la clip e stimare l’emozione riferita sono due compiti distinti.
+Abbiamo usato le feature EEG per classificare tre gruppi di partecipanti e, in un esperimento separato, tre clip. Nella validazione stratificata a cinque fold su 21 partecipanti, il miglior MLP ha raggiunto il 97,2% di accuratezza per i gruppi e l’84,6% per le clip. Il paper non specifica il raggruppamento dei fold per partecipante. Ogni clip aveva un’etichetta legata allo stimolo. I partecipanti hanno anche valutato la propria risposta, quindi riconoscere la clip e stimare l’emozione riferita sono due compiti distinti.
 
 ## Verificare cosa si generalizza
 

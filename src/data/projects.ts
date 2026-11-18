@@ -26,7 +26,7 @@ export const projects: Project[] = [
     ],
     keyResults: [
       'Team 0’PACKET won Challenge 04, Hack the Route, at The Big Hack 2026.',
-      'The backend repository records 14 of 14 room checks passing across three lab scenarios.',
+      { text: 'The backend walkthrough checks that connectivity in Cisco Modeling Labs fails when a workstation link is disconnected and recovers after reconnection. Its scope is the backend and lab path.', evidence: { label: 'CML connectivity check', href: 'https://github.com/kappino/cisco-cyber-office/blob/cf54f981e48b766e85fcd82ceb571b8b5a1e97e5/tests/cml/e2e_cml.py#L86-L98' } },
     ],
     technologies: ['Python', 'FastAPI', 'Cisco CML', 'Unreal Engine 5'],
     githubUrl: 'https://github.com/kappino/cisco-cyber-office',
@@ -53,7 +53,6 @@ export const projects: Project[] = [
       { label: 'CML integration notes', href: 'https://github.com/kappino/cisco-cyber-office/blob/main/docs/CML_INTEGRAZIONE.md' },
       { label: 'Unreal link confirmation and IOS readback', href: 'https://github.com/FeroneAntonio/clara-unreal/blob/main/Source/ClaraDayOne/ClaraStoryGateway.cpp#L168-L263' },
       { label: 'Legacy rack endpoint response', href: 'https://github.com/kappino/cisco-cyber-office/blob/main/backend/main.py#L335-L352' },
-      { label: 'End-to-end cable and connectivity check', href: 'https://github.com/kappino/cisco-cyber-office/blob/main/tests/cml/e2e_cml.py#L86-L98' },
       { label: 'Lab checks and test scope', href: 'https://github.com/kappino/cisco-cyber-office/tree/main/tests/cml' },
       { label: 'Team credits and demo walkthrough', href: 'https://antonioferone.it/journal/tnes-big-hack-2026/' },
     ],
@@ -68,32 +67,30 @@ export const projects: Project[] = [
     articleSlug: 'agy-telegram-mobile-cockpit',
     contribution: 'Built an open-source Telegram client for local coding agents, with mobile approvals and an outbound-only connection.',
     category: 'systems',
-    tagline: 'Outbound-only mobile bridge in Python and tmux: zero exposed listening ports, Unix domain sockets, and instant tmux buffer injection.',
+    tagline: 'Outbound HTTPS long polling, no inbound port required.',
     description:
-      'An open-source asynchronous mobile cockpit connecting Telegram to local AI coding agents running in Linux/Proxmox environments. Operates via outbound long-polling with zero inbound listening ports, local Unix domain socket IPC, and prompt injection directly into tmux buffers.',
+      'An open-source Telegram interface for local coding sessions. The bridge polls Telegram over outbound HTTPS and uses tmux and a local Unix socket.',
     problemStatement:
       'Operating privileged coding and sysadmin agents remotely from mobile devices typically required fragile SSH shells, open firewall ports, or sacrificing interactive Human-in-the-Loop approvals.',
     threatModelOrChallenge:
-      'Eliminated exposed external attack surfaces by relying exclusively on HTTPS outbound long-polling (no open ports or NAT forwarding). Enforced security boundaries via local user ID whitelisting, Unix socket permissions, and sanitization of raw ANSI escape sequences.',
+      'The bridge uses outbound HTTPS long polling, so it needs no inbound port. An account allowlist controls who can interact with the local session.',
     securityStandards: [
-      'Outbound Long-Polling Architecture (Zero Inbound Listening Ports)',
+      'Outbound HTTPS long polling',
       'Least Privilege Execution & User ID Whitelisting',
       'Unix Domain Socket IPC File Permissions (/tmp/agy-sentinel.sock)',
       'Input Sanitization & Telegram HTML Escaping',
     ],
     architectureSpecs: [
       'Pure Asynchronous Python (AsyncIO, python-telegram-bot v21+)',
-      'Sub-Millisecond Input Injection via Tmux Internal Buffers (set-buffer & paste-buffer)',
+      'Multiline prompt input through a local tmux buffer',
       'Structured Telemetry Streaming from Antigravity audit logs (transcript.jsonl)',
       'Interactive Inline Telegram Keyboards with State Persistence Guards',
       'Local Unix Domain Socket IPC for Proactive Notifications (/tmp/agy-sentinel.sock)',
       'Robust HTML Sanitizer with Syntax-Highlighted Code Blocks and Tag-Boundary Splitting',
     ],
     keyResults: [
-      'Zero Inbound Listening Ports: No NAT traversal or open firewall ports required.',
-      'Sub-Millisecond Input Injection: Instant tmux buffer paste for large terminal commands.',
+      'The bot receives updates without an inbound port or NAT forwarding.',
       'Human-in-the-Loop Controls: Interactive inline approval callbacks directly from mobile.',
-      'Zero Markdown Parse Crashes: Resilient Telegram HTML conversion across thousands of agent turns.',
     ],
     technologies: [
       'Python',
@@ -108,9 +105,7 @@ export const projects: Project[] = [
     date: '2026-09',
     featured: true,
     metrics: [
-      { label: 'Inbound Ports', value: '0 (Outbound Only)' },
-      { label: 'Approval UX', value: '1-Tap Inline' },
-      { label: 'Transport', value: 'Long-Polling' },
+      { label: 'Transport', value: 'Outbound HTTPS long polling' },
     ],
   },
   {
@@ -125,7 +120,7 @@ export const projects: Project[] = [
     problemStatement:
       'The original CARE gateway collected biomedical readings over BLE and sent them to the backend over MQTT. It identified sensors by configured addresses, and the MQTT publishing code supplied neither TLS options nor client credentials. Downstream services therefore had limited evidence about where a reading came from.',
     threatModelOrChallenge:
-      'A valid gateway certificate authenticates the connection to the broker. The prototype also needs a way to check who produced a reading before forwarding it, and a way to detect changes after it is stored.',
+      'The prototype requires a programmable BLE sender that can attach an HMAC. That limits compatibility with existing medical sensors. The gateway checks the payload before forwarding it, then uses a client certificate for broker access.',
     architectureDiagram: `Programmable BLE sender
   | Payload + HMAC
   v
@@ -142,8 +137,8 @@ ESP32 gateway -- MQTT over mTLS --> Mosquitto
       'The Python bridge checks the payload and stores readings in SQLite. The Solidity contract records a digest and audit metadata, including a criticality flag. Raw readings stay in SQLite.',
     ],
     keyResults: [
-      'The project presentation documents a controlled lab demonstration in which the original gateway accepted a reading from an impersonated sensor.',
-      'The prototype code checks payload authenticity before forwarding, applies certificate-based topic permissions, and provides a utility for comparing stored readings with their on-chain digests.',
+      { text: 'In the controlled lab demonstration documented in the presentation, the original gateway accepted a reading from an impersonated sensor.', evidence: { label: 'Lab demonstration and design slides', href: 'https://github.com/kappino/IOT_SEC_CARE_Gateway/blob/003057b4fae5a957fcde55ab63aad4cb25229a36/docs/CARE_IoT_Security_Architecture.pdf' } },
+      { text: 'The prototype firmware checks payload authenticity before forwarding. The EVM audit can later check whether a stored record matches its recorded digest. The lab observation concerns the original gateway.', evidence: { label: 'Prototype firmware', href: 'https://github.com/kappino/IOT_SEC_CARE_Gateway/blob/003057b4fae5a957fcde55ab63aad4cb25229a36/firmware/src/main.cpp' } },
     ],
     technologies: ['C++', 'ESP32', 'PlatformIO', 'mbedTLS', 'OpenSSL', 'Mosquitto MQTT', 'Docker', 'Python', 'SQLite', 'Solidity'],
     githubUrl: 'https://github.com/kappino/IOT_SEC_CARE_Gateway',
@@ -223,8 +218,8 @@ Sensor gateway -- MQTT --> CARE backend --> Monitoring dashboard
       'Feature extraction in Python: Welch spectral estimates, band power, and frontal asymmetry features from four-second windows with 50% overlap.',
     ],
     keyResults: [
-      'In the full paper, the best MLP achieved 97.2% accuracy for group classification and 84.6% for clip classification in the reported cross-validation. The abstract summarizes group accuracy as up to 95%.',
-      'The paper describes stratified five-fold validation. It leaves participant grouping across folds unspecified, so performance on unseen participants remains unverified.',
+      'Among 21 participants, the reported stratified five-fold evaluation yielded 97.2% group accuracy and 84.6% clip accuracy for the best MLP. The paper leaves participant grouping across folds unspecified, so performance on unseen participants remains unverified.',
+      'The IAS-19 abstract summarizes group accuracy as up to 95%.',
       'Selected as a Best Student Paper Award finalist at IAS-19 and published in Springer’s Lecture Notes in Networks and Systems.',
     ],
     referenceLinks: [
@@ -277,15 +272,14 @@ Sensor gateway -- MQTT --> CARE backend --> Monitoring dashboard
     problemStatement:
       'Prototyping an automated waste-sorting receptacle combining electronic sensor triggers and PWM mechanical deflection in a rapid 10-day hands-on sprint.',
     architectureSpecs: [
-      'Microcontroller Core: Bare-metal C on STM32 utilizing the ChibiOS RTOS real-time kernel (developed by ST Senior Engineer Giovanni Di Sirio).',
-      'Electronics & Circuit Interfacing: Hands-on breadboard wiring, pull-up/down resistor configurations, and signal routing for analog and digital peripherals.',
-      'Actuation & Sensing: Ultrasonic distance measurement, capacitive proximity triggers, and PWM-driven servomotor deflection routing waste flaps.',
+      'The SortEdge Bin firmware uses C and ChibiOS on STM32. A state machine coordinates sensors and actuators.',
+      'The source also includes a UART image path and local CNN inference on the STM32.',
     ],
     keyResults: [
       'Designed, built, and demonstrated during the final HackFest at STMicroelectronics Arzano campus.',
-      'Multi-threaded execution on ChibiOS coordinating periodic sensor polling and motor actuation.',
+      'The firmware source includes sensor polling, motor actuation, and on-device classification.',
     ],
-    technologies: ['STM32', 'ChibiOS RTOS', 'C', 'Electronics Fundamentals', 'PWM Actuation', 'Sensor Interfacing'],
+    technologies: ['STM32', 'ChibiOS RTOS', 'C', 'PWM', 'UART', 'On-device CNN'],
     date: '2026-09',
     featured: false,
     metrics: [

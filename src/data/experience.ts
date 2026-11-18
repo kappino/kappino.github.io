@@ -40,9 +40,9 @@ export const experiences: ExperienceItem[] = [
     badge: '10-day course',
     type: 'training',
     description:
-      'Built firmware and prototyped MUNNISC, a smart bin that sorts waste using on-device vision.',
+      'Worked on MUNNISC (SortEdge Bin), an STM32 and ChibiOS prototype with sensing, actuation, and local CNN inference in the firmware.',
     highlights: [],
-    technologies: ['STM32', 'ESP32', 'FreeRTOS', 'C/C++', 'STM32CubeIDE', 'Edge AI', 'I2C/SPI'],
+    technologies: ['STM32', 'ChibiOS', 'C', 'UART', 'PWM', 'Edge AI'],
   },
   {
     id: 'exp-ios-foundation',

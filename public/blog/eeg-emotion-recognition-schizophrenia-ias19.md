@@ -14,7 +14,7 @@ For my bachelor’s thesis, I worked with wearable EEG recorded during a baselin
 
 ## Ask two different questions
 
-We used the EEG features to classify three participant groups and, in a separate experiment, three video clips. The best MLP in the full paper reached 97.2% accuracy for groups and 84.6% for clips under the reported cross-validation. Each clip supplied a stimulus label. Participants also rated their responses, so predicting which clip was playing answers a different question from predicting how the person felt.
+We used the EEG features to classify three participant groups and, in a separate experiment, three video clips. The best MLP in the full paper reached 97.2% accuracy for groups and 84.6% for clips in the reported stratified five-fold evaluation of 21 participants. The paper leaves participant grouping across folds unspecified. Each clip supplied a stimulus label. Participants also rated their responses, so predicting which clip was playing answers a different question from predicting how the person felt.
 
 ## Test what carries over
 

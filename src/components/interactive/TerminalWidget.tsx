@@ -8,147 +8,13 @@ interface CommandOutput {
 }
 
 const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
-  status: (
-    <div className="font-mono text-xs space-y-1.5 text-zinc-300">
-      <p className="text-zinc-500">Executing: testbed --diagnostics --all</p>
-      <div className="space-y-1 pl-2 border-l border-zinc-800 text-[11px]">
-        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">mTLS 1.3 Engine:</span> X.509 client certificate validated</p>
-        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">ROS2 Decision Core:</span> GoRules decision tables and priority resolution</p>
-        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">EEG Signal ML:</span> up to 95% group classification accuracy (IAS-19)</p>
-        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">agy-telegram:</span> Mobile agent gateway online (0 inbound ports)</p>
-        <p><span className="text-emerald-400 font-bold">[OK]</span> <span className="text-white font-semibold">Physical Nodes:</span> Proxmox host &amp; STM32/ESP32 bench online</p>
-      </div>
-      <p className="text-sky-400 text-[10px] pt-0.5">:: Use the commands below to browse example output.</p>
-    </div>
-  ),
-  agy: (
-    <div className="font-mono text-xs space-y-2 text-zinc-300">
-      <p className="text-zinc-500">Executing: agy-telegram --telemetry --stream /tmp/agy-sentinel.sock</p>
-      <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 space-y-1.5 text-[11px]">
-        <div className="flex items-center justify-between text-sky-400 font-bold">
-          <span>[TELEGRAM_BOT] Long-Polling Daemon Active</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-300 font-mono">0 INBOUND PORTS</span>
-        </div>
-        <p className="text-zinc-400">|-- Auth Plane: Whitelisted 1-to-1 UserID enforcement (Strict Drop)</p>
-        <p className="text-zinc-400">|-- Control Plane: 0ms Tmux buffer paste injection (set-buffer &amp; paste-buffer)</p>
-        <p className="text-zinc-400">`-- Telemetry Stream: Live transcript.jsonl parser with HTML entity escaping</p>
-        <div className="flex items-center gap-2 pt-1 text-emerald-400 font-bold">
-          <span>[OK] Mobile Cockpit: Human-in-the-Loop interactive approvals ready</span>
-        </div>
-      </div>
-      <p className="text-sky-400 text-[10px]">:: Open source: github.com/kappino/agy-telegram</p>
-    </div>
-  ),
-  mtls: (
-    <div className="font-mono space-y-1 text-xs">
-      <p className="text-zinc-500">Executing: openssl verify -CAfile rootCA.pem -untrusted serverSAN.pem esp32_client.crt</p>
-      <p className="text-zinc-400">|-- [Root CA] 4096-bit RSA (Offline HSM)</p>
-      <p className="text-zinc-400">|-- [Server Intermediate] IP SAN: 203.0.113.1 (TLS_AES_256_GCM_SHA384)</p>
-      <p className="text-zinc-400">`-- [Client Cert] esp32_client.crt (clientAuth extension: verified)</p>
-      <p className="text-emerald-400 font-bold mt-1">[OK] esp32_client.crt: VERIFICATION SUCCESSFUL</p>
-      <p className="text-zinc-500 text-[11px]">Result: All unauthorized packets dropped at TLS layer before application memory.</p>
-    </div>
-  ),
-  ros2: (
-    <div className="font-mono text-xs space-y-1 text-zinc-300">
-      <p className="text-zinc-500">Executing: ros2 topic echo /care/priority_alert --once</p>
-      <div className="p-2.5 rounded bg-zinc-900 border border-zinc-800 text-sky-300">
-        <p>{'{'}</p>
-        <p className="pl-4">"header": {'{"stamp": "2026-09-18T16:00:00Z", "frame_id": "care_base"}'},</p>
-        <p className="pl-4">"source": "patient_vital_monitor",</p>
-        <p className="pl-4">"event": "URGENT_MEDICATION_ALERT",</p>
-        <p className="pl-4">"priority": 1, <span className="text-emerald-400">// Level 1: Medical Override Active</span></p>
-        <p className="pl-4">"override_action": "CANCEL_PATROL_AND_NAVIGATE_BEDSIDE"</p>
-        <p>{'}'}</p>
-      </div>
-      <p className="text-emerald-400 text-[11px]">[OK] Example decision: apply the reminder escalation policy.</p>
-    </div>
-  ),
-  spectra: (
-    <div className="font-mono text-xs space-y-1.5 text-zinc-300">
-      <p className="text-zinc-500">Source: IAS-19 published abstract</p>
-      <div className="p-3 rounded bg-zinc-900 border border-zinc-800 space-y-2">
-        <div className="flex items-center justify-between text-xs">
-          <span>Reported group classification accuracy:</span>
-          <span className="text-emerald-400 font-bold font-mono">Up to 95%</span>
-        </div>
-        <div className="w-full bg-zinc-800 rounded-full h-2">
-          <div className="bg-emerald-400 h-2 rounded-full" style={{ width: '95%' }}></div>
-        </div>
-        <div className="flex items-center justify-between text-xs text-zinc-400 pt-1">
-          <span>Exploratory study</span>
-          <span>Limited sample and stimuli</span>
-        </div>
-      </div>
-      <p className="text-amber-400 font-semibold text-xs">[AWARD] Best Student Paper Award Finalist · IAS-19 (Springer LNNS Series)</p>
-    </div>
-  ),
-  homelab: (
-    <div className="font-mono text-xs space-y-2 text-zinc-300">
-      <p className="text-zinc-500">Executing: tailscale status | grep -E "pve|npm|pihole|ct107|immich"</p>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1">
-        <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
-          <div className="flex items-center justify-between text-emerald-400 font-bold">
-            <span>pve-host</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono">ONLINE</span>
-          </div>
-          <div className="text-zinc-300 text-[11px] mt-0.5">Proxmox VE (Debian 12)</div>
-          <div className="text-zinc-500 text-[10px]">GTX 1070 Passthrough · Exit Node</div>
-        </div>
-        <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
-          <div className="flex items-center justify-between text-emerald-400 font-bold">
-            <span>nginx-proxy</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono">ACTIVE</span>
-          </div>
-          <div className="text-zinc-300 text-[11px] mt-0.5">NPM + Let's Encrypt</div>
-          <div className="text-zinc-500 text-[10px]">Zero-Expose WAN · SSL Termination</div>
-        </div>
-        <div className="p-2 rounded bg-zinc-900/80 border border-zinc-800">
-          <div className="flex items-center justify-between text-sky-400 font-bold">
-            <span>ct105-pihole</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 font-mono">RESOLVING</span>
-          </div>
-          <div className="text-zinc-300 text-[11px] mt-0.5">FTL DNS Engine</div>
-          <div className="text-zinc-500 text-[10px]">Split-DNS &amp; Telemetry Sinkhole</div>
-        </div>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] pt-1.5 text-zinc-400 border-t border-zinc-800/80">
-        <span><strong className="text-emerald-400">Core Services:</strong> CT107 (FastAPI WAL), Home Assistant (Gemini LLM), Immich</span>
-        <span className="text-sky-400 font-semibold">Mesh Security: 0 Open WAN Ports</span>
-      </div>
-    </div>
-  ),
-  cv: (
-    <div className="font-mono text-xs space-y-2 text-zinc-300">
-      <p className="text-zinc-500">Executing: curl -sSL -O https://kappino.me/crescenzo_esposito_cv.pdf</p>
-      <div className="p-2.5 rounded-lg bg-zinc-900/80 border border-zinc-800 space-y-1.5 text-[11px]">
-        <div className="flex items-center justify-between text-zinc-400">
-          <span>% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span>
-        </div>
-        <div className="flex items-center justify-between text-emerald-400 font-bold">
-          <span>100  328k  100  328k    0     0   2.4M      0 --:--:-- --:--:-- --:--:--  2.4M</span>
-        </div>
-        <div className="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden mt-1">
-          <div className="bg-emerald-400 h-1.5 rounded-full w-full animate-pulse"></div>
-        </div>
-        <div className="flex items-center gap-2 pt-1 text-zinc-300">
-          <span className="text-emerald-400 font-bold">[HTTP/2 200 OK]</span>
-          <span>Content-Type: application/pdf (crescenzo_esposito_cv.pdf)</span>
-        </div>
-      </div>
-      <div className="flex items-center justify-between pt-0.5 text-xs font-mono">
-        <span className="text-emerald-400 font-semibold">[SAVED] crescenzo_esposito_cv.pdf</span>
-        <a
-          href="/crescenzo_esposito_cv.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-mono transition-colors"
-        >
-          <span>Open PDF ↗</span>
-        </a>
-      </div>
-    </div>
-  ),
+  status: <p>This demo shows sample responses. Live status checks the portfolio console API and its content indexes.</p>,
+  agy: <p>Outbound HTTPS long polling, no inbound port required. Prompts go into a local tmux buffer and updates come from the transcript.</p>,
+  mtls: <p>In the gateway prototype, MQTT topic permissions are tied to the client certificate. The ESP32 checks the payload HMAC before forwarding.</p>,
+  ros2: <p>In a reconstructed CARE cycle, an exercise can wait for feedback while the planner publishes a medication reminder request to the coordinator.</p>,
+  spectra: <p>The IAS-19 abstract reports up to 95% group classification accuracy. The exploratory study included 21 participants.</p>,
+  homelab: <p>Portfolio testbed examples include Proxmox VE and STM32 and ESP32 development boards.</p>,
+  cv: <a className="text-sky-300 underline" href="/crescenzo_esposito_cv.pdf">Open CV PDF</a>,
   bio: (
     <div className="space-y-1.5 text-zinc-300 text-xs font-mono">
       <p><span className="text-sky-400">[EMAIL]</span> crescenzo.esposito@outlook.it</p>
@@ -229,13 +95,19 @@ export const TerminalWidget = () => {
         signal: controller.signal,
       });
       const result = await response.json();
-      output = response.ok && typeof result.output === 'string'
-        ? result.output
-        : typeof result.error === 'string' ? result.error : 'Unexpected console response.';
+      if (response.ok && typeof result.output === 'string') {
+        output = command.toLowerCase() === 'status'
+          ? 'Live check: portfolio console API responded and read the sitemap and blog index.\n' + result.output
+          : result.output;
+      } else {
+        output = typeof result.error === 'string' ? result.error : 'Unexpected console response.';
+        if (command.toLowerCase() === 'status') output = 'Status check failed. ' + output;
+      }
     } catch {
       output = controller.signal.reason === 'timeout'
         ? 'Console request timed out. Try again.'
         : 'Console service unavailable. Try again later.';
+      if (command.toLowerCase() === 'status') output = 'Status check failed. ' + output;
     } finally {
       clearTimeout(timeout);
     }
@@ -260,7 +132,7 @@ export const TerminalWidget = () => {
       return;
     }
     // Strip query strings or trailing args for clean command routing (e.g. "cv?t=123" -> "cv")
-    const cleanCmd = cmd.split('?')[0].trim();
+    const cleanCmd = cmd.trim() === '?' ? '?' : cmd.split('?')[0].trim();
     const raw = cleanCmd.toLowerCase();
     if (!raw) return;
 
@@ -376,6 +248,7 @@ export const TerminalWidget = () => {
                 <span className="min-w-0 break-all text-zinc-100 font-medium ml-1">{item.command}</span>
               </div>
               <div className="pl-3.5 border-l-2 border-zinc-800/80 text-zinc-300">
+                {!terminalIsLive && <p className="mb-1 text-xs font-semibold text-sky-300">Example output</p>}
                 {item.output}
               </div>
             </div>
