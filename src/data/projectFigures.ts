@@ -19,6 +19,9 @@ export const projectFlows: Record<string, Flow> = {
   'proj-spectra-eeg': { title: 'From wearable recordings to model inputs', steps: [
     ['Emotiv EPOC X', '14 channels at 256 Hz'], ['MATLAB and EEGLAB', 'Segment, filter and remove artifacts'], ['Python', 'Spectral and asymmetry features'], ['scikit-learn', 'Evaluate group and clip classifiers'],
   ] },
+  'proj-unireviews': { title: 'From exam record to academic feedback', steps: [
+    ['Esse3 API', 'Synchronize the list of passed exams'], ['Review service', 'Check eligibility for the verification badge'], ['Community', 'Publish reviews and discussion replies'], ['University dashboard', 'Aggregate feedback by course and department'],
+  ] },
   'proj-munnisc-cestinno': { title: 'Sensing and actuation', steps: [
     ['Ultrasonic and capacitive sensors', 'Measure distance and detect proximity'], ['STM32 with ChibiOS', 'Poll inputs and coordinate actuation'], ['PWM output', 'Drive the servo that moves the sorting flap'],
   ] },
@@ -34,6 +37,10 @@ export const projectFlows: Record<string, Flow> = {
 };
 
 export const articleFlows: Record<string, { en: Flow; it: Flow }> = {
+  'unireviews-beyond-course-surveys': {
+    en: projectFlows['proj-unireviews'],
+    it: { title: 'Dal libretto al feedback per l’ateneo', steps: [['API Esse3', 'Sincronizza gli esami superati'], ['Servizio recensioni', 'Assegna il badge se l’esame risulta superato'], ['Community', 'Raccoglie recensioni e discussioni'], ['Cruscotto di ateneo', 'Aggrega le valutazioni per insegnamento e dipartimento']] },
+  },
   'agy-telegram-mobile-cockpit': {
     en: projectFlows['proj-agy-telegram'],
     it: { title: 'Da Telegram alla sessione locale', steps: [['Telegram', 'Invio del prompt da un account autorizzato'], ['Bridge Python', 'Riceve l’aggiornamento tramite long polling HTTPS'], ['Buffer tmux', 'Incolla il prompt nella sessione locale']] },

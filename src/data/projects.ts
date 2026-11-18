@@ -240,6 +240,34 @@ Sensor gateway -- MQTT --> CARE backend --> Monitoring dashboard
     ],
   },
   {
+    id: 'proj-unireviews',
+    title: 'UniReviews',
+    articleSlug: 'unireviews-beyond-course-surveys',
+    category: 'systems',
+    tagline: 'Post-exam course reviews with an Esse3 verification badge and an analytics dashboard.',
+    description: 'I built UniReviews for my graduate Database Systems II course. It grew out of ParthenoAnswer, an undergraduate Web Technologies project I built with Riccardo Aiello and Aniello Genovese.',
+    problemStatement: 'A survey completed before an exam misses what students learn from taking it. A later review can address how well the exam matched the syllabus, teaching materials, and expected workload.',
+    threatModelOrChallenge: 'Course pages read precomputed review statistics from MongoDB. A review and its course summary are written separately, so failed or concurrent updates can leave the summary behind.',
+    architectureSpecs: [
+      'The Esse3 API integration synchronizes passed exams into a subset of the student document. UniReviews checks the course code to assign a verification badge.',
+      'Course pages use cursor pagination and a MongoDB lookup for discussion replies. Moderation controls which reviews appear in the public feed.',
+      'MongoDB aggregation pipelines power the dashboard, with drill-down from departments to degree programmes and individual courses.',
+      'The demo ETL imports real review text from the University of Waterloo. It matches course titles using an inverted word index with IDF weights, then maps reviews to Salerno course codes and assigns synthetic authors.',
+    ],
+    keyResults: [
+      'Implemented the review and discussion flows, moderation tools, and a dashboard for academic quality staff.',
+      'The final report records a local catalogue query that examined 18 documents with a compound index, compared with 3,570 before indexing.',
+    ],
+    technologies: ['Python', 'Flask', 'MongoDB', 'PyMongo', 'Chart.js', 'Esse3 APIs'],
+    referenceLinks: [{ label: 'Course Reviews University of Waterloo · Kaggle dataset', href: 'https://www.kaggle.com/datasets/anthonysusevski/course-reviews-university-of-waterloo' }],
+    metrics: [
+      { label: 'Data model', value: '5 MongoDB collections' },
+      { label: 'Local catalogue query', value: '3,570 → 18 documents examined' },
+    ],
+    date: '2026',
+    featured: false,
+  },
+  {
     id: 'proj-munnisc-cestinno',
     title: 'MUNNISC: Embedded Waste Sorter & Sensor Interfacing Prototype',
     category: 'embedded',
@@ -346,7 +374,7 @@ Sensor gateway -- MQTT --> CARE backend --> Monitoring dashboard
   },
 ];
 
-const projectPriority = ['proj-mtls-iot-gateway', 'proj-tnes', 'proj-care-decision-planner', 'proj-spectra-eeg'];
+const projectPriority = ['proj-mtls-iot-gateway', 'proj-tnes', 'proj-care-decision-planner', 'proj-spectra-eeg', 'proj-unireviews'];
 
 export const orderedProjects = [
   ...projectPriority.map((id) => projects.find((project) => project.id === id)).filter((project) => project !== undefined),
