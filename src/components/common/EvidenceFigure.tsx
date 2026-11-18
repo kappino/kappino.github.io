@@ -90,11 +90,11 @@ export function FlowFigure({ flow }: { flow: Flow }) {
 
 export function CareDecisionFigure({ italian = false }: { italian?: boolean }) {
   const paths = italian
-    ? [['Sessione cognitiva', 'Attende il feedback', 'Nessuna nuova azione per l’esercizio'], ['Promemoria farmacologico', 'Valutato separatamente', 'Il coordinatore riceve la richiesta']]
-    : [['Cognitive session', 'Waits for feedback', 'No new exercise action'], ['Medication reminder', 'Evaluated independently', 'The coordinator receives the request']];
+    ? [['Esercizio già in corso', 'GoRules restituisce WAIT', 'Il planner attende il feedback'], ['Promemoria in scadenza', 'GoRules restituisce REMIND_FARMACO', 'Il planner pubblica la richiesta su decision_output']]
+    : [['Exercise already running', 'GoRules returns WAIT', 'The planner waits for feedback'], ['Medication reminder due', 'GoRules returns REMIND_FARMACO', 'The planner publishes the request on decision_output']];
 
   return (
-    <figure className="my-5 rounded-2xl border border-zinc-700/80 bg-zinc-900/60 p-4 sm:p-6">
+    <figure id="care-decision-scenario" className="my-5 scroll-mt-24 rounded-2xl border border-zinc-700/80 bg-zinc-900/60 p-4 sm:p-6">
       <figcaption className="mb-4 text-sm font-semibold text-zinc-100">
         {italian ? 'Due rami decisionali nello stesso ciclo' : 'Two decision paths in the same evaluation cycle'}
       </figcaption>

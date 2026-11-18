@@ -14,6 +14,8 @@ Consider a cycle in which a cognitive exercise is already running and a schedule
 
 ## Why split the decision in two?
 
+The first implementation used `durable_rules`. Moving to GoRules decision tables made the conditions and outputs visible in the graph.
+
 We originally chose visual decision tables so clinicians and other nontechnical staff could update rules and therapy settings without editing the ROS2 code. The demo used a fixed set of rules for standard scenarios. The planner fetched scheduled therapies, measurements and cognitive exercises from the backend APIs, shaped them into the input for Zen Engine and evaluated the same `medicine9.json` graph against that data.
 
 The GoRules graph evaluates eligibility. Its medication table checks the schedule, snooze offset and pending state. In the reminder window it can emit `REMIND_FARMACO`. Once the deadline passes, a still-pending entry can instead yield `ESCALATE`. The exercise table can independently return `WAIT` for an exercise already in progress. An expression node gathers the outputs into separate lists.
@@ -28,6 +30,6 @@ The Python ROS2 planner then coordinates those outputs. Keeping eligibility in t
 | Medication returns `REMIND_FARMACO` | Sets a snooze offset and includes the reminder in the command list sent to the coordinator. |
 | A still-pending medication later returns `ESCALATE` | Sends a command addressed to the caregiver integration. |
 
-The exercise can remain in progress while the reminder is dispatched. The code shows that the command is published to the coordinator. Delivery to a person would need to be checked separately.
+The exercise can remain in progress while the planner publishes the reminder request on `decision_output` for the coordinator. Delivery to a person would need to be checked separately.
 
 [CARE project and architecture](/projects/proj-care-decision-planner)

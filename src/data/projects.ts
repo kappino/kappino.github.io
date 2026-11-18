@@ -184,7 +184,7 @@ Sensor gateway -- MQTT --> CARE backend --> Monitoring dashboard
       'The Python planner converts decisions into action requests and publishes them on the ROS2 decision_output topic for the robot coordinator.',
     ],
     keyResults: [
-      'Implemented a planner path in which an exercise can wait for feedback while a due medication reminder still produces an action request.',
+      { text: 'A reconstruction from the planner code shows that one cycle can return WAIT for the exercise and REMIND_FARMACO for a due reminder. The planner publishes the reminder request to the coordinator on decision_output. The reconstruction covers publication to ROS2.', evidence: { label: 'Reconstructed scenario', href: '#care-decision-scenario' } },
       'Implemented snooze handling and a caregiver escalation request in the planner prototype.',
       'The Age-IT D3.3 design deliverable documents the planner alongside sensor ingestion, cognitive interaction, and the clinical dashboard.',
     ],

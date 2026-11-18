@@ -14,6 +14,8 @@ Immaginiamo un ciclo in cui è già in corso un esercizio cognitivo e arriva il 
 
 ## Perché dividere la decisione in due?
 
+La prima implementazione usava `durable_rules`. Il passaggio alle tabelle GoRules ha reso condizioni ed esiti consultabili nel grafo.
+
 All’inizio abbiamo scelto le tabelle decisionali visuali per permettere al personale sanitario e ad altri operatori non tecnici di aggiornare regole e terapie senza modificare il codice ROS2. Per la demo abbiamo usato un insieme fisso di regole per i casi standard. Il planner recuperava terapie pianificate, misurazioni ed esercizi cognitivi dalle API del backend, preparava i dati di ingresso per Zen Engine e valutava lo stesso grafo `medicine9.json` su quei dati.
 
 Il grafo GoRules stabilisce quali azioni sono applicabili. La tabella dei farmaci controlla l’orario, lo snooze e lo stato in attesa. Nella finestra del promemoria può produrre `REMIND_FARMACO`. Dopo la scadenza, una voce ancora in attesa può invece produrre `ESCALATE`. Indipendentemente, la tabella degli esercizi può restituire `WAIT` per un esercizio già in corso. Un nodo di espressione raccoglie gli esiti in liste distinte.

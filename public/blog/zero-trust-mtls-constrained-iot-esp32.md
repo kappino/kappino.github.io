@@ -22,4 +22,6 @@ We also gave the gateway and the ingestion bridge distinct client certificates. 
 
 The prototype stores readings in SQLite and anchors digests in an EVM contract. An auditor can recompute a digest later and compare it with the recorded value. That check establishes whether a stored record still matches what was registered. Its value depends on the checks that ran before the record entered the system.
 
+The EVM path adds transaction submission and confirmation to the prototype’s persistence workflow. I would keep that dependency if the audit needed a digest that could be checked independently of the application database.
+
 [Gateway architecture and implementation](/projects/proj-mtls-iot-gateway)

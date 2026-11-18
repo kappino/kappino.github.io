@@ -18,6 +18,7 @@ const leadSlug = 'eeg-emotion-recognition-schizophrenia-ias19';
 const recommendedSlugs = [
   'deterministic-life-safety-arbitration-ros2-gorules',
   'zero-trust-mtls-constrained-iot-esp32',
+  'ansi-scraping-vs-structured-jsonl',
 ];
 
 export default function Blog() {

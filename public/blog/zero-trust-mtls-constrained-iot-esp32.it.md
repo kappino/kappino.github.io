@@ -22,4 +22,6 @@ Abbiamo assegnato certificati client distinti al gateway e al servizio di ingest
 
 Il prototipo salva le letture in SQLite e registra i digest in un contratto EVM. In fase di audit si può ricalcolare il digest e confrontarlo con quello registrato. Il confronto permette di verificare che il record conservato corrisponda a quello registrato. Il valore di quella verifica dipende dai controlli eseguiti prima che il dato entri nel sistema.
 
+Nel prototipo il passaggio su EVM aggiunge l’invio e la conferma di una transazione al percorso di persistenza. Terrei questa dipendenza se l’audit richiedesse un digest verificabile indipendentemente dal database dell’applicazione.
+
 [Architettura e implementazione del gateway](/projects/proj-mtls-iot-gateway)
