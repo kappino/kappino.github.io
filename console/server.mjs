@@ -33,6 +33,10 @@ const commands = new Map([
   ['cat .signal', () => 'Signal found. The smallest packet still made it through.'],
 ]);
 
+commands.set('?', commands.get('help'));
+commands.set('ls -la', commands.get('ls -a'));
+commands.set('ls -al', commands.get('ls -a'));
+
 function send(response, status, result) {
   response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
   response.end(JSON.stringify(result));
