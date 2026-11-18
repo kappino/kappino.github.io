@@ -8,9 +8,11 @@ import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { BlogLanguageSwitcher } from '@/components/common/BlogLanguageSwitcher';
 import { CodeBlockWithCopy } from '@/components/common/CodeBlockWithCopy';
+import { CareDecisionFigure, FlowFigure, GatewayChecksFigure, SpectraCleaningFigure, SpectraCohortFigure, SpectraResultsFigure, TranscriptComparisonFigure } from '@/components/common/EvidenceFigure';
 import { ReadingProgressBar } from '@/components/common/ReadingProgressBar';
 import { personalInfo } from '@/data/personal';
 import { projects } from '@/data/projects';
+import { articleFlows } from '@/data/projectFigures';
 import { ias19Publication } from '@/data/publications';
 import type { BlogPost } from '@/types';
 import { loadAllBlogPosts, loadBlogPostBySlug, type BlogLanguage } from '@/utils/blogLoader';
@@ -95,6 +97,7 @@ export default function BlogPostView() {
   const content = post?.content ?? '';
   const entries = useMemo(() => articleHeadings(content), [content]);
   const relatedProject = projects.find((project) => project.articleSlug === slug);
+  const flow = slug ? articleFlows[slug]?.[language] : undefined;
   const isPublicationArticle = relatedProject?.id === 'proj-spectra-eeg';
   const articles = collection?.language === language ? collection.articles : [];
   const articleIndex = articles.findIndex((article) => article.slug === slug);
@@ -199,6 +202,19 @@ export default function BlogPostView() {
 
       <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_15rem] xl:gap-16">
         <div className="min-w-0">
+          <div className="max-w-[72ch]">
+            {flow && <FlowFigure flow={flow} />}
+            {slug === 'deterministic-life-safety-arbitration-ros2-gorules' && <CareDecisionFigure italian={italian} />}
+            {slug === 'zero-trust-mtls-constrained-iot-esp32' && <GatewayChecksFigure italian={italian} />}
+            {slug === 'ansi-scraping-vs-structured-jsonl' && <TranscriptComparisonFigure italian={italian} />}
+            {slug === 'eeg-emotion-recognition-schizophrenia-ias19' && (
+              <>
+                <SpectraCohortFigure italian={italian} />
+                <SpectraCleaningFigure italian={italian} />
+                <SpectraResultsFigure italian={italian} />
+              </>
+            )}
+          </div>
           <article className="prose prose-invert max-w-[72ch] prose-headings:tracking-tight prose-p:leading-[1.8] prose-a:text-sky-300 prose-code:break-words prose-code:font-mono prose-code:text-sky-200 sm:prose-lg">
             <ReactMarkdown
               remarkPlugins={[remarkGfm, remarkMath]}

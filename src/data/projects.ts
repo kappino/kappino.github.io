@@ -30,6 +30,7 @@ export const projects: Project[] = [
     ],
     technologies: ['Python', 'FastAPI', 'Cisco CML', 'Unreal Engine 5'],
     githubUrl: 'https://github.com/kappino/cisco-cyber-office',
+    githubLabel: 'FastAPI / CML backend',
     clientUrl: 'https://github.com/FeroneAntonio/clara-unreal',
     walkthrough: {
       title: 'From a click in Unreal to proof in CML',
@@ -108,210 +109,97 @@ export const projects: Project[] = [
     featured: true,
     metrics: [
       { label: 'Inbound Ports', value: '0 (Outbound Only)' },
-      { label: 'Input Latency', value: '< 5ms' },
       { label: 'Approval UX', value: '1-Tap Inline' },
       { label: 'Transport', value: 'Long-Polling' },
     ],
   },
   {
     id: 'proj-mtls-iot-gateway',
-    title: 'Zero-Trust IoT Gateway: mTLS v1.3 Hardening & Blockchain Notary',
+    title: 'Secure IoT Gateway for CARE',
     displayTitle: 'Secure IoT gateway',
     articleSlug: 'zero-trust-mtls-constrained-iot-esp32',
-    contribution: 'Built ESP32 firmware and a certificate-based MQTT gateway for resource-constrained telemetry.',
+    contribution: 'I built ESP32 firmware and configured certificate-based MQTT access for a university security prototype based on the CARE telemetry pipeline.',
     category: 'security',
-    tagline: 'Cryptographic edge-to-cloud channel hardening with ESP32, private PKI, and non-repudiation audit logging.',
-    description:
-      'Engineered an end-to-end Zero-Trust telemetry pipeline for resource-constrained medical IoT devices, defending against packet tampering, rogue device spoofing, and MITM attacks on untrusted local networks.',
+    tagline: 'Authenticating sensor payloads and MQTT clients, with a separate audit trail for stored readings.',
+    description: 'A university prototype for securing biomedical telemetry at the sensor, broker, and storage boundaries.',
     problemStatement:
-      'Standard IoT healthcare telemetry frequently defaults to unauthenticated MQTT or pre-shared keys due to microcontrollers lacking hardware cryptographic accelerators or suffering from TLS handshake memory exhaustion.',
+      'The original CARE gateway collected biomedical readings over BLE and sent them to the backend over MQTT. It identified sensors by configured addresses, and the MQTT publishing code supplied neither TLS options nor client credentials. Downstream services therefore had limited evidence about where a reading came from.',
     threatModelOrChallenge:
-      'Defended against rogue node spoofing, packet tampering, and replay attacks on untrusted Wi-Fi. Forced bidirectional certificate verification (mTLS v1.3) with clientAuth extensions, ensuring rogue nodes without private key access are dropped during the TLS handshake before processing any payload.',
-    securityStandards: [
-      'NIST SP 800-207 (Zero Trust Principles)',
-      'RFC 8446 (TLS v1.3 Protocol Specification)',
-      'FIPS 198-1 (HMAC-SHA256 Authentication)',
-      'GDPR Privacy-by-Design (Zero Plaintext Biometrics On-Chain)',
-    ],
-    misuseCases: [
-      {
-        id: 'mc-sensor-spoofing',
-        threatName: 'Sensor Spoofing (MAC Cloning)',
-        threatActor: 'Mis-User / Evil ESP32',
-        mitreId: 'MITRE T1557 / T1200',
-        targetUseCase: 'Data Collection',
-        layer: 'Perception',
-        countermeasure: 'HMAC-SHA256 Verification',
-        countermeasureDetail: 'FreeRTOS mbedTLS task validates pre-shared cryptographic HMAC before processing packet in application memory.',
-        verifiedOutcome: 'Packets lacking valid signature are dropped at edge (0 bytes to broker).',
-      },
-      {
-        id: 'mc-mitm-broker',
-        threatName: 'Man-in-the-Middle / Rogue Broker',
-        threatActor: 'Network Attacker (ARP / DNS Spoof)',
-        mitreId: 'MITRE T1040 / T1557.002',
-        targetUseCase: 'Data Transmission',
-        layer: 'Transport',
-        countermeasure: 'Mutual TLS v1.3 (X.509 clientAuth)',
-        countermeasureDetail: 'Forced bidirectional handshake with 4096-bit offline Root CA and IP SAN certificate matching on port 8883.',
-        verifiedOutcome: 'The documented test rejected unauthenticated sessions before processing application data.',
-      },
-      {
-        id: 'mc-db-tamper',
-        threatName: 'Database Record Tampering',
-        threatActor: 'Malicious Insider / Storage Malware',
-        mitreId: 'MITRE T1565.001',
-        targetUseCase: 'Data Persistence',
-        layer: 'Storage',
-        countermeasure: 'EVM Hash Notarization (HealthNotary.sol)',
-        countermeasureDetail: 'SHA-256 telemetry digest anchored on-chain with anti-replay guard (dataHashUsed); audited via utils/audit.py.',
-        verifiedOutcome: 'Mismatches between local DB and blockchain ledger immediately flagged.',
-      },
-    ],
-    verificationTerminal: {
-      title: 'Empirical Attack Simulation & Zero-Trust Defense Logs',
-      description: 'Captured real-world serial telemetry and container logs comparing the vulnerable MAC-whitelist gateway against the hardened Zero-Trust pipeline.',
-      tabs: [
-        {
-          id: 'attacker-evil-esp32',
-          label: 'Attacker Serial (Evil ESP32)',
-          command: 'pio device monitor -p /dev/ttyUSB1 --baud 115200',
-          description: 'Adversary node cloning victim pulse oximeter MAC and injecting forged tachycardic vitals.',
-          output: `=== Attacker Serial Monitor (Evil ESP32) ===
-entry 0x400805e4
-Booting Evil ESP32 Jumper...
-Base MAC set successfully!
-Active BLE MAC Address: 12:a2:00:2d:65:03
-Waiting for Gateway...
->> GATEWAY CONNECTED! Starting data injection...
--> INJECTED Packet: BPM=180 SpO2=65 [Hex: 81 B4 41 0F]
--> INJECTED Packet: BPM=180 SpO2=65 [Hex: 81 B4 41 0F]`,
-        },
-        {
-          id: 'vulnerable-gateway',
-          label: 'Legacy Gateway (Vulnerable)',
-          command: 'python gateway_main.py',
-          description: 'Legacy C.A.R.E. gateway relying on static MAC whitelist in config.json accepting spoofed payload.',
-          output: `=== Vulnerable Gateway Log Output ===
-INFO - configuration - Successfully parsed configuration for user 0cd2a3fc-0613-4d76-b154-1d3e195efc4a
-INFO - Gateway main - {'12:A2:00:2D:65:03': 'pulseoximeter'}
-INFO - Pulseoximeter device - Connected to 12:A2:00:2D:65:03
-INFO - Pulseoximeter device - Listening for notifications on 12:A2:00:2D:65:03
-INFO - Pulseoximeter device - Data from 12:A2:00:2D:65:03 -> BPM: 180, SpO2: 65, PI: 1.5
-[ALERT] Critical tachycardia detected! Propagating alarm to clinical dashboard...`,
-        },
-        {
-          id: 'hardened-gateway-defense',
-          label: 'Hardened Gateway (mTLS & HMAC)',
-          command: 'pio device monitor -p /dev/ttyUSB0 --baud 115200',
-          description: 'Zero-Trust C++ firmware executing cryptographic validation and dropping spoofed packets at the physical edge.',
-          output: `[SYS] Gateway ready.
-[NET] WiFi Connected: IP 198.51.100.45 | NTP Clock Synced
-[TLS] Initializing mbedTLS context... Loading X.509 clientAuth certs
-[TLS] Handshake with Mosquitto (198.51.100.50:8883) -> TLS_AES_256_GCM_SHA384 established
-[BLE] Connected to 12:a2:00:2d:65:03
-[RX] 4 bytes received
-[SEC] Verifying HMAC-SHA256 signature...
-[SEC] Packet rejected: BAD_HMAC (No cryptographic signature)
-[SEC] Packet dropped at edge. 0 bytes forwarded to MQTT broker.`,
-        },
-        {
-          id: 'blockchain-audit',
-          label: 'Integrity Auditor & ACL Test',
-          command: 'python utils/permission_test.py && python utils/audit.py',
-          description: 'Automated testing of on-chain least-privilege permissions and database integrity verification.',
-          output: `--- STARTING SECURITY INTEGRATION TESTS ---
-Admin Address:       0x90F79bf6EB2c4f870365E785982E1f101E93b906
-Unauthorized Actor:  0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65
---------------------------------------------------
-TEST START: Verify unauthorized data write block (addRecord)
-PASSED: Blockchain blocked the transaction as expected.
-Error detail: execution reverted: Unauthorized()
---------------------------------------------------
-TEST START: Verify privilege escalation block (setNotarizer)
-PASSED: Blockchain blocked the transaction as expected.
---------------------------------------------------
-AUDIT RESULT: PASSED. System is secure.
-
---- DATA INTEGRITY VERIFICATION (audit.py) ---
-Analyzing record ID: 104...
-Computed Hash (DB):   8f4b23c...e719a
-Immutable Hash (BC):  8f4b23c...e719a
---------------------------------------------------------------
-[OK] INTEGRITY CONFIRMED: Record matches EVM notarization.`,
-        },
-      ],
-    },
-    architectureDiagram: ` +------------------+     mTLS v1.3 Handshake (X.509)     +--------------------+
- |  ESP32-S3 Node   | ==================================> |  Mosquitto Broker  |
- |  [mbedTLS 3.x]   |      Mutual Certificate Validation  |  [Strict ACL Map]  |
- +------------------+                                     +--------------------+
-          |                                                         |
-          v (HMAC-SHA256)                                           v
-   [Telemetry Digest]                                     [EVM Smart Contract]
-   (At Source Origin)                                     (HealthNotary.sol)`,
+      'A valid gateway certificate authenticates the connection to the broker. The prototype also needs a way to check who produced a reading before forwarding it, and a way to detect changes after it is stored.',
+    architectureDiagram: `Programmable BLE sender
+  | Payload + HMAC
+  v
+ESP32 gateway -- MQTT over mTLS --> Mosquitto
+                                      |
+                                      v
+                                 Python bridge
+                                   |       |
+                                   v       v
+                                 SQLite   EVM audit record`,
     architectureSpecs: [
-      'Offline Private PKI: 4096-bit RSA Root CA, intermediate server cert with IP SAN, and isolated clientAuth certificates generated via OpenSSL.',
-      'Embedded Cryptography: C++ firmware on PlatformIO utilizing mbedTLS with optimized dynamic buffer allocation to fit 320KB RAM constraints on ESP32.',
-      'Access Control Matrix: Mosquitto MQTT broker configured with require_certificate true and strict Access Control Lists (ACLs) keyed directly to certificate Common Names (CN).',
-      'Non-Repudiation Layer: Solidity smart contract (HealthNotary.sol) anchoring cryptographic fingerprints on-chain without writing the raw health readings on-chain.',
+      'The ESP32 verifies HMAC-SHA256 before it forwards a message. This path requires a sender that can produce the authenticated payload format.',
+      'Mosquitto requires client certificates and maps certificate identities to MQTT topic permissions. The broker is configured for TLS 1.3.',
+      'The Python bridge checks the payload and stores readings in SQLite. The Solidity contract records a digest and audit metadata, including a criticality flag. Raw readings stay in SQLite.',
     ],
     keyResults: [
-      'The example output shows rejection of a connection without valid client authentication.',
-      'Zero cleartext biometric or patient records exposed on-chain.',
+      'The project presentation documents a controlled lab demonstration in which the original gateway accepted a reading from an impersonated sensor.',
+      'The prototype code checks payload authenticity before forwarding, applies certificate-based topic permissions, and provides a utility for comparing stored readings with their on-chain digests.',
     ],
-    technologies: ['C++', 'ESP32', 'mbedTLS', 'OpenSSL', 'mTLS v1.3', 'Mosquitto MQTT', 'Solidity', 'Docker', 'Zero-Trust'],
+    technologies: ['C++', 'ESP32', 'PlatformIO', 'mbedTLS', 'OpenSSL', 'Mosquitto MQTT', 'Docker', 'Python', 'SQLite', 'Solidity'],
+    githubUrl: 'https://github.com/kappino/IOT_SEC_CARE_Gateway',
+    githubLabel: 'Gateway firmware and services',
     date: '2025-06',
     featured: true,
     metrics: [
-      { label: 'Cipher Suite', value: 'TLS_AES_256_GCM_SHA384' },
-      { label: 'Key Strength', value: '4096-bit RSA / P-256' },
-      { label: 'PoC Defense', value: '100% Drop on Spoof' },
+      { label: 'Transport', value: 'MQTT over mTLS' },
+      { label: 'Payload Check', value: 'HMAC-SHA256' },
+      { label: 'Project Stage', value: 'University prototype' },
     ],
   },
   {
     id: 'proj-care-decision-planner',
-    title: 'CARE Decision Planner: Real-Time Rule Inference & ROS2 Coordination',
+    title: 'CARE: Decision Planning for an Assistive Robot',
     displayTitle: 'CARE Decision Planner',
     articleSlug: 'deterministic-life-safety-arbitration-ros2-gorules',
-    contribution: 'Implemented decision tables and priority handling in ROS2 for an assistive robot built under PNRR Age-IT.',
+    contribution: 'I developed the ROS2 decision planner for CARE, an assistive robotics demonstrator under PNRR Age-IT. My work covered decision tables, backend integration, and how the planner handles competing activities.',
     category: 'robotics',
-    tagline: 'Deterministic decision-making runtime and ROS2 package for the Probot CARE assistive healthcare robot.',
+    tagline: 'A ROS2 planner that turns care schedules, sensor readings, and session state into actions for a social robot.',
     description:
-      'Architected the central decision engine for an autonomous assistive healthcare robot deployed in aged-care environments under the Italian National Recovery Plan (PNRR Age-IT, Spoke 3).',
+      'CARE (Companion for Aging with Resilience and Evaluation) is a PNRR Age-IT research demonstrator for home assistance. It brings together biomedical sensors, a social robot, and a monitoring dashboard.',
     problemStatement:
-      'Assistive robots in eldercare must resolve concurrent, competing goals (e.g. scheduled medication, vital sign telemetry, battery patrol, social interaction) while preserving a traceable decision policy.',
+      'CARE explored home assistance for older adults living with frailty and multiple conditions, with diabetes and cognitive decline as pilot use cases. The wider system combines biomedical monitoring, voice interaction, tablet-based cognitive exercises, and a dashboard for clinicians and caregivers. The planner decides which activity to request when reminders, measurements, and optional exercises overlap.',
     threatModelOrChallenge:
-      'Moved project rules from a Rete-based implementation to GoRules JDM tables, so the conditions and actions could be reviewed separately from ROS2 message handling.',
-    architectureDiagram: `  [Biomedical Telemetry / Sensors]           [Caregiver Escalation Policy]
-                 |                                         ^
-                 v                                         | (Timeout / Urgent)
-       +-------------------+                     +--------------------+
-       |  ROS2 Middleware  | ===(JSON Events)==> | GoRules JDM Engine |
-       |  [care_planner]   |                     | [Decision Tables]  |
-       +-------------------+                     +--------------------+
-                 ^                                         |
-                 |               (Execution Vector)        v
-                 +================================ [Priority Resolver]
-                                                   (Health > Patrol)`,
+      'The first planner used durable_rules (Rete). I moved the policy into GoRules decision tables with the goal of letting clinical and other non-technical staff review and edit it visually. For the demo, we used a fixed JDM graph and populated its decision inputs from the backend APIs.',
+    architectureDiagram: `Biomedical sensors
+  | BLE
+  v
+Sensor gateway -- MQTT --> CARE backend --> Monitoring dashboard
+                                  |
+                                  | REST APIs
+                                  v
+                           ROS2 CARE planner
+                           [GoRules JDM graph]
+                                  |
+                                  | decision_output
+                                  v
+                           Robot coordinator`,
     architectureSpecs: [
-      'Inference Runtime: GoRules JDM decision tables used to make the reminder policy inspectable.',
-      'Temporal Priority Resolver: Deterministic state engine prioritizing medical emergencies and timed medication alerts over routine navigation or patrol routines.',
-      'Escalation State Machine: Finite state machine governing patient reminder timeouts, configurable snooze intervals, and automated caregiver phone/alert escalation.',
-      'ROS2 Package: Custom care_planner package communicating over ROS2 topics and services, serializing event schemas to decoupled JSON payloads.',
+      'The CARE backend exposes REST APIs for therapy schedules, measurement plans and readings, and cognitive session state. The same platform provides role-based dashboard views.',
+      'The planner gathers that context and evaluates a GoRules JSON Decision Model. Separate branches cover health alerts, measurements, medication reminders, and optional activities.',
+      'The Python planner converts decisions into action requests and publishes them on the ROS2 decision_output topic for the robot coordinator.',
     ],
     keyResults: [
-      'Implemented reminder acknowledgements, snooze and caregiver escalation as explicit outcomes in the CARE planner prototype.',
-      'Official technical contribution to Deliverable D3.3 of the PNRR Age-IT national research program.',
-      'Kept rule evaluation separate from robot-specific integrations through ROS2 messages.',
+      'Implemented a planner path in which an exercise can wait for feedback while a due medication reminder still produces an action request.',
+      'Implemented snooze handling and a caregiver escalation request in the planner prototype.',
+      'The Age-IT D3.3 design deliverable documents the planner alongside sensor ingestion, cognitive interaction, and the clinical dashboard.',
     ],
-    technologies: ['Python', 'ROS2', 'GoRules (JDM)', 'durable_rules', 'Docker', 'Linux', 'AAL Robotics'],
+    technologies: ['Python', 'ROS2', 'GoRules (JDM)', 'REST APIs'],
     date: '2025-09',
     featured: true,
     metrics: [
       { label: 'National Project', value: 'PNRR Age-IT (Spoke 3)' },
       { label: 'Inference Model', value: 'JDM Decision Tables' },
-      { label: 'Resolution Logic', value: 'Deterministic FSM' },
+      { label: 'Project Stage', value: 'Research demonstrator' },
     ],
   },
   {
@@ -319,32 +207,36 @@ Immutable Hash (BC):  8f4b23c...e719a
     title: 'SPECTRA: Clinical EEG Signal Processing & Supervised ML Classification',
     displayTitle: 'SPECTRA · Wearable EEG',
     articleSlug: 'eeg-emotion-recognition-schizophrenia-ias19',
-    contribution: 'Developed a signal-cleaning and classification pipeline for data from a 14-channel wearable EEG.',
+    contribution: 'For my bachelor’s thesis, I compared three EEG preprocessing pipelines and worked on feature extraction and classifier evaluation. I am first author of the IAS-19 paper based on this study.',
     category: 'research',
     tagline: 'Wearable EEG preprocessing and feature extraction for an exploratory study of emotional responses.',
     description:
       'Conducted clinical research and implemented an automated artifact-rejection and classification pipeline analyzing 14-channel EEG data from patients across the schizophrenia spectrum.',
     problemStatement:
-      'Wearable electroencephalography in clinical environments suffers from massive signal noise: ocular blinks, cranial muscle artifacts, and 50 Hz power-line interference degrade machine learning diagnostic viability.',
+      'SPECTRA explored whether wearable EEG captured different responses across participant groups and emotional stimuli. The exploratory study involved 21 participants: 7 healthy controls, 6 participants with treatment-responsive schizophrenia, and 8 with treatment-resistant schizophrenia.',
     threatModelOrChallenge:
-      'Extracting clean neurological feature vectors without destroying spectral markers of emotional response. Addressed by chaining PICARD Independent Component Analysis with narrow notch filtering and frontal asymmetry calculation.',
+      'The pipeline had to reduce eye and muscle artifacts while retaining spectral features aligned with the experimental phases.',
     architectureDiagram: `Wearable EEG → MATLAB preprocessing → Python feature extraction → Group classification`,
     architectureSpecs: [
-      'Protocol: a cognitive test followed by three two-minute video clips.',
-      'Pipeline: MATLAB for preprocessing and Python for feature extraction.',
-      'Analysis: alpha and beta activity and frontal brain asymmetry in relation to valence and arousal.',
+      'Protocol: a 30-second baseline, a memory game, and three two-minute clips. EEG was recorded with a 14-channel Emotiv EPOC X at 256 Hz. The classification experiments used EEG features.',
+      'Preprocessing in MATLAB and EEGLAB: align segments with event markers, correct baseline and filter the signal, then identify artifacts with PICARD ICA and ICLabel.',
+      'Feature extraction in Python: Welch spectral estimates, band power, and frontal asymmetry features from four-second windows with 50% overlap.',
     ],
     keyResults: [
-      'The published abstract reports up to 95% accuracy in classifying healthy controls and participants with treatment-responsive or treatment-resistant schizophrenia. The study used a small sample and a limited set of stimuli.',
+      'In the full paper, the best MLP achieved 97.2% accuracy for group classification and 84.6% for clip classification in the reported cross-validation. The abstract summarizes group accuracy as up to 95%.',
+      'The paper describes stratified five-fold validation. It leaves participant grouping across folds unspecified, so performance on unseen participants remains unverified.',
       'Selected as a Best Student Paper Award finalist at IAS-19 and published in Springer’s Lecture Notes in Networks and Systems.',
     ],
-    referenceLinks: [{ label: 'Published abstract and results', href: 'https://link.springer.com/chapter/10.1007/978-3-032-33874-7_13#Abs1' }],
-    technologies: ['Python', 'MATLAB', 'Signal Processing', 'EEG'],
+    referenceLinks: [
+      { label: 'Published abstract and results', href: 'https://link.springer.com/chapter/10.1007/978-3-032-33874-7_13#Abs1' },
+      { label: 'EEG and wearable acquisition protocol (Italian)', href: 'https://github.com/kappino/SpectraProtocol' },
+    ],
+    technologies: ['Python', 'scikit-learn', 'MATLAB', 'EEGLAB', 'PICARD ICA', 'Wearable EEG'],
     date: '2025-05',
     featured: true,
     metrics: [
-      { label: 'Group classification', value: 'Up to 95% accuracy' },
-      { label: 'Telemetry Channels', value: '14 @ 256 Hz' },
+      { label: 'Participants', value: '21 across 3 groups' },
+      { label: 'EEG acquisition', value: '14 channels at 256 Hz' },
     ],
   },
   {
@@ -376,218 +268,79 @@ Immutable Hash (BC):  8f4b23c...e719a
   },
   {
     id: 'proj-posix-sockets',
-    title: 'Concurrent POSIX C Multi-Process Server & Advisory Locking Datastore',
+    title: 'Concurrent TCP Services in C',
+    displayTitle: 'Concurrent TCP services',
     category: 'systems',
-    tagline: 'Multi-process TCP/IP networking, concurrent POSIX sockets, stream-safe I/O primitives, and flock binary datastore in C11.',
-    description:
-      'Developed a distributed client-server architecture in pure C (C11) as an advanced systems programming coursework. Coordinates certificate issuance, health authority revocation, and point-of-entry verification across multi-process TCP/IP socket streams with atomic BSD advisory file locking.',
-    problemStatement:
-      'Handling concurrent multi-client transactions across unbuffered TCP streams without message boundary fragmentation, race conditions during in-place record updates, or memory exhaustion on Unix servers.',
-    threatModelOrChallenge:
-      'Addressed race conditions and dirty reads on shared binary records (file.dat), TCP stream fragmentation across slow networks, and signal interruption (EINTR) desynchronization during socket I/O. Solved via atomic BSD advisory locks (flock) and loop-safe full_read/full_write primitives.',
-    securityStandards: [
-      'POSIX.1-2008 (IEEE Std 1003.1 Socket & Process API)',
-      'BSD Advisory File Locking (flock Specification)',
-      'ISO/IEC 9899:2011 (C11 Memory & Concurrency Safety)',
-      'Valgrind Memcheck Leak-Free Verification',
-    ],
-    misuseCases: [
-      {
-        id: 'mc-race-conditions',
-        threatName: 'Race Conditions & Concurrent Write Corruption',
-        threatActor: 'Concurrent Worker Processes',
-        mitreId: 'CWE-362 (Race Condition)',
-        targetUseCase: 'Datastore Record Modification',
-        layer: 'Storage',
-        countermeasure: 'BSD Advisory Locking (flock)',
-        countermeasureDetail: 'Atomic exclusive lock flock(fd, LOCK_EX) wraps salvaCertificato() and aggiornaStato() ensuring sequential integrity.',
-        verifiedOutcome: '0 lost bytes / 0 corruption across 10,000 sustained cycles.',
-      },
-      {
-        id: 'mc-tcp-fragmentation',
-        threatName: 'TCP Stream Fragmentation & Partial I/O Desync',
-        threatActor: 'Network Delay / OS Signal (EINTR)',
-        mitreId: 'Stream Framing Bug',
-        targetUseCase: 'Binary Socket I/O',
-        layer: 'Transport',
-        countermeasure: 'Loop-Safe full_read / full_write',
-        countermeasureDetail: 'Byte-counting stream loops resume on EINTR signals and assemble fixed-width binary structs reliably.',
-        verifiedOutcome: 'Zero framing errors or dropped transactions.',
-      },
-      {
-        id: 'mc-slowloris-hang',
-        threatName: 'Worker Starvation by Slow Clients',
-        threatActor: 'Slow / Stalled TCP Client',
-        mitreId: 'CWE-400 (Resource Starvation)',
-        targetUseCase: 'Point-of-Entry Venue Scans',
-        layer: 'Application',
-        countermeasure: 'Multi-Process Concurrency (fork)',
-        countermeasureDetail: 'Spawns dedicated isolated worker process per client connection; slow clients cannot starve inspection checkpoints.',
-        verifiedOutcome: 'Deterministic sub-millisecond check-in latency maintained.',
-      },
-    ],
-    architectureDiagram: `  [ClientUtente]               [ClientS (Verifier)]            [ClientT (ASL)]
-        |                              |                              |
-        v (TCP Port 1024)              v (TCP Port 1024)              v (TCP Port 1024)
-  +------------------+           +---------------------------------------------+
-  | CentroVaccinale  |           |          ServerG (Gateway / Proxy)          |
-  +------------------+           +---------------------------------------------+
-        | (TCP Port 1025)                              | (TCP Port 1026)
-        v                                              v
-  +----------------------------------------------------------------------------+
-  |                   ServerV (Core Validation & Datastore)                    |
-  |              [Concurrent fork() Workers + bitCom Demuxer]                  |
-  +----------------------------------------------------------------------------+
-                                       |
-                                       v  flock(LOCK_EX / LOCK_UN)
-                                 [file.dat Datastore]
-                              (Atomic In-Place Record Updates)`,
+    tagline: 'A coursework simulation using POSIX sockets, worker processes, and a shared binary datastore.',
+    description: 'A C11 networking project that models issuing, checking, and updating a certificate record across cooperating TCP services.',
+    problemStatement: 'TCP can deliver a message in several reads. The system also needs to coordinate access when separate workers read or update the same file.',
+    threatModelOrChallenge: 'The implementation uses full-read and full-write loops at the connection boundary and advisory file locks around shared record updates.',
     architectureSpecs: [
-      'Multi-Process Architecture: Backend servers (ServerV, ServerG) spawning dedicated worker processes via fork() per incoming TCP client.',
-      'Binary Stream Framing: Fixed-width binary structs (Certificato, Notifica, Data) with 1-byte multiplexing control flags (bitComServer, bitComClient).',
-      'Atomic Advisory Synchronization: flock(fd, LOCK_EX) applied during salvaCertificato() and aggiornaStato() ensuring atomic record lookups and overwrites.',
-      'Signal-Resilient Stream I/O: Custom full_read() and full_write() handling EINTR signals and partial stream fragmentation.',
-      'Clinical Business Logic: Automated enforcement of 4-month minimum dose interval on re-vaccination and 7-month dynamic expiration windows.',
+      'The registration and verification clients connect to separate services, which forward requests to the central record server.',
+      'The C server uses forked workers to handle TCP clients and fixed-size binary messages to exchange requests.',
+      'The shared datastore uses flock to coordinate workers that follow the same locking protocol.',
     ],
     keyResults: [
-      'Valgrind memory verification: 0 bytes lost, 0 leaks across 10,000 sustained socket cycles.',
-      'Deterministic sub-millisecond status resolution under concurrent multi-process simulation.',
-      'Zero corrupted datastore records under parallel stress tests.',
+      'Implemented certificate issuance, status checks, and status updates as separate workflows in the simulation.',
+      'Handled partial socket I/O and coordinated updates to the shared file across worker processes.',
     ],
-    verificationTerminal: {
-      title: 'Compilation, Memory Safety & Multi-Process Execution',
-      description: 'Verifiable build sequence and Valgrind memory leak verification from the original C11 repository.',
-      tabs: [
-        {
-          id: 'make-build-valgrind',
-          label: 'Build & Valgrind Verification',
-          command: 'make all && valgrind --leak-check=full --show-leak-kinds=all ./bin/ServerV',
-          description: 'Modular GNU Make compilation followed by full Valgrind memcheck verification.',
-          output: `$ make all
-gcc -Wall -Wextra -std=c11 -Iinclude -c src/ServerV.c -o obj/ServerV.o
-gcc -Wall -Wextra -std=c11 -Iinclude -c src/ServerG.c -o obj/ServerG.o
-gcc -Wall -Wextra -std=c11 -Iinclude -c src/CentroVaccinale.c -o obj/CentroVaccinale.o
-gcc -Wall -Wextra -std=c11 -Iinclude -c src/ClientUtente.c -o obj/ClientUtente.o
-gcc -Wall -Wextra -std=c11 -Iinclude -c src/ClientS.c -o obj/ClientS.o
-gcc -Wall -Wextra -std=c11 -Iinclude -c src/ClientT.c -o obj/ClientT.o
-gcc -o bin/ServerV obj/ServerV.o
-gcc -o bin/ServerG obj/ServerG.o
-gcc -o bin/CentroVaccinale obj/CentroVaccinale.o
-gcc -o bin/ClientUtente obj/ClientUtente.o
-gcc -o bin/ClientS obj/ClientS.o
-gcc -o bin/ClientT obj/ClientT.o
-
-$ valgrind --leak-check=full --show-leak-kinds=all ./bin/ServerV
-==14208== Memcheck, a memory error detector
-==14208== Command: ./bin/ServerV
-==14208== 
-[ServerV] Server started. Listening on ports 1025 (CV) and 1026 (SG)...
-... 10,000 sustained socket transaction cycles ...
-==14208== 
-==14208== HEAP SUMMARY:
-==14208==     in use at exit: 0 bytes in 0 blocks
-==14208==   total heap usage: 20,012 allocs, 20,012 frees, 1,024,480 bytes allocated
-==14208== 
-==14208== All heap blocks were freed -- no leaks are possible
-==14208== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)`,
-        },
-        {
-          id: 'server-daemons',
-          label: 'Backend Daemons Startup',
-          command: './bin/ServerV & ./bin/CentroVaccinale & ./bin/ServerG',
-          description: 'Initialization sequence of the distributed multi-tier server hierarchy.',
-          output: `$ ./bin/ServerV
-[ServerV] Listening on port 1025 (CentroVaccinale) and 1026 (ServerG)...
-[ServerV] Datastore: file.dat opened with flock(LOCK_EX). Multi-process concurrency active.
-
-$ ./bin/CentroVaccinale
-[CentroVaccinale] Listening on port 1024 for citizen registration.
-[CentroVaccinale] Connection to ServerV:1025 for certificate forwarding established.
-
-$ ./bin/ServerG
-[ServerG] Gateway started on port 1024. Forwarding verifications to ServerV:1026.`,
-        },
-        {
-          id: 'client-lifecycle',
-          label: 'End-to-End Client Lifecycle',
-          command: './bin/ClientUtente localhost && ./bin/ClientS localhost && ./bin/ClientT localhost',
-          description: 'Interactive execution tracing registration, venue verification, ASL quarantine revocation, and instant re-inspection.',
-          output: `# 1. Citizen Vaccination Registration
-$ ./bin/ClientUtente localhost
-Enter health card code: ABC12345
--> Sending to CentroVaccinale:1024...
--> ServerV Response: Certificate issued successfully [Valid: 7 months]
-
-# 2. Venue Entry Gate Scan (Point-of-Entry Check)
-$ ./bin/ClientS localhost
-Enter health card code to verify: ABC12345
--> Querying Gateway ServerG:1024...
--> Result: VALID HEALTH CERT [Expires: 15-10-2025]
-
-# 3. Infection Notification & Quarantine by Health Authority
-$ ./bin/ClientT localhost
-Enter health card code: ABC12345
-Enter new status (0: Positive/Revoke, 1: Recovered/Restore): 0
--> Atomic update to ServerV with flock(LOCK_EX)...
--> Status updated: SUSPENSION CONFIRMED
-
-# 4. Immediate Re-Inspection at Gate (Real-Time Revocation Check)
-$ ./bin/ClientS localhost
-Enter health card code to verify: ABC12345
--> Result: INVALID HEALTH CERT (Suspended by Health Authority)`,
-        },
-      ],
-    },
-    technologies: ['C11', 'POSIX Sockets', 'TCP/IP', 'flock', 'fork()', 'Valgrind', 'GNU Make', 'Linux'],
+    technologies: ['C11', 'POSIX sockets', 'TCP/IP', 'flock', 'fork', 'GNU Make'],
     githubUrl: 'https://github.com/kappino/computer_network_green_pass',
     date: '2022-02',
     featured: false,
     metrics: [
-      { label: 'Valgrind Leaks', value: '0 Bytes / 0 Errors' },
-      { label: 'Locking Model', value: 'BSD flock(LOCK_EX)' },
-      { label: 'Transport', value: 'L4 Raw TCP Streams' },
+      { label: 'Transport', value: 'TCP byte streams' },
+      { label: 'Concurrency', value: 'Forked workers' },
+      { label: 'Storage coordination', value: 'Advisory file locks' },
     ],
   },
   {
     id: 'proj-virtual-pong',
-    title: 'Virtual Pong: Real-Time Inertial Sensor Fusion on iOS',
+    title: 'Virtual Pong: Motion-Controlled Table Tennis',
+    displayTitle: 'Virtual Pong',
+    recognition: 'Winner · Best App Award “Alfredo Petrosino”',
     category: 'systems',
-    tagline: 'Multiplayer motion-tracking game engine sampling CoreMotion IMU telemetry at 60 Hz.',
+    tagline: 'An Apple Watch motion controller and an iPhone game with local peer-to-peer multiplayer.',
     description:
-      'Interactive mobile game translating high-frequency accelerometer and gyroscope data into real-time paddle restitution, awarded Best App at the Apple Developer Academy Network.',
+      'An Apple Developer Academy team project that turns Apple Watch swings into inputs for a table-tennis game on iPhone.',
     problemStatement:
-      'Filtering noisy inertial measurements from handheld hardware to reliably distinguish swing velocity and topspin angles.',
+      'Recognize swings from wrist motion and pass the resulting input from watchOS to the game running on iPhone.',
     architectureSpecs: [
-      'IMU Sampling: High-rate CoreMotion polling (60 Hz) with low-pass noise filtering.',
-      'Physics Engine: Native SpriteKit physics simulation modeling dynamic velocity vectors.',
+      'The Apple Watch collects accelerometer and gyroscope readings with CoreMotion and classifies gestures on-device with Core ML.',
+      'WatchConnectivity links the watch to the iPhone, and MultipeerConnectivity exchanges game state between nearby iPhones.',
     ],
     keyResults: [
       'Awarded Best App Award "Alfredo Petrosino" (May 2023).',
-      'Under 20ms end-to-end motion-to-render latency.',
+      'Built a local multiplayer prototype that uses wrist gestures as game input.',
     ],
-    technologies: ['Swift', 'CoreMotion', 'SpriteKit', 'Sensor Fusion', 'iOS SDK'],
+    technologies: ['Swift', 'SwiftUI', 'CoreMotion', 'Core ML', 'WatchConnectivity', 'MultipeerConnectivity'],
     githubUrl: 'https://github.com/kappino/Ios_A1_TeamC_Virtual_Pong',
+    githubLabel: 'iOS and watchOS app',
     date: '2023-05',
     featured: false,
   },
   {
     id: 'proj-pepper-icsr',
-    title: 'Humanoid Robot Teleoperation & WebSocket Bridge for SoftBank Pepper',
+    title: 'Pepper Infotainment at ICSR 2025',
     category: 'robotics',
     tagline: 'Bidirectional bridge between NAOqi runtime and responsive client dashboard for conference demo.',
     description:
       'Integrated software platform for the Pepper humanoid robot presented at the International Conference on Social Robotics (ICSR 2025).',
     problemStatement:
-      'Exposing high-latency Python NAOqi events to touch tablet interfaces without choking the robot main loop.',
+      'Connect a touch interface on a tablet to Pepper’s NAOqi runtime during a live demo.',
     architectureSpecs: [
-      'Async WebSocket gateway in Python routing touch telemetry to NAOqi motion APIs.',
-      'Fault-tolerant connection handling with automatic reconnection upon Wi-Fi dropouts.',
+      'A Python WebSocket backend connects the web interface to Pepper through the qi library.',
+      'Predefined scenes combine robot speech, multimedia and multiple-choice questions with feedback.',
     ],
     keyResults: [
       'Live operational demonstration exhibited at ICSR 2025 conference.',
     ],
-    technologies: ['Python', 'ROS1', 'NAOqi', 'WebSockets', 'Human-Robot Interaction'],
+    technologies: ['Python', 'NAOqi', 'WebSockets', 'HTML', 'JavaScript', 'CSS'],
     githubUrl: 'https://github.com/kappino/pepper_icsr2025',
+    githubLabel: 'ICSR demo source',
+    referenceLinks: [
+      { label: 'Related project · RESTART adaptive Pepper controller (ROS1)', href: 'https://github.com/kappino/RESTART_Pepper_ROS1' },
+    ],
     date: '2025-10',
     featured: false,
   },

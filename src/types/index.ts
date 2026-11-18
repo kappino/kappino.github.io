@@ -57,6 +57,7 @@ export interface Project {
   keyResults: string[];
   technologies: string[];
   githubUrl?: string;
+  githubLabel?: string;
   demoUrl?: string;
   date: string; // YYYY-MM
   featured: boolean;

@@ -1,11 +1,12 @@
 import { Fragment, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, ChevronDown } from 'lucide-react';
-import { CodeBlockWithCopy } from '@/components/common/CodeBlockWithCopy';
+import { CareDecisionFigure, FlowFigure, GatewayChecksFigure, SourceFigure, SpectraCleaningFigure, SpectraCohortFigure, SpectraResultsFigure, UniReviewsIndexFigure } from '@/components/common/EvidenceFigure';
 import { GithubIcon } from '@/components/common/Icons';
 import { MisuseCaseDiagram } from '@/components/interactive/MisuseCaseDiagram';
 import { VerificationTerminal } from '@/components/interactive/VerificationTerminal';
 import { orderedProjects as projects, PROJECT_CATEGORIES } from '@/data/projects';
+import { projectFlows } from '@/data/projectFigures';
 
 function ProjectDisclosure({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -33,6 +34,7 @@ export default function ProjectDetail() {
   const articleSlug = project.articleSlug;
   const previous = projects[index - 1];
   const next = projects[index + 1];
+  const flow = projectFlows[project.id];
 
   return (
     <article className="site-shell editorial-page" key={project.id}>
@@ -53,7 +55,7 @@ export default function ProjectDetail() {
             )}
             {project.githubUrl && (
               <a href={project.githubUrl} className="editorial-button" target="_blank" rel="noreferrer">
-                <GithubIcon className="h-4 w-4" /> Source code
+                <GithubIcon className="h-4 w-4" /> {project.githubLabel ?? 'Source code'}
               </a>
             )}
             {project.clientUrl && <a href={project.clientUrl} className="editorial-button" target="_blank" rel="noreferrer">Unreal client <ArrowUpRight size={16} aria-hidden="true" /></a>}
@@ -65,6 +67,17 @@ export default function ProjectDetail() {
           </div>
         )}
       </header>
+
+      {project.metrics && (
+        <dl className="mb-8 grid gap-3 sm:grid-cols-3">
+          {project.metrics.map(({ label, value }) => (
+            <div key={label} className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+              <dt className="text-xs text-zinc-400">{label}</dt>
+              <dd className="mt-1 text-base font-semibold text-zinc-100">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
 
       <div className="grid items-start gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
         <div className="min-w-0 space-y-7">
@@ -81,15 +94,28 @@ export default function ProjectDetail() {
         </div>
         <section aria-labelledby="results-heading" className="rounded-2xl border border-sky-300/20 bg-sky-300/[0.045] p-5 sm:p-6">
           <h2 id="results-heading" className="text-2xl font-semibold tracking-tight text-white">Results</h2>
+          {project.id === 'proj-spectra-eeg' && <SpectraResultsFigure />}
+          {project.id === 'proj-unireviews' && <UniReviewsIndexFigure />}
           <ul className="mt-3 divide-y divide-sky-300/15">
             {project.keyResults.map((result) => <li key={result} className="py-3 text-sm leading-relaxed text-zinc-200">{result}</li>)}
           </ul>
         </section>
       </div>
 
+      {project.id === 'proj-spectra-eeg' && <SpectraCohortFigure />}
+
       <section className="mt-12 min-w-0 border-t border-zinc-800 pt-8" aria-labelledby="architecture-heading">
         <h2 id="architecture-heading" className="editorial-section-title">Architecture</h2>
-        {project.architectureDiagram && <CodeBlockWithCopy>{project.architectureDiagram}</CodeBlockWithCopy>}
+        {flow && <FlowFigure flow={flow} />}
+        {project.id === 'proj-care-decision-planner' && <CareDecisionFigure />}
+        {project.id === 'proj-mtls-iot-gateway' && <GatewayChecksFigure />}
+        {project.id === 'proj-spectra-eeg' && <SpectraCleaningFigure />}
+        {project.id === 'proj-care-decision-planner' && (
+          <SourceFigure file="care-planner-design.png" alt="CARE design diagram showing inputs, the decision core and robot outputs" caption="CARE design diagram. The decision core connects the proposed inputs to robot actions, alerts, and monitoring interfaces." />
+        )}
+        {project.id === 'proj-mtls-iot-gateway' && (
+          <SourceFigure file="gateway-proposed-architecture.png" alt="Gateway design showing the sensor, ESP32, backend and audit layers" caption="Proposed gateway architecture from the design materials. The drawing includes a programmable sensor and separates edge checks, transport, and audit." />
+        )}
         <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
           {project.architectureSpecs.map((spec) => <li key={spec} className="border-t border-zinc-800 pt-3 text-sm leading-relaxed text-zinc-300">{spec}</li>)}
         </ul>
