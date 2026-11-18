@@ -14,7 +14,7 @@ export function useBlogLanguage() {
   }
   const language: BlogLanguage = requestedLanguage === 'en' || requestedLanguage === 'it'
     ? requestedLanguage
-    : savedLanguage === 'en' ? 'en' : 'it';
+    : savedLanguage === 'it' ? 'it' : 'en';
 
   function setLanguage(nextLanguage: BlogLanguage) {
     if (nextLanguage === language) return;

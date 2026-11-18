@@ -6,7 +6,7 @@ import { CommandPalette } from '@/components/interactive/CommandPalette';
 
 const navigation = [
   { path: '/projects', label: 'Projects' },
-  { path: '/blog', label: 'Articles' },
+  { path: '/blog', label: 'Blog' },
   { path: '/research', label: 'Research' },
   { path: '/experience', label: 'Experience' },
   { path: '/contact', label: 'Contact' },
