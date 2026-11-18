@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useId } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Terminal as TerminalIcon, CornerDownLeft, Trash2, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { consoleEndpoint, terminalIsLive } from '@/utils/consoleEndpoint';
 
@@ -6,6 +7,11 @@ interface CommandOutput {
   command: string;
   output: React.ReactNode;
 }
+
+const projectCommands = [
+  { command: 'open gateway', alias: 'gateway', path: '/projects/proj-mtls-iot-gateway', description: 'Follow a sensor reading from Bluetooth to the MQTT broker, and see where the ESP32 checks it.' },
+  { command: 'open tnes', alias: 'tns', path: '/projects/proj-tnes', description: 'Plug in a virtual cable in Unreal and see how Cisco Modeling Labs checks the connection.', award: 'Winner · Hack the Route, The Big Hack 2026' },
+] as const;
 
 const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
   status: <p>This demo shows sample responses. Live status checks the portfolio console API and its content indexes.</p>,
@@ -42,12 +48,10 @@ const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
 };
 
 export const TerminalWidget = () => {
-  const [history, setHistory] = useState<CommandOutput[]>(terminalIsLive ? [] : [
-    {
-      command: 'status',
-      output: COMMAND_OUTPUTS.status,
-    },
-  ]);
+  const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const terminalBodyId = useId();
+  const [history, setHistory] = useState<CommandOutput[]>([]);
   const [activeCommand, setActiveCommand] = useState<string>('status');
   const [inputVal, setInputVal] = useState('');
   const [pending, setPending] = useState(false);
@@ -118,6 +122,12 @@ export const TerminalWidget = () => {
   }
 
   function runCommand(cmd: string) {
+    const normalized = cmd.trim().toLowerCase().replace(/\s+/g, ' ');
+    const project = projectCommands.find(({ command, alias }) => command === normalized || alias === normalized);
+    if (project) {
+      navigate(project.path);
+      return;
+    }
     if (terminalIsLive) {
       const command = cmd.trim();
       if (!command) return;
@@ -189,7 +199,10 @@ export const TerminalWidget = () => {
           <TerminalIcon className="h-4 w-4 shrink-0 text-sky-300" aria-hidden="true" />
           <span className="truncate text-xs font-semibold text-zinc-100">{terminalIsLive ? 'kappino@portfolio' : 'Portfolio demo'}</span>
         </div>
-        <div className="flex shrink-0 items-center gap-0.5">
+        <button type="button" className="min-h-9 shrink-0 px-2 text-xs text-sky-300 sm:hidden" aria-expanded={mobileOpen} aria-controls={terminalBodyId} onClick={() => setMobileOpen((open) => !open)}>
+          {mobileOpen ? 'Close terminal' : 'Open terminal'}
+        </button>
+        <div className={mobileOpen ? 'flex shrink-0 items-center gap-0.5' : 'hidden shrink-0 items-center gap-0.5 sm:flex'}>
           <button type="button" onClick={() => { if (viewState === 'collapsed') setViewState('normal'); runCommand('help'); }} className="terminal-control" aria-label="Help" title="Help">
             <HelpCircle className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -205,13 +218,14 @@ export const TerminalWidget = () => {
         </div>
       </div>
 
+      <div id={terminalBodyId} className={mobileOpen ? undefined : 'hidden sm:block'}>
       {/* Terminal Screen / Buffer */}
       {viewState !== 'collapsed' ? (
         <>
         <div
           ref={terminalBufferRef}
           className={`px-3 py-4 sm:p-5 text-xs sm:text-sm leading-relaxed space-y-4 overflow-auto break-words bg-black/40 ${
-            viewState === 'expanded' ? 'h-[clamp(17rem,58dvh,36rem)]' : 'h-[clamp(11rem,29dvh,20rem)]'
+            viewState === 'expanded' ? 'h-[clamp(17rem,58dvh,36rem)]' : history.length === 0 ? 'min-h-[15rem]' : 'h-[clamp(11rem,29dvh,20rem)]'
           }`}
         >
           {history.length === 0 && (
@@ -225,16 +239,20 @@ export const TerminalWidget = () => {
                   <p className="mt-0.5 text-xs text-zinc-400">{terminalIsLive ? 'Portfolio terminal' : 'Terminal demo'}</p>
                 </div>
               </div>
-              <p className="max-w-[50ch] text-zinc-300">
-                {terminalIsLive
-                  ? 'Pick a shortcut below or type a command at the prompt.'
-                  : 'Pick a shortcut below to explore the demo.'}
-              </p>
-              <dl className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-3 gap-y-1 border-l border-sky-300/30 pl-3 text-zinc-400 sm:gap-x-5">
-                <dt className="text-sky-200">help</dt><dd>See what you can run</dd>
-                <dt className="text-sky-200">status</dt><dd>{terminalIsLive ? 'Check the live service' : 'View example diagnostics'}</dd>
-                {terminalIsLive && <><dt className="text-sky-200">projects</dt><dd>List portfolio projects</dd></>}
-              </dl>
+              <p className="text-xs text-zinc-400">Type a command or pick a project to explore.</p>
+              <ul aria-label="Projects to explore" className="divide-y divide-zinc-800 rounded-lg border border-zinc-800 bg-zinc-900/50">
+                {projectCommands.map((project) => (
+                  <li key={project.command}>
+                    <Link className="group block px-3 py-2.5 hover:bg-sky-300/5 focus-visible:outline focus-visible:outline-sky-300" to={project.path}>
+                      <span className="block text-xs font-semibold text-sky-200 group-hover:underline">
+                        <span aria-hidden="true" className="mr-2 text-sky-400">$</span>{project.command}
+                      </span>
+                      <span className="mt-1 block text-xs leading-relaxed text-zinc-300">{project.description}</span>
+                      {'award' in project && <span className="mt-1 block text-xs text-amber-200">{project.award}</span>}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
@@ -341,6 +359,7 @@ export const TerminalWidget = () => {
         >
           type 'clear' to reset
         </button>
+      </div>
       </div>
     </div>
   );
