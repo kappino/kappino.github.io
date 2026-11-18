@@ -1,23 +1,25 @@
 ---
-title: "Mutual TLS su ESP32 con memoria limitata"
+title: "Da dove parte la fiducia nel gateway IoT di CARE"
 date: "2026-09-28"
 category: "Sicurezza & Sistemi Embedded"
 topic: "Security"
-tags: ["Zero-Trust", "mTLS", "ESP32", "OpenSSL", "Crittografia", "IoT Security", "FreeRTOS"]
-excerpt: "Come la configurazione dei certificati e la ripresa delle sessioni incidono su tempi di connessione e memoria."
+tags: ["mTLS", "ESP32", "MQTT", "HMAC", "IoT Security"]
+excerpt: "Cosa ci ha insegnato una prova in laboratorio sulla fiducia nelle misurazioni, nelle connessioni MQTT e nei dati archiviati."
 author: "Crescenzo Esposito"
 ---
 
-## Identità del dispositivo al gateway
+## Una lettura può sembrare plausibile
 
-Il progetto trasferisce la telemetria di un ESP32 a un broker Mosquitto. Ho lavorato al firmware e alla configurazione del gateway affinché ogni dispositivo debba autenticarsi con un certificato client prima di pubblicare. Le regole del broker associano all’identità del dispositivo i topic a cui può accedere.
+Il gateway originale di CARE raccoglieva misurazioni da sensori biomedicali BLE e le inoltrava via MQTT. Nella prova di laboratorio il gateway ha accettato una lettura da un dispositivo che impersonava un sensore noto. Da qui è nata la domanda che volevo affrontare con il prototipo. Se una lettura sembra plausibile e arriva con un’identità familiare, quali prove ha il sistema della sua provenienza?
 
-## I costi di TLS su un dispositivo a risorse limitate
+## Verificare la lettura prima dell’inoltro
 
-La verifica dei certificati e l’apertura della connessione usano memoria e tengono attiva la radio. Cambiare la configurazione dei certificati e riprendere una sessione TLS 1.3 agiscono su costi diversi. Su un nodo che si connette a intervalli, una prova dovrebbe documentare hardware, configurazione del firmware, numero di ripetizioni e tipo di sessione. Tempo di connessione e durata di attività della radio vanno misurati separatamente.
+Ho lavorato sul firmware ESP32 e sull’accesso a MQTT con certificati. Il firmware verifica un codice di autenticazione del messaggio prima di inoltrare la lettura. Questo richiede un mittente programmabile che produca il formato previsto, un vincolo concreto per un sistema che nasce attorno a periferiche biomedicali già esistenti.
 
-## Che cosa mostra il prototipo
+Abbiamo assegnato certificati client distinti al gateway e al servizio di ingestione. Mosquitto usa quelle identità per applicare i permessi sui topic. Il certificato del gateway identifica chi ha aperto la connessione. Il controllo del payload dà al gateway un riscontro sulla provenienza della lettura che riceve.
 
-Negli output della scheda si vede il broker rifiutare una connessione non autenticata. La scheda descrive anche un componente di audit separato, che registra impronte della telemetria senza salvare le letture grezze sulla blockchain.
+## Conservare un record verificabile
 
-[Architettura del gateway e output di esempio](/projects/proj-mtls-iot-gateway)
+Il prototipo salva le letture in SQLite e registra i digest in un contratto EVM. In fase di audit si può ricalcolare il digest e confrontarlo con quello registrato. Il confronto permette di verificare che il record conservato corrisponda a quello registrato. Il valore di quella verifica dipende dai controlli eseguiti prima che il dato entri nel sistema.
+
+[Architettura e implementazione del gateway](/projects/proj-mtls-iot-gateway)

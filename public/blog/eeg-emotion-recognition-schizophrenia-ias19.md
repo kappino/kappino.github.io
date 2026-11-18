@@ -1,25 +1,23 @@
 ---
-title: "Emotion recognition with wearable EEG"
+title: "What wearable EEG could distinguish in SPECTRA"
 date: "2026-09-30"
 category: "Biomedical ML & Robotics"
 topic: "Biomedical"
-tags: ["EEG", "Biomedical ML", "Signal Processing", "PICARD-ICA", "Schizophrenia", "IAS-19", "Neuroscience"]
-excerpt: "A companion article to the IAS-19 study on signal cleaning, spectral features and classification."
+tags: ["EEG", "Biomedical ML", "Signal Processing", "PICARD-ICA", "Schizophrenia", "IAS-19"]
+excerpt: "Why I compared three EEG cleaning pipelines, and what changed when we asked the classifier to distinguish clips."
 author: "Crescenzo Esposito"
 ---
 
-## What we measured
+## Start with the signal
 
-My bachelor's thesis contributed to SPECTRA's study of emotional responses using wearable EEG and other physiological signals. Participants completed a cognitive test and watched three two-minute clips chosen to elicit different emotions.
+For my bachelor’s thesis, I worked with wearable EEG recorded during a baseline, a memory game, and three film clips. I compared three preprocessing pipelines. Looking at the raw and cleaned traces side by side helped me see how much a baseline offset or a blink could change the signal before we even computed a feature. We aligned the recordings to event markers so the analysis could refer back to the part of the session that produced each segment.
 
-## From recording to features
+## Ask two different questions
 
-I worked on preparing the EEG recordings and extracting features for supervised classification. The study used MATLAB for preprocessing and Python for feature extraction. It examined activity in the alpha and beta bands and frontal brain asymmetry in relation to valence and arousal.
+We used the EEG features to classify three participant groups and, in a separate experiment, three video clips. The best MLP in the full paper reached 97.2% accuracy for groups and 84.6% for clips under the reported cross-validation. Each clip supplied a stimulus label. Participants also rated their responses, so predicting which clip was playing answers a different question from predicting how the person felt.
 
-## What the result means
+## Test what carries over
 
-The published abstract reports **up to 95% accuracy in classifying groups** of healthy controls and participants with treatment-responsive or treatment-resistant schizophrenia. The result concerns group classification in an exploratory study with a small sample and a limited set of stimuli. A larger cohort and additional physiological signals are needed to assess generalization.
+With 21 participants and overlapping EEG windows, the unit of validation matters. The paper reports stratified five-fold validation and leaves open whether all windows from each participant stayed in the same fold. To check how much of the result carries over to a new participant, I would hold out entire participants and repeat feature selection and tuning within the training folds.
 
-## Paper and citation
-
-[Read the original abstract on Springer](https://link.springer.com/chapter/10.1007/978-3-032-33874-7_13#Abs1) · [Publication details and BibTeX](/research) · [SPECTRA case study](/projects/proj-spectra-eeg)
+[Full paper on Springer](https://link.springer.com/chapter/10.1007/978-3-032-33874-7_13) · [Publication details and BibTeX](/research) · [SPECTRA project](/projects/proj-spectra-eeg)

@@ -1,27 +1,33 @@
 ---
 title: "Come CARE decide le priorità in ROS2"
 date: "2026-09-29"
-category: "Robotica & Sistemi Real-Time"
+category: "Robotica"
 topic: "Robotics"
-tags: ["ROS2", "Robotica", "GoRules JDM", "PNRR Age-IT", "Real-Time", "Life Safety", "C++"]
-excerpt: "Tabelle decisionali e regole di priorità per risolvere eventi in conflitto in un robot assistivo."
+tags: ["ROS2", "Python", "GoRules JDM", "PNRR Age-IT"]
+excerpt: "Un esercizio è già in corso quando scatta un promemoria. Seguiamo la decisione dalle tabelle GoRules al coordinatore ROS2."
 author: "Crescenzo Esposito"
 ---
 
-## Quando un promemoria compete con attività di routine
+## Scade un promemoria mentre è in corso un esercizio
 
-Nel progetto PNRR Age-IT, il robot assistivo CARE doveva gestire promemoria per i farmaci insieme alle attività ordinarie. Un promemoria può essere confermato, rinviato o segnalato al caregiver dopo un timeout. Esplicitare questi esiti aiuta a ricostruire perché il robot ha selezionato o rinviato un’attività.
+Immaginiamo un ciclo in cui è già in corso un esercizio cognitivo e arriva il momento di un promemoria per un farmaco. È un esempio ricostruito dal codice del planner e dalle sue tabelle decisionali. La domanda è che cosa fa ciascun componente con la stessa fotografia dello stato.
 
-## Il mio contributo
+## Perché dividere la decisione in due?
 
-Ho sviluppato il motore decisionale e il Priority Resolver e ho scritto il pacchetto ROS2 `care_planner`. Ho trasferito le regole da un’implementazione basata su Rete alle tabelle GoRules JDM. Una tabella rende più semplice ispezionare condizioni e regole. Il resolver gestisce le priorità e lo stato dei timer fra un evento e l’altro.
+All’inizio abbiamo scelto le tabelle decisionali visuali per permettere al personale sanitario e ad altri operatori non tecnici di aggiornare regole e terapie senza modificare il codice ROS2. Per la demo abbiamo usato un insieme fisso di regole per i casi standard. Il planner recuperava terapie pianificate, misurazioni ed esercizi cognitivi dalle API del backend, preparava i dati di ingresso per Zen Engine e valutava lo stesso grafo `medicine9.json` su quei dati.
 
-## Flusso decisionale
+Il grafo GoRules stabilisce quali azioni sono applicabili. La tabella dei farmaci controlla l’orario, lo snooze e lo stato in attesa. Nella finestra del promemoria può produrre `REMIND_FARMACO`. Dopo la scadenza, una voce ancora in attesa può invece produrre `ESCALATE`. Indipendentemente, la tabella degli esercizi può restituire `WAIT` per un esercizio già in corso. Un nodo di espressione raccoglie gli esiti in liste distinte.
 
-1. Un evento ROS2 raggiunge il planner.
-2. La tabella valuta l’evento e seleziona l’azione applicabile.
-3. Il resolver applica le priorità e segue lo stato del promemoria, incluse scadenza ed escalation.
+Il planner Python su ROS2 coordina poi quegli esiti. Nel grafo si leggono insieme le condizioni. Nel planner si vede quando viene aggiornato lo stato e quale esito diventa un comando.
 
-L’integrazione ha permesso di provare le regole nel prototipo CARE. Per documentare la latenza servirebbe una traccia che misuri separatamente ricezione dell’evento ROS2, valutazione della regola e invio dell’azione.
+## Che cosa succede in quel ciclo?
 
-[Progetto CARE e architettura](/projects/proj-care-decision-planner) · [Borsa di ricerca](/experience)
+| Esito del grafo | Comportamento del planner |
+| --- | --- |
+| L’esercizio restituisce `WAIT` | Attende il feedback e sospende le attività opzionali. |
+| La tabella dei farmaci restituisce `REMIND_FARMACO` | Imposta lo snooze e include il promemoria nella lista di comandi inviata al coordinatore. |
+| Un farmaco ancora in attesa restituisce poi `ESCALATE` | Invia un comando indirizzato all’integrazione per il caregiver. |
+
+L’esercizio può restare in corso mentre il planner inoltra il promemoria. Il codice permette di seguire il comando fino alla pubblicazione sul coordinatore. La consegna alla persona richiederebbe una verifica separata.
+
+[Progetto CARE e architettura](/projects/proj-care-decision-planner)
