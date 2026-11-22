@@ -143,7 +143,7 @@ ESP32 gateway -- MQTT over mTLS --> Mosquitto
     technologies: ['C++', 'ESP32', 'PlatformIO', 'mbedTLS', 'OpenSSL', 'Mosquitto MQTT', 'Docker', 'Python', 'SQLite', 'Solidity'],
     githubUrl: 'https://github.com/kappino/IOT_SEC_CARE_Gateway',
     githubLabel: 'Gateway firmware and services',
-    date: '2025-06',
+    date: '2026-02',
     featured: true,
     metrics: [
       { label: 'Transport', value: 'MQTT over mTLS' },
