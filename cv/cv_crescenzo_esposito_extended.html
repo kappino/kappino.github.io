@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crescenzo Esposito | Junior Embedded &amp; IoT Security Engineer</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #182433;
+      --muted: #425266;
+      --accent: #154d69;
+      --line: #cdd7df;
+      font: 10.4pt/1.37 Arial, "Liberation Sans", sans-serif;
+      color: var(--ink);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-variant-ligatures: none !important;
+      font-feature-settings: "liga" 0 !important;
+    }
+
+    body {
+      margin: 0;
+      background: #eef2f5;
+    }
+
+    .resume {
+      max-width: 210mm;
+      margin: 1.5rem auto;
+      padding: 11mm 14mm;
+      background: white;
+      box-shadow: 0 4px 20px rgba(24, 36, 51, 0.08);
+    }
+
+    h1, h2, h3, p, ul { margin: 0; }
+
+    header {
+      padding-bottom: 0.45rem;
+      border-bottom: 1.5px solid var(--accent);
+    }
+
+    h1 {
+      font-size: 22pt;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+    }
+
+    .role {
+      margin-top: 0.18rem;
+      font-size: 11.2pt;
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .contacts {
+      margin-top: 0.34rem;
+      font-size: 9.2pt;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    .summary {
+      margin-top: 0.58rem;
+    }
+
+    section { margin-top: 0.72rem; }
+
+    h2 {
+      margin-bottom: 0.34rem;
+      padding-bottom: 0.12rem;
+      border-bottom: 1px solid var(--line);
+      color: var(--accent);
+      font-size: 10.6pt;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      break-after: avoid;
+    }
+
+    article { break-inside: avoid; }
+    article + article { margin-top: 0.52rem; }
+
+    h3 {
+      font-size: 10.2pt;
+      line-height: 1.24;
+    }
+
+    .meta {
+      margin-top: 0.05rem;
+      font-size: 9pt;
+      color: var(--muted);
+    }
+
+    ul {
+      margin-top: 0.18rem;
+      padding-left: 1.15rem;
+    }
+
+    li + li { margin-top: 0.14rem; }
+
+    .details { margin-top: 0.2rem; }
+    .skills + .skills { margin-top: 0.2rem; }
+    .publication-title { text-wrap: pretty; }
+
+    code {
+      font-family: Consolas, "Liberation Mono", monospace;
+      font-size: 9.2pt;
+    }
+
+    .gdpr {
+      margin-top: 0.9rem;
+      padding-top: 0.45rem;
+      border-top: 1px solid var(--line);
+      font-size: 7.9pt;
+      color: var(--muted);
+    }
+
+    a {
+      color: var(--accent);
+      text-underline-offset: 0.15em;
+    }
+
+    .continuation { display: none; }
+
+    @media screen and (max-width: 600px) {
+      .resume {
+        margin: 0;
+        padding: 1.3rem 1.15rem;
+        box-shadow: none;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 10.5mm 14mm 11.5mm;
+
+      @bottom-right {
+        content: counter(page) " / " counter(pages);
+        color: #425266;
+        font: 8.5pt Arial, "Liberation Sans", sans-serif;
+      }
+    }
+
+    @media print {
+      body { background: white; }
+      .resume {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+      }
+
+      .continuation {
+        display: block;
+        break-before: page;
+        border-bottom: 1px solid var(--accent);
+        padding-bottom: 0.3rem;
+        margin-bottom: 0.15rem;
+        color: var(--accent);
+        font-size: 10pt;
+        font-weight: bold;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="resume">
+    <header>
+      <h1>Crescenzo Esposito</h1>
+      <p class="role">Junior Embedded &amp; IoT Security Engineer</p>
+      <p class="contacts">
+        Napoli, Italia · <a href="mailto:crescenzo.esposito@outlook.it">crescenzo.esposito@outlook.it</a> ·
+        <a href="https://kappino.me/" target="_blank" rel="noopener noreferrer">kappino.me</a><br>
+        <a href="https://github.com/kappino" target="_blank" rel="noopener noreferrer">github.com/kappino</a> ·
+        <a href="https://www.linkedin.com/in/crescenzo-esposito" target="_blank" rel="noopener noreferrer">linkedin.com/in/crescenzo-esposito</a>
+      </p>
+    </header>
+
+    <p class="summary">Laureato in Informatica (108/110) e studente magistrale in Cybersecurity all’Università di Salerno.
+      Lavoro tra software di sistema, embedded e sicurezza: motori decisionali in ROS 2 per robotica assistiva, firmware C/C++
+      su STM32 ed ESP32 e hardening IoT con mTLS e HMAC. Primo autore su Springer (IAS-19) e vincitore della challenge
+      <em>Hack the Route</em> a The Big Hack 2026.</p>
+
+    <section aria-labelledby="esperienza">
+      <h2 id="esperienza">Esperienza professionale e di ricerca</h2>
+      <article>
+        <h3>Ricercatore e Sviluppatore Software (Borsa di ricerca) · <a href="https://kappino.me/projects/proj-care-decision-planner" target="_blank" rel="noopener noreferrer">Progetto CARE</a></h3>
+        <p class="meta">Università degli Studi di Napoli Parthenope · PNRR Age-IT, con Protom Robotics · 03/2025 – 10/2025</p>
+        <ul>
+          <li><strong>Ricerca, hardware e documentazione:</strong> selezione di dispositivi indossabili e sensori biomedici per un robot di assistenza domiciliare, documentazione tecnica e test del dimostratore.</li>
+          <li><strong>Planner decisionale da zero (ROS 2):</strong> progettato e sviluppato in Python il nodo <code>care_planner</code> integrato con le REST API del backend; realizzata una prima versione in <code>durable_rules</code>, poi trasferita su tabelle <strong>GoRules (JDM)</strong> per renderle consultabili in un editor visuale anche dal team clinico.</li>
+          <li><strong>Gestione priorità ed escalation:</strong> implementato e testato l’arbitraggio tra attività concorrenti (precedenza a farmaci e misurazioni sugli esercizi cognitivi), con rinvii (snooze), nuovi tentativi ed escalation al caregiver.</li>
+        </ul>
+        <p class="details"><strong>Attività di laboratorio (Robot Pepper):</strong> in parallelo, aggiornato il client su PC a Python 3.12 e ROS 2 (Wi-Fi / NAOqi), eliminando la dipendenza da Python 2.7 e l’avvio degli script ML come sottoprocessi.</p>
+      </article>
+    </section>
+
+    <section aria-labelledby="progetti">
+      <h2 id="progetti">Progetti tecnici</h2>
+      <article>
+        <h3><a href="https://kappino.me/projects/proj-mtls-iot-gateway" target="_blank" rel="noopener noreferrer">Gateway IoT sicuro per telemetria sanitaria</a> · ESP32</h3>
+        <p class="meta">Progetto universitario di IoT Security · Università degli Studi di Salerno · 02/2026</p>
+        <ul>
+          <li><strong>Analisi e PoC di attacco:</strong> esaminata la pipeline BLE/MQTT del prototipo CARE (priva di autenticazione e cifratura) e riprodotto in laboratorio uno spoofing con ESP32 malevolo capace di iniettare letture false.</li>
+          <li><strong>Firmware autenticato e mTLS:</strong> sviluppato su ESP32 (C++, PlatformIO, mbedTLS) il controllo dei payload BLE con <strong>HMAC-SHA256</strong>; configurato Mosquitto (Docker) con <strong>mTLS (TLS 1.3)</strong> e ACL su certificati <strong>X.509</strong>.</li>
+          <li><strong>Integrità dello storico:</strong> aggiunto un bridge Python con SQLite e ancoraggio dei digest su smart contract Solidity (rete locale Ganache) per rendere rilevabili alterazioni del database.</li>
+        </ul>
+      </article>
+      <article>
+        <h3><a href="https://kappino.me/projects/proj-munnisc-cestinno" target="_blank" rel="noopener noreferrer">SortEdge Bin</a> · Smistamento rifiuti con Firmware RTOS ed Edge AI</h3>
+        <p class="meta">NeaPolis Innovation Summer Campus · STMicroelectronics, Arzano (NA) · 09/2026</p>
+        <ul>
+          <li><strong>Firmware e team leadership:</strong> coordinato un team di 8 persone in 10 giorni per un prototipo di cestino smart; sviluppato su <strong>STM32G474RE</strong> (Cortex-M4) il firmware in <strong>C con ChibiOS</strong> per sensori, servomotori PWM, display SPI (uGFX) e inferenza CNN on-device (~13 ms).</li>
+          <li><strong>Protocollo seriale inter-scheda:</strong> implementato il trasferimento dei frame da <strong>ESP32-CAM</strong> a STM32 su UART con <strong>CRC-32</strong> e ritrasmissione dei pacchetti in errore, adattando il firmware ESP32.</li>
+        </ul>
+      </article>
+      <article>
+        <h3><a href="https://kappino.me/projects/proj-tnes" target="_blank" rel="noopener noreferrer">TNES</a> · 1° posto challenge Hack the Route (Hackathon)</h3>
+        <p class="meta">The Big Hack 2026 · Challenge Partner: Consorzio Clara · Team 0’PACKET · 11/2026</p>
+        <ul>
+          <li><strong>Gateway FastAPI per Cisco Modeling Labs:</strong> co-sviluppato il backend Python di un gioco simulatore 3D di networking e cybersecurity in <strong>Unreal Engine 5</strong> collegato a <strong>Cisco Modeling Labs (CML)</strong>, mappando via API le porte di gioco sulle interfacce del lab.</li>
+          <li><strong>Verifica della connettività nel lab Cisco:</strong> revisionata l’integrazione API tra Unreal e backend e scritti test lato backend su CML per verificare che disconnessioni e ricollegamenti dei cavi virtuali impattino sulla connettività reale del lab.</li>
+        </ul>
+      </article>
+    </section>
+
+    <p class="continuation" aria-hidden="true">Crescenzo Esposito — Curriculum Vitae</p>
+
+    <section aria-labelledby="formazione">
+      <h2 id="formazione">Istruzione e formazione</h2>
+      <article>
+        <h3>Laurea Magistrale in Informatica (LM-18) · Curriculum Cybersecurity</h3>
+        <p class="meta">Università degli Studi di Salerno, Fisciano (SA) · 02/2025 – In corso (conclusione prevista nel 2027)</p>
+        <p class="details">Corsi principali: IoT Security, Sicurezza delle Reti, Crittografia Applicata, Malware Analysis, Sistemi Distribuiti.</p>
+      </article>
+      <article>
+        <h3>Laurea Triennale in Informatica (L-31) · 108/110</h3>
+        <p class="meta">Università degli Studi di Napoli Parthenope · 09/2020 – 02/2025</p>
+        <p class="details">Esami di rilievo: Architettura dei Calcolatori (30L), Ingegneria del Software (30L), Algoritmi e Strutture Dati (30), Calcolo Parallelo e Distribuito (30). Tesi sperimentale con la prof.ssa Mariacarla Staffa sull’analisi di segnali EEG da dispositivi indossabili, da cui è nato il paper a IAS-19.</p>
+      </article>
+      <article>
+        <h3>iOS Foundation Essentials &amp; Advanced</h3>
+        <p class="meta">Apple Developer Academy Network &amp; Università Parthenope · 2022–2023</p>
+        <p class="details">Sviluppo nativo iOS e watchOS (Swift, SwiftUI). Realizzato in team <a href="https://kappino.me/projects/proj-virtual-pong" target="_blank" rel="noopener noreferrer">Virtual Pong</a>, prototipo che trasforma l’Apple Watch in un controller per multiplayer locale su iPhone classificando i gesti on-device con CoreMotion e Core ML; vincitore del <strong>Best App Award «Alfredo Petrosino»</strong>.</p>
+      </article>
+    </section>
+
+    <section aria-labelledby="pubblicazioni">
+      <h2 id="pubblicazioni">Pubblicazioni scientifiche</h2>
+      <article>
+        <h3><a href="https://kappino.me/projects/proj-spectra-eeg" target="_blank" rel="noopener noreferrer">SPECTRA</a> · Primo autore a IAS-19 · Finalista Best Student Paper Award</h3>
+        <p class="meta details publication-title"><cite>Emotion Recognition by EEG and Physiological Data in Patients with Schizophrenia: A Study with Wearable Devices</cite></p>
+        <ul>
+          <li><strong>Signal processing e acquisizione:</strong> analisi di segnali EEG wireless a 14 canali raccolti su 21 partecipanti (con il reparto di Psichiatria della Federico II). Confrontate tre pipeline di pulizia in <strong>MATLAB / EEGLAB</strong> (PICARD-ICA) ed estratte in <strong>Python</strong> feature spettrali (PSD e asimmetria frontale) su bande alfa e beta.</li>
+          <li><strong>Classificazione supervisionata:</strong> confrontati classificatori (MLP, Random Forest, SVM, KNN) in <strong>scikit-learn</strong>, fino al 95% di accuratezza nella distinzione dei gruppi clinici (studio esplorativo su campione ridotto).</li>
+        </ul>
+        <p class="meta details">Conferenza IAS-19, Genova 2025 · Springer LNNS (09/2026) · DOI
+          <a href="https://doi.org/10.1007/978-3-032-33874-7_13" target="_blank" rel="noopener noreferrer" style="white-space: nowrap;">10.1007/978-3-032-33874-7_13</a></p>
+      </article>
+    </section>
+
+    <section aria-labelledby="altre-esperienze">
+      <h2 id="altre-esperienze">Altre esperienze</h2>
+      <article>
+        <h3>Servizio Civile Universale · Front office e supporto IT</h3>
+        <p class="meta">Comune di Casamicciola Terme (NA) · 07/2021 – 07/2022</p>
+        <p class="details">Front office e assistenza al pubblico anche in lingua inglese; supporto tecnico al personale comunale nella risoluzione di problemi su postazioni d’ufficio e rete locale.</p>
+      </article>
+    </section>
+
+    <section aria-labelledby="competenze">
+      <h2 id="competenze">Competenze tecniche e lingue</h2>
+      <p class="skills"><strong>Firmware e robotica:</strong> C, C++, Python, STM32, ESP32, RTOS (ChibiOS), PlatformIO, UART, SPI, PWM, ROS 2</p>
+      <p class="skills"><strong>Sicurezza e reti:</strong> BLE, MQTT, Mosquitto, mTLS, PKI X.509, ACL, HMAC-SHA256, TCP/IP, Cisco CML, Solidity</p>
+      <p class="skills"><strong>Sviluppo e dati:</strong> Git, Linux, Docker, FastAPI, REST API, SQLite, MATLAB, EEGLAB, scikit-learn, Swift (base)</p>
+      <p class="skills"><strong>Homelab e infrastruttura:</strong> gestione di un ambiente personale su Proxmox VE con container LXC e VM Linux per test di segmentazione VLAN, reverse proxy, certificati TLS e deploy containerizzati.</p>
+      <p class="skills"><strong>Lingue:</strong> Italiano madrelingua · Inglese B2 (QCER)</p>
+    </section>
+
+    <p class="gdpr">Autorizzo il trattamento dei dati personali presenti nel curriculum vitae ai sensi del Regolamento (UE) 2016/679 (GDPR) e del D.Lgs. 196/2003.</p>
+  </main>
+</body>
+</html>
