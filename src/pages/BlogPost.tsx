@@ -8,7 +8,7 @@ import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { BlogLanguageSwitcher } from '@/components/common/BlogLanguageSwitcher';
 import { CodeBlockWithCopy } from '@/components/common/CodeBlockWithCopy';
-import { CareDecisionFigure, FlowFigure, GatewayChecksFigure, SpectraCleaningFigure, SpectraCohortFigure, SpectraResultsFigure, TranscriptComparisonFigure } from '@/components/common/EvidenceFigure';
+import { CareDecisionFigure, FlowFigure, GatewayChecksFigure, HomelabGpuOpsFigure, HomelabTopologyFigure, SpectraCleaningFigure, SpectraCohortFigure, SpectraResultsFigure, TranscriptComparisonFigure } from '@/components/common/EvidenceFigure';
 import { ReadingProgressBar } from '@/components/common/ReadingProgressBar';
 import { personalInfo } from '@/data/personal';
 import { projects } from '@/data/projects';
@@ -204,6 +204,12 @@ export default function BlogPostView() {
         <div className="min-w-0">
           <div className="max-w-[72ch]">
             {flow && <FlowFigure flow={flow} />}
+            {slug === 'proxmox-homelab-architecture' && (
+              <>
+                <HomelabTopologyFigure italian={italian} />
+                <HomelabGpuOpsFigure italian={italian} />
+              </>
+            )}
             {slug === 'deterministic-life-safety-arbitration-ros2-gorules' && <CareDecisionFigure italian={italian} />}
             {slug === 'zero-trust-mtls-constrained-iot-esp32' && <GatewayChecksFigure italian={italian} />}
             {slug === 'ansi-scraping-vs-structured-jsonl' && <TranscriptComparisonFigure italian={italian} />}

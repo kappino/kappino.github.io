@@ -8,16 +8,18 @@ import { useBlogLanguage } from '@/utils/useBlogLanguage';
 
 const topics = [
   { id: 'all', en: 'All', it: 'Tutti' },
+  { id: 'Infrastructure', en: 'Homelab & Infra', it: 'Homelab & Infra' },
   { id: 'Security', en: 'Security', it: 'Sicurezza' },
   { id: 'Robotics', en: 'Robotics', it: 'Robotica' },
   { id: 'Biomedical', en: 'Biomedical ML', it: 'ML biomedico' },
   { id: 'Systems', en: 'Systems', it: 'Sistemi' },
 ];
 
-const leadSlug = 'eeg-emotion-recognition-schizophrenia-ias19';
+const leadSlug = 'proxmox-homelab-architecture';
 const recommendedSlugs = [
-  'deterministic-life-safety-arbitration-ros2-gorules',
   'zero-trust-mtls-constrained-iot-esp32',
+  'deterministic-life-safety-arbitration-ros2-gorules',
+  'eeg-emotion-recognition-schizophrenia-ias19',
   'ansi-scraping-vs-structured-jsonl',
 ];
 
@@ -34,7 +36,7 @@ export default function Blog() {
   const lead = posts?.find((post) => post.slug === leadSlug);
   const recommended = recommendedSlugs
     .map((slug) => posts?.find((post) => post.slug === slug))
-    .filter((post) => post !== undefined);
+    .filter((post): post is BlogPost => post !== undefined);
   const postPath = (slug: string) => '/blog/' + slug + '?lang=' + language;
   const matches = posts?.filter((post) => {
     const topic = activeTopic.toLowerCase();
@@ -69,10 +71,18 @@ export default function Blog() {
       <header className="mb-6 flex flex-wrap items-start justify-between gap-5 sm:mb-8">
         <div>
           <h1 className="editorial-title">Blog</h1>
-          <p className="editorial-intro">{italian ? 'Note su sicurezza embedded, robotica e software di sistema.' : 'Notes on embedded security, robotics and systems software.'}</p>
+          <p className="editorial-intro">
+            {italian
+              ? 'Appunti di ingegneria su infrastrutture self-hosted, sicurezza IoT, robotica ROS 2 e sistemi reali.'
+              : 'Engineering deep dives on self-hosted infrastructure, IoT security, ROS 2 robotics, and systems trade-offs.'}
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-4">
-          {lead && <a href="#article-index" className="editorial-link min-h-10">{italian ? 'Tutti gli articoli' : 'Browse all posts'} <ArrowDown size={16} aria-hidden="true" /></a>}
+          {lead && (
+            <a href="#article-index" className="editorial-link min-h-10">
+              {italian ? 'Tutti gli articoli' : 'Browse all posts'} <ArrowDown size={16} aria-hidden="true" />
+            </a>
+          )}
           <BlogLanguageSwitcher language={language} onChange={setLanguage} />
         </div>
       </header>
@@ -81,22 +91,36 @@ export default function Blog() {
         <section aria-label={italian ? 'Letture in evidenza' : 'Featured reading'} className="mb-10 space-y-4 sm:mb-14">
           <article className="grid items-center gap-6 rounded-2xl border border-sky-300/25 bg-zinc-950/95 p-5 sm:p-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-10">
             <div className="min-w-0">
-              <p className="editorial-label mb-3">SPECTRA · IAS-19</p>
+              <p className="editorial-label mb-3">
+                {italian ? 'Case Study · Homelab Proxmox VE 9.1' : 'Deep Dive · Proxmox VE 9.1 Homelab'}
+              </p>
               <h2 className="max-w-[23ch] text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl">{lead.title}</h2>
               <p className="mt-4 max-w-[56ch] text-sm leading-relaxed text-zinc-300 sm:text-base">{lead.excerpt}</p>
               <Link to={postPath(lead.slug)} className="editorial-button editorial-button-primary mt-6">
-                {italian ? 'Leggi il metodo dello studio' : 'Read how the study worked'} <ArrowRight size={16} className="shrink-0" aria-hidden="true" />
+                {italian ? 'Esplora architettura e diagrammi' : 'Read the architecture & diagrams'} <ArrowRight size={16} className="shrink-0" aria-hidden="true" />
               </Link>
             </div>
             <div className="min-w-0 rounded-xl border border-sky-300/15 bg-sky-950/25 p-4 sm:p-5">
-              <p className="editorial-label mb-3">{italian ? 'Il percorso del segnale' : 'From signal to result'}</p>
+              <p className="editorial-label mb-3">{italian ? 'Dentro i 16 GB di RAM' : 'Inside the 16 GB RAM budget'}</p>
               <ol className="divide-y divide-sky-300/15 font-mono text-sm text-sky-100">
                 {(italian
-                  ? ['Registrazioni EEG indossabile', 'Preprocessing in MATLAB', 'Estrazione delle feature in Python']
-                  : ['Wearable EEG recordings', 'Preprocessing in MATLAB', 'Feature extraction in Python']
+                  ? [
+                      'vmbr0 / vmbr1 · Tailscale + Cloudflare Tunnels',
+                      'Splunk SIEM · Uptime Kuma · Backup zstd alle 03:00',
+                      'GTX 1070 condivisa · Immich CUDA, Ollama & Whisper',
+                      'Aegis Core & Agentic SRE con snapshot preventivi',
+                    ]
+                  : [
+                      'vmbr0 / vmbr1 · Tailscale + Cloudflare Tunnels',
+                      'Splunk SIEM · Uptime Kuma · Daily 03:00 zstd backups',
+                      'Shared GTX 1070 · Immich CUDA, Ollama & Whisper',
+                      'Aegis Core & Agentic SRE with preventive snapshots',
+                    ]
                 ).map((step) => <li key={step} className="py-2.5 first:pt-0 last:pb-0">{step}</li>)}
               </ol>
-              <p className="mt-4 text-sm text-zinc-400">{italian ? 'Approfondimento del lavoro pubblicato su Springer.' : 'Companion note to the published Springer paper.'}</p>
+              <p className="mt-4 text-xs text-zinc-400">
+                {italian ? '12 LXC + 2 VM KVM su laptop ASUS riciclato con batteria usata come UPS.' : '12 LXC + 2 KVM VMs on a recycled ASUS laptop with battery-as-UPS limiting.'}
+              </p>
             </div>
           </article>
           {recommended.length > 0 && (

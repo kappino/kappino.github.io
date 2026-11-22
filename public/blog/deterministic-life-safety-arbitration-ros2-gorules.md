@@ -1,35 +1,57 @@
 ---
-title: "How CARE prioritizes decisions in ROS2"
-date: "2026-09-29"
-category: "Robotics"
+title: "How CARE Prioritizes Competing Actions in ROS 2"
+date: "2025-10-15"
+category: "Robotics & Decision Systems"
 topic: "Robotics"
-tags: ["ROS2", "Python", "GoRules JDM", "PNRR Age-IT"]
-excerpt: "A reminder comes due during a cognitive exercise. Follow the decision from GoRules tables to the ROS2 coordinator."
+tags: ["ROS 2", "Python", "GoRules JDM", "durable_rules", "PNRR Age-IT"]
+excerpt: "From building the care_planner node from scratch in durable_rules to visual GoRules JDM tables: how an assistive robot arbitrates medication reminders, cognitive exercises, and caregiver escalation."
 author: "Crescenzo Esposito"
 ---
 
-## A medication reminder arrives during an exercise
+## When a medication reminder collides with an active exercise
 
-Consider a cycle in which a cognitive exercise is already running and a scheduled medication reminder becomes due. This is a walkthrough reconstructed from the planner and its decision tables. The useful question is what each part of the system does with the same snapshot of state.
+Imagine a home-assistance robot helping an older adult with a tablet-based cognitive exercise when a scheduled medication reminder comes due. Both activities compete for the same person's attention — and if the reminder is repeatedly ignored, a caregiver needs to be notified.
 
-## Why split the decision in two?
+During my research fellowship on **Project CARE (PNRR Age-IT, with Protom Robotics)** at the University of Naples Parthenope, I selected biomedical wearables, documented and tested the demonstrator, and designed and built the Python ROS 2 **`care_planner`** node from scratch to solve this exact arbitration problem.
 
-The first implementation used `durable_rules`. Moving to GoRules decision tables made the conditions and outputs visible in the graph.
+## Why I moved from `durable_rules` to GoRules (JDM)
 
-We originally chose visual decision tables so clinicians and other nontechnical staff could update rules and therapy settings without editing the ROS2 code. The demo used a fixed set of rules for standard scenarios. The planner fetched scheduled therapies, measurements and cognitive exercises from the backend APIs, shaped them into the input for Zen Engine and evaluated the same `medicine9.json` graph against that data.
+My first working implementation of `care_planner` ran on **`durable_rules`** (a Rete forward-chaining engine embedded in Python). Technically it worked, but every policy tweak required editing Python rule code — creating an opaque wall between developers and the clinicians designing care protocols.
 
-The GoRules graph evaluates eligibility. Its medication table checks the schedule, snooze offset and pending state. In the reminder window it can emit `REMIND_FARMACO`. Once the deadline passes, a still-pending entry can instead yield `ESCALATE`. The exercise table can independently return `WAIT` for an exercise already in progress. An expression node gathers the outputs into separate lists.
+To make policies inspectable and maintainable by non-technical stakeholders, I transferred the rule logic into **GoRules JSON Decision Model (JDM)** tables evaluated via Zen Engine. For the demonstrator, the planner pulls live therapy schedules, biometric measurement plans, and active exercise state from the backend REST APIs, formats the snapshot, and evaluates the `medicine9.json` decision graph on every cycle.
 
-The Python ROS2 planner then coordinates those outputs. Keeping eligibility in the graph makes the rules visible together. Keeping state changes and message publication in the planner makes it possible to trace which result became a command.
+## Splitting eligibility from orchestration
 
-## What happens in that cycle?
+A clean architectural boundary makes the system far easier to debug and audit:
 
-| Output of the graph | What the planner does |
-| --- | --- |
-| Exercise returns `WAIT` | Waits for feedback and holds optional activities. |
-| Medication returns `REMIND_FARMACO` | Sets a snooze offset and includes the reminder in the command list sent to the coordinator. |
-| A still-pending medication later returns `ESCALATE` | Sends a command addressed to the caregiver integration. |
+1. **GoRules JDM decides *eligibility*:**
+   - The medication table checks schedule windows, snooze offsets, and pending flags — emitting `REMIND_FARMACO` inside the reminder window or `ESCALATE` once the deadline passes with no confirmation.
+   - Independently, the exercise table returns `WAIT` if a cognitive session is already running.
+   - An expression node collects branch outputs into structured lists.
+2. **The Python ROS 2 `care_planner` handles *state & arbitration*:**
+   - Applies priority precedence so medication reminders and health measurements override optional exercises.
+   - Updates snooze offsets and retry counters cleanly in Python, then publishes explicit commands to the robot coordinator on the **`decision_output`** ROS 2 topic.
 
-The exercise can remain in progress while the planner publishes the reminder request on `decision_output` for the coordinator. Delivery to a person would need to be checked separately.
+```mermaid
+flowchart LR
+  API["CARE Backend REST APIs (Therapies · Readings · Exercise State)"] --> NODE["ROS 2 care_planner (Python)"]
+  NODE --> JDM["GoRules JDM (medicine9.json · Zen Engine)"]
+  JDM -->|"WAIT"| HOLD["Hold Optional Exercises"]
+  JDM -->|"REMIND_FARMACO"| REM["Set Snooze & Publish Priority Reminder"]
+  JDM -->|"ESCALATE"| ESC["Route Escalation to Caregiver"]
+  REM --> TOPIC["ROS 2 Topic: decision_output"]
+  ESC --> TOPIC
+  TOPIC --> COORD["Robot Coordinator"]
+```
 
-[CARE project and architecture](/projects/proj-care-decision-planner)
+## Walking through a single evaluation cycle
+
+| GoRules graph output | How `care_planner` responds |
+| :--- | :--- |
+| Exercise returns `WAIT` | Holds new optional activities and waits for session feedback. |
+| Medication returns `REMIND_FARMACO` | Updates the snooze offset and queues the reminder on `decision_output`. |
+| Unconfirmed medication past deadline returns `ESCALATE` | Emits an escalation command targeting the caregiver integration. |
+
+Keeping eligibility declarative inside GoRules lets clinicians read every threshold in one visual table, while keeping state transitions and ROS 2 publication in Python makes every published robot command deterministic and traceable.
+
+[CARE project case study & architecture](/projects/proj-care-decision-planner)

@@ -1,7 +1,20 @@
 import { Fragment, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, ChevronDown } from 'lucide-react';
-import { CareDecisionFigure, FlowFigure, GatewayChecksFigure, SourceFigure, SpectraCleaningFigure, SpectraCohortFigure, SpectraResultsFigure, UniReviewsIndexFigure } from '@/components/common/EvidenceFigure';
+import {
+  CareDecisionFigure,
+  FlowFigure,
+  GatewayChecksFigure,
+  HomelabGpuOpsFigure,
+  HomelabTopologyFigure,
+  SortEdgeArchitectureFigure,
+  SourceFigure,
+  SpectraCleaningFigure,
+  SpectraCohortFigure,
+  SpectraResultsFigure,
+  TnesArchitectureFigure,
+  UniReviewsIndexFigure,
+} from '@/components/common/EvidenceFigure';
 import { GithubIcon } from '@/components/common/Icons';
 import { MisuseCaseDiagram } from '@/components/interactive/MisuseCaseDiagram';
 import { VerificationTerminal } from '@/components/interactive/VerificationTerminal';
@@ -58,7 +71,11 @@ export default function ProjectDetail() {
                 <GithubIcon className="h-4 w-4" /> {project.githubLabel ?? 'Source code'}
               </a>
             )}
-            {project.clientUrl && <a href={project.clientUrl} className="editorial-button" target="_blank" rel="noreferrer">Unreal client <ArrowUpRight size={16} aria-hidden="true" /></a>}
+            {project.clientUrl && (
+              <a href={project.clientUrl} className="editorial-button" target="_blank" rel="noreferrer">
+                Unreal client <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+            )}
             {project.demoUrl && (
               <a href={project.demoUrl} className="editorial-button" target="_blank" rel="noreferrer">
                 {project.id === 'proj-tnes' ? 'Watch demo' : 'Demo'} <ArrowUpRight size={16} aria-hidden="true" />
@@ -87,7 +104,7 @@ export default function ProjectDetail() {
           </section>
           {project.threatModelOrChallenge && (
             <section aria-labelledby="decision-heading">
-              <h2 id="decision-heading" className="text-2xl font-semibold tracking-tight text-white">Design decision</h2>
+              <h2 id="decision-heading" className="text-2xl font-semibold tracking-tight text-white">Design decision &amp; trade-offs</h2>
               <p className="mt-3 max-w-[68ch] text-base leading-relaxed text-zinc-300">{project.threatModelOrChallenge}</p>
             </section>
           )}
@@ -116,8 +133,16 @@ export default function ProjectDetail() {
       <section className="mt-12 min-w-0 border-t border-zinc-800 pt-8" aria-labelledby="architecture-heading">
         <h2 id="architecture-heading" className="editorial-section-title">Architecture</h2>
         {flow && <FlowFigure flow={flow} />}
+        {project.id === 'proj-proxmox-homelab' && (
+          <>
+            <HomelabTopologyFigure />
+            <HomelabGpuOpsFigure />
+          </>
+        )}
         {project.id === 'proj-care-decision-planner' && <CareDecisionFigure />}
         {project.id === 'proj-mtls-iot-gateway' && <GatewayChecksFigure />}
+        {project.id === 'proj-munnisc-cestinno' && <SortEdgeArchitectureFigure />}
+        {project.id === 'proj-tnes' && <TnesArchitectureFigure />}
         {project.id === 'proj-spectra-eeg' && <SpectraCleaningFigure />}
         {project.id === 'proj-care-decision-planner' && (
           <SourceFigure file="care-planner-design.png" alt="CARE design diagram showing inputs, the decision core and robot outputs" caption="CARE design diagram. The decision core connects the proposed inputs to robot actions, alerts, and monitoring interfaces." />
@@ -170,7 +195,7 @@ export default function ProjectDetail() {
         <section className="mt-8 border-t border-zinc-800 pt-5" aria-labelledby="project-references">
           <h2 id="project-references" className="mb-3 text-lg font-semibold text-white">Sources &amp; evidence</h2>
           <ul className="space-y-2">
-            {project.referenceLinks.map(({ label, href }) => <li key={href}><a className="editorial-link" href={href}>{label} <ArrowUpRight size={15} aria-hidden="true" /></a></li>)}
+            {project.referenceLinks.map(({ label, href }) => <li key={href}><a className="editorial-link" href={href} target="_blank" rel="noreferrer">{label} <ArrowUpRight size={15} aria-hidden="true" /></a></li>)}
           </ul>
         </section>
       )}

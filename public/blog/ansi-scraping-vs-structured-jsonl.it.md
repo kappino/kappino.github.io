@@ -1,23 +1,31 @@
 ---
 title: "Perché sono passato dalle schermate del terminale a JSONL"
 date: "2026-09-28"
-category: "Sistemi"
+category: "Ingegneria dei sistemi"
 topic: "Systems"
-tags: ["Python", "AsyncIO", "JSONL", "Terminale"]
-excerpt: "Cosa va ricostruito da una schermata del terminale e cosa è già esplicito negli eventi della trascrizione."
+tags: ["Python", "AsyncIO", "JSONL", "Terminale", "tmux"]
+excerpt: "Una schermata tmux è una proiezione visiva, non un flusso di eventi. Perché leggere la trascrizione JSONL append-only ha sostituito lo scraping ANSI in agy-telegram."
 author: "Crescenzo Esposito"
 ---
 
-## La schermata dipende da ciò che è visibile
+## Una cattura del terminale è una vista, non un log strutturato
 
-Sono partito dall’output in tmux perché era già disponibile. Per le risposte brevi funzionava. Su un output lungo le righe potevano andare a capo in base alla larghezza del pannello e un aggiornamento poteva sovrascrivere una riga precedente. Il bridge riceveva lo stato visibile in un dato momento e doveva dedurre cosa fosse accaduto.
+Nella prima versione di `agy-telegram`, leggere le righe visibili da `tmux` sembrava la strada più rapida: il testo era già lì. Con risposte brevi funzionava.
 
-## Seguire la trascrizione
+Appena sono arrivate sessioni reali più lunghe, però, il modello ha mostrato tutti i suoi limiti:
+- **A capo dipendente dalla larghezza:** ridimensionare il pannello `tmux` spezzava righe di codice e tabelle in punti arbitrari.
+- **Sovrascritture ANSI:** barre di avanzamento e spinner riscrivevano righe precedenti prima che il bridge potesse interpretarle.
+- **Fine turno indovinata a euristiche:** fotografare ciò che è visibile in un istante costringeva il bridge a *dedurre* se l'agente stesse ancora lavorando o avesse concluso.
 
-L’agente scrive anche una trascrizione JSONL. Il bridge legge i nuovi record durante il turno e usa i loro campi per distinguere gli aggiornamenti intermedi dalla risposta finale. Così può aggiornare un solo messaggio di stato e formattare il risultato senza ricomporre le colonne del terminale.
+## Seguire la trascrizione JSONL
 
-## Il formato è una dipendenza
+L'agente scrive già una **trascrizione JSONL append-only** in cui ogni riga è un evento JSON autonomo. Spostare il watcher sui nuovi record JSONL ha eliminato ogni ambiguità:
 
-Il watcher dipende da dove l’applicazione scrive la trascrizione e dai campi che usa. Un cambio di formato può quindi richiedere di aggiornare il watcher anche quando il terminale continua a funzionare. Il terminale resta utile per ispezionare direttamente la sessione.
+1. **Testo integro:** il contenuto arriva come campo stringa pulito, indipendente dalle colonne del terminale.
+2. **Tipi di evento espliciti:** chiamate ai tool, stati intermedi e risposta finale sono già separati — permettendo al bot Telegram di modificare un solo messaggio di stato durante il turno e pubblicare la risposta finale appena completata.
 
-[Progetto del bridge Telegram](/projects/proj-agy-telegram)
+## Il compromesso reale: dipendenza dallo schema
+
+Passare a JSONL scambia la *fragilità visiva* con l'**accoppiamento allo schema**. Il watcher dipende dal percorso del file e dai nomi dei campi scritti dall'agente: se il formato cambia, va aggiornato il parser anche se il terminale continua a funzionare. È comunque un compromesso nettamente migliore: uno schema strutturato segnala subito l'errore, mentre lo scraping ANSI degrada in silenzio. E `tmux` continua a fare benissimo il suo lavoro di interfaccia live quando torni alla scrivania.
+
+[Scheda progetto agy-telegram](/projects/proj-agy-telegram) · [Controllare una sessione di coding da Telegram](/blog/agy-telegram-mobile-cockpit)

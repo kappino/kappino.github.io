@@ -40,7 +40,16 @@
 
   <!-- Featured Engineering Projects -->
   <url>
+    <loc>https://kappino.me/projects/proj-proxmox-homelab</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://kappino.me/projects/proj-tnes</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://kappino.me/projects/proj-agy-telegram</loc>
@@ -98,6 +107,12 @@
   </url>
 
   <!-- Technical Deep-Dive & Peer-Reviewed Research Articles -->
+  <url>
+    <loc>https://kappino.me/blog/proxmox-homelab-architecture</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
   <url>
     <loc>https://kappino.me/blog/unireviews-beyond-course-surveys</loc>
     <lastmod>2026-11-18</lastmod>

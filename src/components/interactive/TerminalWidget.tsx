@@ -9,25 +9,26 @@ interface CommandOutput {
 }
 
 const projectCommands = [
-  { command: 'open gateway', alias: 'gateway', path: '/projects/proj-mtls-iot-gateway', description: 'Follow a sensor reading from Bluetooth to the MQTT broker, and see where the ESP32 checks it.' },
-  { command: 'open tnes', alias: 'tns', path: '/projects/proj-tnes', description: 'Plug in a virtual cable in Unreal and see how Cisco Modeling Labs checks the connection.', award: 'Winner · Hack the Route, The Big Hack 2026' },
+  { command: 'open gateway', alias: 'gateway', path: '/projects/proj-mtls-iot-gateway', description: 'Follow a BLE reading from ESP32 HMAC-SHA256 verification to Mosquitto mTLS and local Solidity digest audit.' },
+  { command: 'open homelab', alias: 'homelab', path: '/projects/proj-proxmox-homelab', description: 'Explore 12 LXC + 2 KVM VMs inside 16 GB RAM on Proxmox VE 9.1 with Splunk SIEM and shared GTX 1070 CUDA.' },
+  { command: 'open tnes', alias: 'tns', path: '/projects/proj-tnes', description: 'Plug in a virtual cable in Unreal Engine 5 and watch Cisco Modeling Labs verify real network reachability.', award: '1st Place · Hack the Route · The Big Hack 2026' },
 ] as const;
 
 const COMMAND_OUTPUTS: Record<string, React.ReactNode> = {
   status: <p>This demo shows sample responses. Live status checks the portfolio console API and its content indexes.</p>,
-  agy: <p>Outbound HTTPS long polling, no inbound port required. Prompts go into a local tmux buffer and updates come from the transcript.</p>,
-  mtls: <p>In the gateway prototype, MQTT topic permissions are tied to the client certificate. The ESP32 checks the payload HMAC before forwarding.</p>,
-  ros2: <p>In a reconstructed CARE cycle, an exercise can wait for feedback while the planner publishes a medication reminder request to the coordinator.</p>,
-  spectra: <p>The IAS-19 abstract reports up to 95% group classification accuracy. The exploratory study included 21 participants.</p>,
-  homelab: <p>Portfolio testbed examples include Proxmox VE and STM32 and ESP32 development boards.</p>,
+  agy: <p>Outbound HTTPS long polling, no inbound port required. Prompts go into a local tmux buffer and updates stream from structured JSONL transcripts.</p>,
+  mtls: <p>ESP32 firmware (C++/mbedTLS) verifies BLE HMAC-SHA256 before forwarding. Mosquitto (Docker) enforces mTLS (TLS 1.3) and X.509 topic ACLs.</p>,
+  ros2: <p>In CARE’s care_planner (durable_rules → GoRules JDM), medication reminders override cognitive exercises and escalate to caregivers if missed.</p>,
+  spectra: <p>First-author Springer LNNS paper (IAS-19 Finalist): 14-ch wearable EEG across 21 participants, up to 95% accuracy reported in the abstract.</p>,
+  homelab: <p>Recycled ASUS laptop running Proxmox VE 9.1 (Linux 6.17): 12 LXC + 2 KVM VMs in 16 GB RAM, vmbr0/vmbr1 segmentation, Splunk SIEM, shared GTX 1070 CUDA (Immich, Ollama, Whisper), and daily 03:00 zstd snapshots.</p>,
   cv: <a className="text-sky-300 underline" href="/crescenzo_esposito_cv.pdf">Open CV PDF</a>,
   bio: (
     <div className="space-y-1.5 text-zinc-300 text-xs font-mono">
       <p><span className="text-sky-400">[EMAIL]</span> crescenzo.esposito@outlook.it</p>
       <p><span className="text-zinc-500">[LOC]</span>   Naples, Italy · Remote &amp; Hybrid</p>
-      <p><span className="text-zinc-500">[ACAD]</span>  M.Sc. Cybersecurity @ UNISA (2025-2027) · B.Sc. Parthenope (2020-2025)</p>
+      <p><span className="text-zinc-500">[ACAD]</span>  M.Sc. Cybersecurity @ UNISA (2025–2027) · B.Sc. Parthenope (108/110)</p>
       <p className="text-zinc-400 text-[11px] mt-1.5 pt-1 border-t border-zinc-900">
-        Skills: Cybersecurity, C++, Python · Certs: iOS Essentials, iOS Advanced
+        Focus: STM32/ESP32 Firmware, IoT Security, ROS 2, Proxmox Infrastructure
       </p>
     </div>
   ),

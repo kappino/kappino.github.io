@@ -1,23 +1,32 @@
 ---
-title: "Che cosa distingueva l’EEG indossabile in SPECTRA"
-date: "2026-09-30"
-category: "Biomedical ML & Robotics"
+title: "Cosa riesce a distinguere l’EEG indossabile in SPECTRA"
+date: "2026-09-02"
+category: "ML biomedico e signal processing"
 topic: "Biomedical"
-tags: ["EEG", "Machine Learning", "Elaborazione dei segnali", "PICARD-ICA", "Schizofrenia", "IAS-19"]
-excerpt: "Perché ho confrontato tre pipeline di pulizia EEG e cosa è cambiato quando abbiamo chiesto al modello di distinguere le clip."
+tags: ["EEG", "Machine Learning", "Signal Processing", "PICARD-ICA", "Schizofrenia", "IAS-19", "Springer LNNS"]
+excerpt: "Dal segnale grezzo EEG a 14 canali al paper da primo autore su Springer LNNS: perché la pulizia degli artefatti viene prima dei modelli e dove stanno i limiti metodologici su 21 partecipanti."
 author: "Crescenzo Esposito"
 ---
 
-## Partire dal segnale
+## Partire dal segnale grezzo, non dal modello
 
-Per la tesi triennale ho lavorato su registrazioni EEG acquisite durante una baseline, un gioco di memoria e tre clip. Ho confrontato tre pipeline di preprocessing. Mettere fianco a fianco le tracce grezze e quelle pulite mi ha aiutato a vedere quanto un offset o un battito di ciglia potesse alterare il segnale prima ancora di calcolare una feature. Abbiamo allineato le registrazioni ai marker degli eventi per collegare ogni segmento alla fase sperimentale corrispondente.
+Un caschetto EEG wireless riduce drasticamente l'attrito nella ricerca clinica rispetto a una cuffia ospedaliera da 64 canali, ma produce tracce molto sensibili al rumore. Per la mia tesi triennale (relatrice Prof.ssa M. Staffa, in collaborazione con Psichiatria Federico II) abbiamo acquisito **EEG wireless a 14 canali (Emotiv EPOC X, 256 Hz)** su **21 partecipanti** durante una baseline di 30 secondi, un gioco di memoria e tre clip video emotive da due minuti.
 
-## Fare due domande diverse
+Prima di addestrare qualsiasi classificatore, ho confrontato **tre pipeline di preprocessing in MATLAB/EEGLAB** (segmentazione sui marker, filtro passa-banda 1–45 Hz e notch a 50 Hz, pulizia automatica, **PICARD-ICA** e **ICLabel**). Mettere a confronto le tracce grezze e pulite del canale F3 mostra chiaramente quanto un offset DC o un battito di ciglia possano dominare l'ampiezza del segnale rispetto all'attività corticale in microvolt.
 
-Abbiamo usato le feature EEG per classificare tre gruppi di partecipanti e, in un esperimento separato, tre clip. Nella validazione stratificata a cinque fold su 21 partecipanti, il miglior MLP ha raggiunto il 97,2% di accuratezza per i gruppi e l’84,6% per le clip. Il paper non specifica il raggruppamento dei fold per partecipante. Ogni clip aveva un’etichetta legata allo stimolo. I partecipanti hanno anche valutato la propria risposta, quindi riconoscere la clip e stimare l’emozione riferita sono due compiti distinti.
+## Due domande di classificazione distinte
 
-## Verificare cosa si generalizza
+Dal segnale pulito ho estratto in **Python** la **densità spettrale di potenza (Welch PSD)**, la potenza nelle bande alfa/beta e l'**asimmetria frontale** su finestre da 4 secondi con sovrapposizione del 50%, confrontando più classificatori **scikit-learn** (MLP, Random Forest, SVM, k-NN, Decision Tree) su due compiti separati:
 
-Con 21 partecipanti e finestre EEG sovrapposte, conta come sono stati costruiti i fold. Il paper descrive una validazione stratificata a cinque fold e lascia aperto se tutte le finestre della stessa persona siano rimaste nello stesso fold. Per capire quanto il risultato si trasferisca a persone nuove, terrei fuori interi partecipanti e ripeterei selezione delle feature e tuning all’interno dei fold di addestramento.
+1. **Classificazione dei gruppi clinici** (7 controlli sani, 6 pazienti con schizofrenia responsiva al trattamento, 8 con schizofrenia resistente al trattamento).
+2. **Classificazione delle clip video** tra i tre stimoli emotivi proposti.
 
-[Paper su Springer](https://link.springer.com/chapter/10.1007/978-3-032-33874-7_13) · [Dettagli della pubblicazione e BibTeX](/research) · [Progetto SPECTRA](/projects/proj-spectra-eeg)
+Nelle tabelle 3 e 4 del paper IAS-19 il miglior MLP raggiunge il **97,2% sui gruppi** e l'**84,6% sulle clip** in validazione stratificata 5-fold, mentre l'abstract pubblicato riassume prudentemente i risultati fino al **95%**. Va inoltre distinta la domanda del secondo esperimento: riconoscere *quale clip fosse in riproduzione* misura la risposta allo stimolo, che non coincide automaticamente con l'emozione soggettiva riferita dal partecipante.
+
+## Il peso della validazione su un campione esplorativo
+
+Con **21 partecipanti** e finestre EEG sovrapposte, il modo in cui vengono costruiti i fold decide quanto un risultato sia generalizzabile. Il paper riporta una validazione stratificata 5-fold senza specificare se tutte le finestre di uno stesso soggetto siano rimaste confinate nello stesso fold.
+
+Il passo successivo per verificare la generalizzazione su pazienti mai visti è una **validazione subject-independent** (Leave-One-Subject-Out o GroupKFold), mantenendo normalizzazione, selezione delle feature e tuning rigorosamente dentro i fold di addestramento.
+
+[Paper pubblicato su Springer LNNS (DOI)](https://doi.org/10.1007/978-3-032-33874-7_13) · [Dettagli pubblicazione e BibTeX](/research) · [Scheda progetto SPECTRA](/projects/proj-spectra-eeg)

@@ -1,27 +1,60 @@
 ---
-title: "Where trust starts in CARE’s IoT gateway"
-date: "2026-09-28"
+title: "Where Trust Starts in CARE’s IoT Gateway"
+date: "2026-02-20"
 category: "Security & Embedded Systems"
 topic: "Security"
-tags: ["mTLS", "ESP32", "MQTT", "HMAC", "IoT Security"]
-excerpt: "What a lab demo taught us about trusting a sensor reading, an MQTT connection, and a stored record."
+tags: ["mTLS", "ESP32", "MQTT", "HMAC-SHA256", "X.509", "IoT Security"]
+excerpt: "After spoofing an unauthenticated BLE/MQTT healthcare pipeline with a rogue ESP32, I hardened three boundaries: edge HMAC-SHA256 verification, Mosquitto mTLS/X.509 ACLs, and local Solidity digest auditing."
 author: "Crescenzo Esposito"
 ---
 
-## A reading can look right
+## A forged reading can look completely plausible
 
-The original CARE gateway collected readings from BLE medical sensors and forwarded them over MQTT. In our lab demonstration, the original gateway accepted a reading from a device impersonating a known sensor. That result changed the question I wanted the prototype to answer. If a reading looks plausible and arrives under a familiar identity, what evidence does the system have about its source?
+The original CARE prototype collected biomedical readings from BLE sensors and forwarded them to a backend over plaintext MQTT. Sensors were matched only by configured addresses, and MQTT publishing carried neither TLS nor client credentials.
 
-## Move the check before forwarding
+In our lab test at the University of Salerno, a **rogue ESP32** impersonating a known sensor injected forged readings straight into the pipeline — and the gateway forwarded them without hesitation. That single demo reframed the entire engineering question: *if a reading looks numerically plausible and arrives under a familiar address, what cryptographic evidence does each layer actually hold?*
 
-I worked on the ESP32 firmware and the certificate-based MQTT setup. The firmware checks a message authentication code before forwarding a reading. That requires a programmable sender able to produce the expected format. This was a real design constraint for a system built around existing biomedical peripherals.
+## Boundary 1: Verify the BLE payload before it leaves the edge
 
-We also gave the gateway and the ingestion bridge distinct client certificates. Mosquitto uses those identities to enforce topic permissions. A gateway certificate establishes who opened the connection. The payload check is what gives the gateway evidence about the reading it receives.
+I wrote the ESP32 gateway firmware in **C++ (PlatformIO, mbedTLS)** to validate an **HMAC-SHA256** authentication tag on every incoming BLE payload *before* touching the MQTT client. Any payload with a missing or invalid tag is dropped immediately at the edge.
 
-## Keep a record that can be checked later
+This choice comes with an honest hardware trade-off: checking an HMAC requires a **programmable BLE sender** capable of signing payloads in the expected format. Many off-the-shelf clinical wearables do not allow custom firmware, so in a real hospital deployment this boundary either demands programmable sensors (such as Movesense MD) or pairing-level BLE security where custom signing is impossible.
 
-The prototype stores readings in SQLite and anchors digests in an EVM contract. An auditor can recompute a digest later and compare it with the recorded value. That check establishes whether a stored record still matches what was registered. Its value depends on the checks that ran before the record entered the system.
+## Boundary 2: Mutual TLS (TLS 1.3) and X.509 topic ACLs
 
-The EVM path adds transaction submission and confirmation to the prototype’s persistence workflow. I would keep that dependency if the audit needed a digest that could be checked independently of the application database.
+Authenticating the sensor payload still leaves the network hop exposed. To lock down broker access, I containerized **Mosquitto (Docker)** with **mTLS (TLS 1.3)** and issued distinct **X.509 client certificates** for the ESP32 gateway and the Python ingestion bridge.
 
-[Gateway architecture and implementation](/projects/proj-mtls-iot-gateway)
+Mosquitto maps each certificate's identity directly to **MQTT topic ACLs**:
+- The gateway certificate is allowed to publish *only* to its designated telemetry topics.
+- The ingestion bridge holds read-only subscription permissions on those topics.
+
+Notice why both layers matter: **mTLS proves which gateway opened the TCP connection**, whereas **edge HMAC proves the reading itself came from an authorized sender** rather than a nearby BLE spoofer.
+
+```mermaid
+sequenceDiagram
+  participant S as Programmable BLE Sensor
+  participant GW as ESP32 Gateway (C++ / mbedTLS)
+  participant MQ as Mosquitto Broker (Docker · TLS 1.3)
+  participant BR as Python Bridge & SQLite
+  participant SC as Solidity Contract (Local Ganache)
+
+  S->>GW: BLE Payload + HMAC-SHA256
+  alt Invalid or forged HMAC
+    GW--xGW: Drop packet at edge
+  else Valid HMAC-SHA256
+    GW->>MQ: MQTT Publish over mTLS (X.509 ACL check)
+    MQ->>BR: Deliver authenticated telemetry
+    BR->>BR: Persist raw reading in SQLite
+    BR->>SC: Anchor SHA-256 digest + criticality flag
+  end
+```
+
+## Boundary 3: Post-storage tamper detection (and its limits)
+
+Once the Python bridge persists a clinical reading in **SQLite**, it computes a **SHA-256 digest** and anchors that digest (alongside audit metadata, never raw clinical payloads) in a **Solidity smart contract on a local Ganache network**.
+
+Later, an auditor can recompute hashes from SQLite and compare them against the anchored digests to detect whether historical rows were altered. Keeping expectations grounded is essential here:
+- Digest anchoring **detects post-storage tampering**; it does *not* prevent forged data from entering the system if upstream checks fail.
+- Anchoring introduces transaction latency into persistence — worth keeping only when audit requirements demand an integrity reference independent of the application database.
+
+[Gateway architecture, code & lab demo](/projects/proj-mtls-iot-gateway)

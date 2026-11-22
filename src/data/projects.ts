@@ -2,6 +2,7 @@ import { Project } from '../types';
 
 export const PROJECT_CATEGORIES: Record<Project['category'], string> = {
   security: 'Security',
+  infrastructure: 'Homelab & Infra',
   robotics: 'Robotics',
   embedded: 'Embedded',
   research: 'Research',
@@ -10,367 +11,511 @@ export const PROJECT_CATEGORIES: Record<Project['category'], string> = {
 
 export const projects: Project[] = [
   {
-    id: 'proj-tnes',
-    title: 'TNES · Hack the Route',
-    category: 'systems',
-    tagline: 'A gateway between an Unreal Engine training game and Cisco Modeling Labs.',
-    contribution: 'Co-developed the FastAPI gateway integration with Cisco Modeling Labs and reviewed the API connections between Unreal and the lab.',
-    recognition: 'Winner · Hack the Route · The Big Hack 2026',
-    description: 'A networking and cybersecurity training prototype built by team 0’PACKET in Unreal Engine 5.',
-    problemStatement: 'When a player connected two ports in the 3D office, the game needed to tell whether the corresponding connection worked in the Cisco lab.',
-    threatModelOrChallenge: 'The gateway maps game identifiers to CML nodes and interfaces. Unreal distinguishes a local simulation response from a connection confirmed by the remote lab.',
-    architectureSpecs: [
-      'Unreal sends the selected devices and ports to the Python gateway over HTTPS.',
-      'FastAPI resolves the identifiers and uses the CML API to read lab topology and confirm the connection.',
-      'The gateway bridges console sessions to virtual devices and synchronizes lab startup with the selected scenario.',
-    ],
-    keyResults: [
-      'Team 0’PACKET won Challenge 04, Hack the Route, at The Big Hack 2026.',
-      { text: 'The backend walkthrough checks that connectivity in Cisco Modeling Labs fails when a workstation link is disconnected and recovers after reconnection. Its scope is the backend and lab path.', evidence: { label: 'CML connectivity check', href: 'https://github.com/kappino/cisco-cyber-office/blob/cf54f981e48b766e85fcd82ceb571b8b5a1e97e5/tests/cml/e2e_cml.py#L86-L98' } },
-    ],
-    technologies: ['Python', 'FastAPI', 'Cisco CML', 'Unreal Engine 5'],
-    githubUrl: 'https://github.com/kappino/cisco-cyber-office',
-    githubLabel: 'FastAPI / CML backend',
-    clientUrl: 'https://github.com/FeroneAntonio/clara-unreal',
-    walkthrough: {
-      title: 'From a click in Unreal to proof in CML',
-      steps: [
-        {
-          title: 'Map the selected port',
-          detail: 'Unreal checks that the office lab is ready and that the selected game port maps to a lab interface. While an update is in progress, it keeps only the latest pending state for that port.',
-        },
-        {
-          title: 'Check what the gateway actually confirmed',
-          detail: 'The client accepts a confirmed CML link only when a live response matches the expected node and connection state and includes a link ID. The legacy rack endpoint can echo the requested state without supplying that ID. The client then checks the IOS administrative state with a separate readback and reports that outcome without claiming the CML link was rewired.',
-        },
-        {
-          title: 'Check the effect on connectivity',
-          detail: 'The backend end-to-end test exercises the cable endpoint directly. It disconnects and reconnects the workstation link and checks that ping fails and then recovers. This covers the lab effect. The Unreal confirmation logic is visible separately in the client source.',
-        },
-      ],
-    },
-    referenceLinks: [
-      { label: 'CML integration notes', href: 'https://github.com/kappino/cisco-cyber-office/blob/main/docs/CML_INTEGRAZIONE.md' },
-      { label: 'Unreal link confirmation and IOS readback', href: 'https://github.com/FeroneAntonio/clara-unreal/blob/main/Source/ClaraDayOne/ClaraStoryGateway.cpp#L168-L263' },
-      { label: 'Legacy rack endpoint response', href: 'https://github.com/kappino/cisco-cyber-office/blob/main/backend/main.py#L335-L352' },
-      { label: 'Lab checks and test scope', href: 'https://github.com/kappino/cisco-cyber-office/tree/main/tests/cml' },
-      { label: 'Team credits and demo walkthrough', href: 'https://antonioferone.it/journal/tnes-big-hack-2026/' },
-    ],
-    demoUrl: 'https://www.youtube.com/watch?v=Fb0JmIhDriw',
-    date: '2026-11',
-    featured: true,
-  },
-  {
-    id: 'proj-agy-telegram',
-    title: 'agy-telegram: Asynchronous Mobile Gateway & Cockpit for AI Agents',
-    displayTitle: 'agy-telegram',
-    articleSlug: 'agy-telegram-mobile-cockpit',
-    contribution: 'Built an open-source Telegram client for local coding agents, with mobile approvals and an outbound-only connection.',
-    category: 'systems',
-    tagline: 'Outbound HTTPS long polling, no inbound port required.',
+    id: 'proj-proxmox-homelab',
+    title: 'Proxmox VE Homelab: Self-Hosted Infrastructure, SOC & Local AI',
+    displayTitle: 'Proxmox VE Homelab',
+    articleSlug: 'proxmox-homelab-architecture',
+    category: 'infrastructure',
+    recognition: '14 Workloads · 16 GB RAM · Shared GTX 1070 CUDA',
+    tagline: 'Turning a recycled gaming laptop into a 24/7 segmented Proxmox VE 9.1 lab with Splunk SIEM, shared-GPU local AI, and agentic SRE automation.',
+    contribution:
+      'Architected and operate a 24/7 bare-metal Proxmox VE 9.1 homelab running 12 LXC containers and 2 KVM VMs inside 16 GB of RAM — combining network segmentation, zero-open-port ingress, Splunk SIEM observability, multi-LXC CUDA GPU sharing, and automated snapshot-guarded maintenance.',
     description:
-      'An open-source Telegram interface for local coding sessions. The bridge polls Telegram over outbound HTTPS and uses tmux and a local Unix socket.',
+      'A personal infrastructure, cybersecurity, self-hosting, and local AI laboratory built by sustainably repurposing a retired ASUS gaming laptop (i7-7700HQ, 16 GB RAM, NVIDIA GTX 1070 Mobile) with a custom battery charge-limiting script acting as an integrated UPS.',
     problemStatement:
-      'Operating privileged coding and sysadmin agents remotely from mobile devices typically required fragile SSH shells, open firewall ports, or sacrificing interactive Human-in-the-Loop approvals.',
+      'Commercial cloud services trade privacy and observability for convenience, while enterprise infrastructure patterns — network segmentation, SIEM log analysis, immutable-style snapshot backups, and zero-open-port ingress — are hard to internalize without operating real daily workloads under strict hardware limits.',
     threatModelOrChallenge:
-      'The bridge uses outbound HTTPS long polling, so it needs no inbound port. An account allowlist controls who can interact with the local session.',
-    securityStandards: [
-      'Outbound HTTPS long polling',
-      'Least Privilege Execution & User ID Whitelisting',
-      'Unix Domain Socket IPC File Permissions (/tmp/agy-sentinel.sock)',
-      'Input Sanitization & Telegram HTML Escaping',
-    ],
+      'Fitting 14 active workloads (including Splunk SIEM, CUDA-accelerated photo ML, local LLMs, Nextcloud, Home Assistant, and custom bots) into 16 GB of RAM without sacrificing isolation required choosing lightweight LXC containers over full VMs wherever possible, keeping KVM strictly for Home Assistant OS and an isolated firewalled Portfolio Console VM, and eliminating inbound WAN ports via Cloudflare Tunnels and Tailscale.',
     architectureSpecs: [
-      'Pure Asynchronous Python (AsyncIO, python-telegram-bot v21+)',
-      'Multiline prompt input through a local tmux buffer',
-      'Structured Telemetry Streaming from Antigravity audit logs (transcript.jsonl)',
-      'Interactive Inline Telegram Keyboards with State Persistence Guards',
-      'Local Unix Domain Socket IPC for Proactive Notifications (/tmp/agy-sentinel.sock)',
-      'Robust HTML Sanitizer with Syntax-Highlighted Code Blocks and Tag-Boundary Splitting',
+      'Sustainable bare-metal host: recycled ASUS gaming laptop running Proxmox VE 9.1 (Linux 6.17) 24/7 with an Intel Core i7-7700HQ (4C/8T), 16 GB RAM, NVIDIA GTX 1070 Mobile, and a custom battery charge-limiting script preserving battery health as a built-in UPS.',
+      'Three-tier storage architecture: 256 GB SSD (LVM-thin) for the hypervisor and VM/LXC root disks; 1 TB SSD for fast media and AI datastores (Immich); 2 TB HDD for shared Nextcloud/Samba storage and automated daily 03:00 vzdump snapshot backups with zstd compression.',
+      'Segmented virtual networking: two virtual bridges — vmbr0 (physical LAN) and vmbr1 (isolated private NAT/masquerade subnet for application containers) — with controlled dual-homing for Nginx Proxy Manager and Aegis Core, plus a dedicated Pi-hole LXC for local DNS and ad/tracker filtering.',
+      'Zero-open-port remote access & SOC observability: Tailscale for private admin access, Nginx Proxy Manager for internal HTTPS routing, Cloudflare Tunnels for selective public web exposure without router port-forwarding, paired with Splunk SIEM, Uptime Kuma, and Homepage.',
+      'Multi-LXC GTX 1070 GPU sharing: a single mobile GPU shared concurrently across Immich ML (Docker stack with PostgreSQL pgvectors/vectorchord and Valkey/Redis), Ollama, and Faster-Whisper (INT8) for offline voice transcription and local receipt/document analysis.',
+      'Aegis Core, Agentic SRE & production bots: async FastAPI + SQLite WAL personal platform with an AI Sysadmin/SRE agent (enforcing preventive Proxmox snapshots and rollback, querying Splunk SIEM, controlled from Telegram), alongside Social Video Bot (aiogram 3 + local Bot API up to 2 GB zero-copy, anti-SSRF/anti-DoS), Fuorisede (deterministic price analysis, Ollama receipt scanner, Web GUI & MCP JSON-RPC 2.0 server), an isolated Portfolio Console KVM VM, and Python/ML (GBM) test sandboxes.',
     ],
     keyResults: [
-      'The bot receives updates without an inbound port or NAT forwarding.',
-      'Human-in-the-Loop Controls: Interactive inline approval callbacks directly from mobile.',
+      'Consolidated 12 LXC containers and 2 KVM VMs inside a 16 GB RAM envelope while running daily self-hosted cloud, smart-home, SIEM, and local CUDA workloads.',
+      'Eliminated router port-forwarding completely through Tailscale private admin access and Cloudflare Tunnels for selective public web apps.',
+      'Automated daily 03:00 vzdump snapshot backups (zstd) to dedicated 2 TB HDD storage and enforced snapshot-before-change guardrails in the Agentic SRE workflow.',
+      'Replaced cloud photo, drive, and voice/document assistants with privacy-first local alternatives (Immich CUDA, Nextcloud/Samba, Ollama, Faster-Whisper INT8).',
     ],
     technologies: [
-      'Python',
-      'Google Antigravity',
-      'Telegram API',
-      'Tmux',
-      'AsyncIO',
-      'Linux / Proxmox VE',
-      'Systemd',
+      'Proxmox VE 9.1',
+      'LXC & KVM',
+      'Linux 6.17',
+      'Tailscale',
+      'Cloudflare Tunnels',
+      'Nginx Proxy Manager',
+      'Pi-hole',
+      'Splunk SIEM',
+      'Uptime Kuma',
+      'Docker',
+      'NVIDIA CUDA',
+      'Ollama',
+      'Faster-Whisper',
+      'FastAPI',
+      'SQLite WAL',
+      'MCP (JSON-RPC 2.0)',
     ],
-    githubUrl: 'https://github.com/kappino/agy-telegram',
-    date: '2026-09',
+    date: '2026-11',
     featured: true,
     metrics: [
-      { label: 'Transport', value: 'Outbound HTTPS long polling' },
+      { label: 'Workload Density', value: '12 LXC + 2 KVM VMs' },
+      { label: 'Host Envelope', value: 'i7-7700HQ · 16 GB · GTX 1070' },
+      { label: 'Backup Policy', value: 'Daily 03:00 vzdump (zstd)' },
     ],
   },
   {
     id: 'proj-mtls-iot-gateway',
-    title: 'Secure IoT Gateway for CARE',
-    displayTitle: 'Secure IoT gateway',
+    title: 'Secure IoT Gateway for Healthcare Telemetry',
+    displayTitle: 'Secure IoT Gateway',
     articleSlug: 'zero-trust-mtls-constrained-iot-esp32',
-    contribution: 'I built ESP32 firmware and configured certificate-based MQTT access for a university security prototype based on the CARE telemetry pipeline.',
     category: 'security',
-    tagline: 'Authenticating sensor payloads and MQTT clients, with a separate audit trail for stored readings.',
-    description: 'A university prototype for securing biomedical telemetry at the sensor, broker, and storage boundaries.',
+    tagline: 'Authenticating BLE sensor payloads on ESP32, enforcing mTLS + X.509 MQTT ACLs, and anchoring digests for tamper detection.',
+    contribution:
+      'Analyzed the unauthenticated BLE/MQTT pipeline of CARE, reproduced a rogue-ESP32 spoofing attack in the lab, developed the C++/mbedTLS ESP32 HMAC-SHA256 verification firmware, configured Dockerized Mosquitto with mTLS (TLS 1.3) and X.509 topic ACLs, and added a Python/SQLite + local Ganache Solidity audit bridge.',
+    description:
+      'A university IoT Security prototype that hardens biomedical telemetry across three explicit boundaries: BLE payload ingestion on ESP32, mutually authenticated MQTT transport, and post-storage tamper detection.',
     problemStatement:
-      'The original CARE gateway collected biomedical readings over BLE and sent them to the backend over MQTT. It identified sensors by configured addresses, and the MQTT publishing code supplied neither TLS options nor client credentials. Downstream services therefore had limited evidence about where a reading came from.',
+      'The original CARE gateway collected biomedical readings over BLE and published them over plaintext MQTT without client credentials. Sensors were trusted solely by configured addresses, allowing an impersonating device in our lab demo to inject plausible but forged health readings straight into the backend.',
     threatModelOrChallenge:
-      'The prototype requires a programmable BLE sender that can attach an HMAC. That limits compatibility with existing medical sensors. The gateway checks the payload before forwarding it, then uses a client certificate for broker access.',
+      'Verifying HMAC-SHA256 on the ESP32 before forwarding requires a programmable BLE sender capable of attaching an authenticated tag — a concrete compatibility trade-off with off-the-shelf medical wearables. Separately, mTLS authenticates the gateway connection to Mosquitto, while digest anchoring on local Ganache detects post-hoc SQLite tampering rather than preventing bad data at the source.',
     architectureDiagram: `Programmable BLE sender
-  | Payload + HMAC
+  | Payload + HMAC-SHA256
   v
-ESP32 gateway -- MQTT over mTLS --> Mosquitto
-                                      |
-                                      v
-                                 Python bridge
-                                   |       |
-                                   v       v
-                                 SQLite   EVM audit record`,
+ESP32 gateway (C++/mbedTLS) -- MQTT over mTLS (TLS 1.3) --> Mosquitto (X.509 ACLs)
+                                                              |
+                                                              v
+                                                         Python bridge
+                                                           |       |
+                                                           v       v
+                                                         SQLite   Solidity digest (Ganache)`,
     architectureSpecs: [
-      'The ESP32 verifies HMAC-SHA256 before it forwards a message. This path requires a sender that can produce the authenticated payload format.',
-      'Mosquitto requires client certificates and maps certificate identities to MQTT topic permissions. The broker is configured for TLS 1.3.',
-      'The Python bridge checks the payload and stores readings in SQLite. The Solidity contract records a digest and audit metadata, including a criticality flag. Raw readings stay in SQLite.',
+      'ESP32 edge firmware (C++, PlatformIO, mbedTLS) validates the HMAC-SHA256 tag on incoming BLE payloads and drops forged frames before they reach the MQTT client.',
+      'Dockerized Mosquitto enforces mutual TLS (TLS 1.3) with distinct client certificates for the gateway and ingestion bridge, binding X.509 certificate identities to granular MQTT topic ACLs.',
+      'The Python ingestion bridge validates payloads, stores raw clinical readings in SQLite, and anchors SHA-256 digests plus criticality metadata into a Solidity smart contract on a local Ganache chain.',
+      'Auditors can later recompute record hashes from SQLite and verify them against the anchored contract digests to detect unauthorized database modifications.',
     ],
     keyResults: [
-      { text: 'In the controlled lab demonstration documented in the presentation, the original gateway accepted a reading from an impersonated sensor.', evidence: { label: 'Lab demonstration and design slides', href: 'https://github.com/kappino/IOT_SEC_CARE_Gateway/blob/003057b4fae5a957fcde55ab63aad4cb25229a36/docs/CARE_IoT_Security_Architecture.pdf' } },
-      { text: 'The prototype firmware checks payload authenticity before forwarding. The EVM audit can later check whether a stored record matches its recorded digest. The lab observation concerns the original gateway.', evidence: { label: 'Prototype firmware', href: 'https://github.com/kappino/IOT_SEC_CARE_Gateway/blob/003057b4fae5a957fcde55ab63aad4cb25229a36/firmware/src/main.cpp' } },
+      {
+        text: 'Reproduced a live BLE/MQTT spoofing attack with a rogue ESP32 against the original unauthenticated CARE gateway, injecting falsified telemetry accepted by the pipeline.',
+        evidence: {
+          label: 'Lab spoofing demo & architecture slides',
+          href: 'https://github.com/kappino/IOT_SEC_CARE_Gateway/blob/003057b4fae5a957fcde55ab63aad4cb25229a36/docs/CARE_IoT_Security_Architecture.pdf',
+        },
+      },
+      {
+        text: 'Implemented on-device HMAC-SHA256 verification on ESP32, X.509-bound topic isolation on Mosquitto (TLS 1.3), and digest-based tamper detection on local Ganache.',
+        evidence: {
+          label: 'ESP32 verification firmware',
+          href: 'https://github.com/kappino/IOT_SEC_CARE_Gateway/blob/003057b4fae5a957fcde55ab63aad4cb25229a36/firmware/src/main.cpp',
+        },
+      },
     ],
-    technologies: ['C++', 'ESP32', 'PlatformIO', 'mbedTLS', 'OpenSSL', 'Mosquitto MQTT', 'Docker', 'Python', 'SQLite', 'Solidity'],
+    technologies: ['C++', 'ESP32', 'PlatformIO', 'mbedTLS', 'OpenSSL', 'Mosquitto MQTT', 'mTLS (TLS 1.3)', 'X.509 ACLs', 'Docker', 'Python', 'SQLite', 'Solidity'],
     githubUrl: 'https://github.com/kappino/IOT_SEC_CARE_Gateway',
-    githubLabel: 'Gateway firmware and services',
+    githubLabel: 'Gateway firmware & services',
     date: '2026-02',
     featured: true,
     metrics: [
-      { label: 'Transport', value: 'MQTT over mTLS' },
-      { label: 'Payload Check', value: 'HMAC-SHA256' },
-      { label: 'Project Stage', value: 'University prototype' },
+      { label: 'BLE Edge Check', value: 'HMAC-SHA256 (mbedTLS)' },
+      { label: 'Broker Transport', value: 'mTLS (TLS 1.3) + X.509 ACL' },
+      { label: 'Tamper Detection', value: 'SQLite + Ganache Solidity' },
+    ],
+  },
+  {
+    id: 'proj-tnes',
+    title: 'TNES · Hack the Route (1st Place Hackathon)',
+    displayTitle: 'TNES · Hack the Route',
+    category: 'systems',
+    tagline: 'FastAPI gateway bridging a 3D networking & cybersecurity simulator game in Unreal Engine 5 to live Cisco Modeling Labs.',
+    contribution:
+      'Co-developed the Python FastAPI backend bridging an Unreal Engine 5 3D office simulator to Cisco Modeling Labs (CML), reviewed the Unreal-to-backend API integration, and wrote backend connectivity tests verifying real network impact inside the Cisco lab.',
+    recognition: '1st Place · Hack the Route · The Big Hack 2026 (Consorzio Clara)',
+    description:
+      'A 3D networking and cybersecurity training simulator game built by Team 0’PACKET in Unreal Engine 5 for Challenge 04 (Hack the Route, Challenge Partner: Consorzio Clara) at The Big Hack 2026.',
+    problemStatement:
+      'In a 3D training game where players physically plug and unplug cables between virtual racks and workstations, faking success locally breaks realism. Whenever a player connects or disconnects two ports in Unreal Engine 5, the backend needs to map that action to a live Cisco Modeling Labs topology and report whether the underlying network actually changed.',
+    threatModelOrChallenge:
+      'The gateway translates game device/port identifiers into CML nodes and interfaces over HTTPS while avoiding stale state during rapid clicks. Crucially, the Unreal client distinguishes a confirmed CML link response (carrying a real link ID) from a legacy rack echo, falling back to an IOS administrative state readback rather than falsely claiming a rewire occurred.',
+    architectureSpecs: [
+      'Unreal Engine 5 sends player-selected devices and ports over HTTPS to the Python FastAPI gateway, coalescing rapid updates to the latest pending state per port.',
+      'FastAPI resolves in-game port identifiers against live Cisco Modeling Labs (CML) APIs to inspect topology state, toggle links, synchronize scenario startup, and bridge console sessions to virtual devices.',
+      'The Unreal client requires a confirmed CML link ID before marking a link rewired; on legacy rack responses without a link ID, it reads back IOS interface administrative state separately.',
+      'Backend-side automated CML tests exercise the cable endpoint directly, disconnecting and reconnecting a workstation link and verifying that real ping reachability drops and recovers inside the lab.',
+    ],
+    keyResults: [
+      'Won 1st Place in Challenge 04 (Hack the Route, Challenge Partner: Consorzio Clara) at The Big Hack 2026 with Team 0’PACKET.',
+      {
+        text: 'Automated backend-side CML connectivity test confirms that disconnecting a workstation link breaks ping inside the Cisco lab and reconnecting restores reachability.',
+        evidence: {
+          label: 'CML backend connectivity test',
+          href: 'https://github.com/kappino/cisco-cyber-office/blob/cf54f981e48b766e85fcd82ceb571b8b5a1e97e5/tests/cml/e2e_cml.py#L86-L98',
+        },
+      },
+    ],
+    technologies: ['Python', 'FastAPI', 'Cisco Modeling Labs (CML)', 'REST APIs', 'Unreal Engine 5'],
+    githubUrl: 'https://github.com/kappino/cisco-cyber-office',
+    githubLabel: 'FastAPI / CML backend',
+    clientUrl: 'https://github.com/FeroneAntonio/clara-unreal',
+    walkthrough: {
+      title: 'From a virtual cable click in Unreal to verified reachability in CML',
+      steps: [
+        {
+          title: 'Map game ports to CML interfaces',
+          detail: 'Unreal verifies that the office lab is ready and maps the selected 3D port to a gateway identifier. If another update is already in flight, the client retains only the latest pending state for that port.',
+        },
+        {
+          title: 'Confirm live CML state instead of assuming success',
+          detail: 'The client accepts a confirmed CML link only when the live response matches the target node/state and returns a valid link ID. When the legacy rack endpoint echoes a request without a link ID, the client performs a separate IOS administrative-state readback instead of misreporting a rewire.',
+        },
+        {
+          title: 'Verify real network impact in the Cisco lab',
+          detail: 'The backend test suite calls the cable endpoint directly to disconnect and reconnect a workstation link, asserting that ICMP ping inside CML fails on disconnect and recovers after reconnection. Unreal confirmation logic is verified separately in client source.',
+        },
+      ],
+    },
+    referenceLinks: [
+      { label: 'CML integration documentation', href: 'https://github.com/kappino/cisco-cyber-office/blob/main/docs/CML_INTEGRAZIONE.md' },
+      { label: 'Unreal link confirmation & IOS readback', href: 'https://github.com/FeroneAntonio/clara-unreal/blob/main/Source/ClaraDayOne/ClaraStoryGateway.cpp#L168-L263' },
+      { label: 'Legacy rack endpoint response handling', href: 'https://github.com/kappino/cisco-cyber-office/blob/main/backend/main.py#L335-L352' },
+      { label: 'Lab connectivity tests & scope', href: 'https://github.com/kappino/cisco-cyber-office/tree/main/tests/cml' },
+      { label: 'Team 0’PACKET write-up & credits', href: 'https://antonioferone.it/journal/tnes-big-hack-2026/' },
+    ],
+    demoUrl: 'https://www.youtube.com/watch?v=Fb0JmIhDriw',
+    date: '2026-11',
+    featured: true,
+    metrics: [
+      { label: 'Outcome', value: '1st Place · Hack the Route' },
+      { label: 'Challenge Partner', value: 'Consorzio Clara' },
+      { label: 'Integration Path', value: 'UE5 ↔ FastAPI ↔ Cisco CML' },
     ],
   },
   {
     id: 'proj-care-decision-planner',
-    title: 'CARE: Decision Planning for an Assistive Robot',
+    title: 'CARE: ROS 2 Decision Planner for Assistive Robotics',
     displayTitle: 'CARE Decision Planner',
     articleSlug: 'deterministic-life-safety-arbitration-ros2-gorules',
-    contribution: 'I developed the ROS2 decision planner for CARE, an assistive robotics demonstrator under PNRR Age-IT. My work covered decision tables, backend integration, and how the planner handles competing activities.',
     category: 'robotics',
-    tagline: 'A ROS2 planner that turns care schedules, sensor readings, and session state into actions for a social robot.',
+    recognition: 'PNRR Age-IT (Spoke 3) · with Protom Robotics',
+    tagline: 'From wearable sensor selection to a Python ROS 2 planner translating GoRules decision tables into prioritized robot actions.',
+    contribution:
+      'Selected wearable devices and biomedical sensors, wrote technical documentation and ran demonstrator tests, and designed and built the Python ROS 2 care_planner node from scratch (first in durable_rules, then migrated to GoRules JDM visual tables) — plus modernized the lab Pepper PC client to Python 3.12 and ROS 2.',
     description:
-      'CARE (Companion for Aging with Resilience and Evaluation) is a PNRR Age-IT research demonstrator for home assistance. It brings together biomedical sensors, a social robot, and a monitoring dashboard.',
+      'CARE (Companion for Aging with Resilience and Evaluation) is a PNRR Age-IT research demonstrator for home assistance built with Protom Robotics, uniting biomedical wearables, a social robot, tablet cognitive exercises, and a clinical monitoring dashboard.',
     problemStatement:
-      'CARE explored home assistance for older adults living with frailty and multiple conditions, with diabetes and cognitive decline as pilot use cases. The wider system combines biomedical monitoring, voice interaction, tablet-based cognitive exercises, and a dashboard for clinicians and caregivers. The planner decides which activity to request when reminders, measurements, and optional exercises overlap.',
+      'Older adults managing frailty, diabetes, and cognitive decline face overlapping daily routines: scheduled medication reminders, biometric measurements, and optional tablet exercises. A home robot needs deterministic arbitration so clinical reminders always take precedence over optional exercises — and escalate to a caregiver if repeatedly missed — while keeping rules readable for clinicians.',
     threatModelOrChallenge:
-      'The first planner used durable_rules (Rete). I moved the policy into GoRules decision tables with the goal of letting clinical and other non-technical staff review and edit it visually. For the demo, we used a fixed JDM graph and populated its decision inputs from the backend APIs.',
-    architectureDiagram: `Biomedical sensors
+      'I built the first care_planner engine from scratch using durable_rules (Rete), then transferred the policy into GoRules JSON Decision Model (JDM) tables so clinical and non-technical stakeholders could inspect and revise rules visually without touching Python or ROS 2 code. For the demonstrator, the planner loads a fixed JDM graph and hydrates it dynamically from backend REST APIs.',
+    architectureDiagram: `Biomedical wearables & sensors
   | BLE
   v
-Sensor gateway -- MQTT --> CARE backend --> Monitoring dashboard
+Sensor gateway -- MQTT --> CARE backend --> Clinical dashboard
                                   |
                                   | REST APIs
                                   v
-                           ROS2 CARE planner
-                           [GoRules JDM graph]
+                           ROS 2 care_planner (Python)
+                           [GoRules JDM tables]
                                   |
                                   | decision_output
                                   v
                            Robot coordinator`,
     architectureSpecs: [
-      'The CARE backend exposes REST APIs for therapy schedules, measurement plans and readings, and cognitive session state. The same platform provides role-based dashboard views.',
-      'The planner gathers that context and evaluates a GoRules JSON Decision Model. Separate branches cover health alerts, measurements, medication reminders, and optional activities.',
-      'The Python planner converts decisions into action requests and publishes them on the ROS2 decision_output topic for the robot coordinator.',
+      'Hardware & research groundwork: evaluated wearable devices and biomedical sensors for domestic deployment, produced technical documentation, and tested end-to-end demonstrator scenarios.',
+      'Backend-integrated ROS 2 node: care_planner queries REST APIs for therapy schedules, measurement plans, and active cognitive sessions, evaluating separate GoRules JDM branches for health alerts, measurements, medications, and optional tasks.',
+      'Priority arbitration & escalation: implements precedence of medication reminders and measurements over cognitive exercises, managing snooze windows, retry counters, and caregiver escalation requests published on the ROS 2 decision_output topic.',
+      'Parallel lab modernization (Pepper): updated the Pepper robot PC client to Python 3.12 and ROS 2 over Wi-Fi/NAOqi, eliminating legacy Python 2.7 dependencies and subprocess-invoked ML scripts.',
     ],
     keyResults: [
-      { text: 'A reconstruction from the planner code shows that one cycle can return WAIT for the exercise and REMIND_FARMACO for a due reminder. The planner publishes the reminder request to the coordinator on decision_output. The reconstruction covers publication to ROS2.', evidence: { label: 'Reconstructed scenario', href: '#care-decision-scenario' } },
-      'Implemented snooze handling and a caregiver escalation request in the planner prototype.',
-      'The Age-IT D3.3 design deliverable documents the planner alongside sensor ingestion, cognitive interaction, and the clinical dashboard.',
+      {
+        text: 'Reconstructed planner trace confirms that within a single cycle, an ongoing exercise evaluates to WAIT while a due medication emits REMIND_FARMACO and is published on decision_output to the ROS 2 coordinator.',
+        evidence: { label: 'Reconstructed decision scenario', href: '#care-decision-scenario' },
+      },
+      'Migrated rule logic from durable_rules to visual GoRules JDM tables, adding snooze offsets, retry handling, and caregiver escalation paths.',
+      'Documented in the PNRR Age-IT D3.3 deliverable alongside sensor ingestion, cognitive interaction, and the clinical dashboard.',
     ],
-    technologies: ['Python', 'ROS2', 'GoRules (JDM)', 'REST APIs'],
+    technologies: ['Python', 'ROS 2', 'GoRules (JDM)', 'durable_rules', 'REST APIs', 'NAOqi', 'Wearable Sensors'],
     date: '2025-09',
     featured: true,
     metrics: [
-      { label: 'National Project', value: 'PNRR Age-IT (Spoke 3)' },
-      { label: 'Inference Model', value: 'JDM Decision Tables' },
-      { label: 'Project Stage', value: 'Research demonstrator' },
+      { label: 'Program', value: 'PNRR Age-IT · Protom Robotics' },
+      { label: 'Rule Engine', value: 'durable_rules → GoRules JDM' },
+      { label: 'Lab Side-Task', value: 'Pepper PC → Python 3.12 / ROS 2' },
+    ],
+  },
+  {
+    id: 'proj-munnisc-cestinno',
+    title: 'SortEdge Bin: Smart Waste Sorting with STM32 RTOS & Edge AI',
+    displayTitle: 'SortEdge Bin',
+    category: 'embedded',
+    recognition: 'STMicroelectronics NeaPolis Summer Campus · Team Lead (8 people)',
+    tagline: 'Led an 8-person team in 10 days to build an STM32G474RE smart waste sorter with ChibiOS RTOS, ~13 ms on-device CNN inference, and CRC-32 UART vision.',
+    contribution:
+      'Led an 8-person multidisciplinary team over a 10-day sprint, developed the C/ChibiOS RTOS firmware on STM32G474RE (sensors, PWM servo actuation, SPI uGFX display, ~13 ms on-device CNN inference), and implemented CRC-32 UART image transfer with error retransmission from ESP32-CAM.',
+    description:
+      'Prototyped during the intensive 10-day STMicroelectronics NeaPolis Innovation Summer Campus (Arzano, Naples), combining real-time embedded control on an ARM Cortex-M4 MCU with edge image classification and reliable inter-board serial framing.',
+    problemStatement:
+      'Automated waste sorting on low-power microcontrollers has to coordinate physical sensors, user feedback, mechanical flap actuation, and neural-network inference inside tight RAM and timing budgets — without corrupting image frames transferred over noisy wired links between a camera board and the main MCU.',
+    threatModelOrChallenge:
+      'Splitting vision capture and control across two MCUs kept memory manageable: the ESP32-CAM captures raw frames and streams them over UART, while the STM32G474RE runs the ChibiOS state machine and executes the ~13 ms on-device CNN. Adding CRC-32 checksums and packet-level retransmission prevented corrupted frames from triggering misclassifications.',
+    architectureSpecs: [
+      'STM32G474RE (ARM Cortex-M4) firmware in C on ChibiOS RTOS orchestrates concurrent threads for sensor polling, deterministic state transitions, PWM servomotor flap actuation, and SPI uGFX status rendering.',
+      'On-device CNN inference executes directly on the STM32G474RE in approximately 13 ms per classification, removing any cloud or Wi-Fi dependency at sorting time.',
+      'Custom inter-board UART protocol between ESP32-CAM and STM32 splits captured frames into framed packets protected by CRC-32 error detection and automatic retransmission on checksum mismatch.',
+      'Coordinated firmware, hardware interfacing, and integration milestones across an 8-person team from concept to live HackFest demonstration in 10 days.',
+    ],
+    keyResults: [
+      'Delivered a working, live-demonstrated smart waste-sorting prototype in 10 days leading an 8-person team at STMicroelectronics Arzano.',
+      'Achieved ~13 ms on-device CNN classification directly on STM32G474RE alongside concurrent ChibiOS sensor, PWM, and SPI uGFX tasks.',
+      'Eliminated silent frame corruption on the ESP32-CAM → STM32 UART link through CRC-32 verification and packet retransmission.',
+    ],
+    technologies: ['C', 'STM32G474RE', 'ChibiOS RTOS', 'ESP32-CAM', 'UART + CRC-32', 'SPI (uGFX)', 'PWM', 'On-Device CNN'],
+    date: '2026-09',
+    featured: true,
+    metrics: [
+      { label: 'Leadership', value: '8-person team · 10 days' },
+      { label: 'On-Device AI', value: '~13 ms CNN on STM32G474RE' },
+      { label: 'Inter-MCU Link', value: 'ESP32-CAM UART + CRC-32' },
     ],
   },
   {
     id: 'proj-spectra-eeg',
-    title: 'SPECTRA: Clinical EEG Signal Processing & Supervised ML Classification',
+    title: 'SPECTRA: Wearable EEG Signal Processing & Emotion Classification',
     displayTitle: 'SPECTRA · Wearable EEG',
     articleSlug: 'eeg-emotion-recognition-schizophrenia-ias19',
-    contribution: 'For my bachelor’s thesis, I compared three EEG preprocessing pipelines and worked on feature extraction and classifier evaluation. I am first author of the IAS-19 paper based on this study.',
     category: 'research',
-    tagline: 'Wearable EEG preprocessing and feature extraction for an exploratory study of emotional responses.',
+    recognition: 'First Author · IAS-19 Best Student Paper Award Finalist (Springer LNNS)',
+    tagline: 'Comparing three MATLAB/EEGLAB artifact-rejection pipelines and scikit-learn classifiers on 14-channel clinical wearable EEG.',
+    contribution:
+      'For my B.Sc. thesis (Prof. M. Staffa) with Psychiatry at Federico II, I compared three MATLAB/EEGLAB (PICARD-ICA) preprocessing pipelines, extracted spectral and frontal asymmetry features in Python, benchmarked scikit-learn classifiers, and authored the resulting first-author IAS-19 Springer LNNS paper.',
     description:
-      'Conducted clinical research and implemented an automated artifact-rejection and classification pipeline analyzing 14-channel EEG data from patients across the schizophrenia spectrum.',
+      'An exploratory clinical study investigating whether a 14-channel wireless wearable EEG headset (Emotiv EPOC X, 256 Hz) can distinguish emotional and group-level neural signatures across 21 participants on the schizophrenia spectrum.',
     problemStatement:
-      'SPECTRA explored whether wearable EEG captured different responses across participant groups and emotional stimuli. The exploratory study involved 21 participants: 7 healthy controls, 6 participants with treatment-responsive schizophrenia, and 8 with treatment-resistant schizophrenia.',
+      'Consumer-grade wearable EEG lowers barriers for clinical studies, but raw recordings are heavily contaminated by baseline drift, eye blinks, and muscle artifacts. Without disciplined cleaning and honest validation boundaries, spectral features can easily reflect noise rather than neural activity.',
     threatModelOrChallenge:
-      'The pipeline had to reduce eye and muscle artifacts while retaining spectral features aligned with the experimental phases.',
-    architectureDiagram: `Wearable EEG → MATLAB preprocessing → Python feature extraction → Group classification`,
+      'With 21 participants (7 healthy controls, 6 treatment-responsive, 8 treatment-resistant) and overlapping 4-second EEG windows, validation methodology is critical. While the paper reports stratified five-fold validation reaching up to 95% in the abstract (97.2% best MLP in Table 3), participant-level fold grouping is unspecified — making subject-independent holdout the essential next step before clinical generalization.',
+    architectureDiagram: `14-ch Wearable EEG (256 Hz) → MATLAB/EEGLAB (PICARD-ICA) → Python Spectral Features → scikit-learn Benchmark`,
     architectureSpecs: [
-      'Protocol: a 30-second baseline, a memory game, and three two-minute clips. EEG was recorded with a 14-channel Emotiv EPOC X at 256 Hz. The classification experiments used EEG features.',
-      'Preprocessing in MATLAB and EEGLAB: align segments with event markers, correct baseline and filter the signal, then identify artifacts with PICARD ICA and ICLabel.',
-      'Feature extraction in Python: Welch spectral estimates, band power, and frontal asymmetry features from four-second windows with 50% overlap.',
+      'Experimental protocol: 30-second baseline, a memory task, and three two-minute emotional video clips recorded on a 14-channel Emotiv EPOC X at 256 Hz across 21 participants.',
+      'MATLAB & EEGLAB preprocessing: event-marker segmentation, baseline correction, 1–45 Hz bandpass + 50 Hz notch filtering, and automated artifact rejection via PICARD-ICA and ICLabel across three comparative pipelines.',
+      'Python feature extraction: Welch power spectral density (PSD), alpha/beta band power, and frontal hemispheric asymmetry computed over 4-second windows with 50% overlap.',
+      'Model evaluation: benchmarked MLP, Random Forest, SVM (RBF, linear, polynomial, sigmoid), k-NN, and Decision Tree in scikit-learn across both 3-group and 3-clip classification tasks.',
     ],
     keyResults: [
-      'Among 21 participants, the reported stratified five-fold evaluation yielded 97.2% group accuracy and 84.6% clip accuracy for the best MLP. The paper leaves participant grouping across folds unspecified, so performance on unseen participants remains unverified.',
-      'The IAS-19 abstract summarizes group accuracy as up to 95%.',
-      'Selected as a Best Student Paper Award finalist at IAS-19 and published in Springer’s Lecture Notes in Networks and Systems.',
+      'First-author paper accepted at IAS-19 (Genoa 2025), selected as a Best Student Paper Award Finalist, and published in Springer Lecture Notes in Networks and Systems (Sep 2026).',
+      'Reported up to 95% accuracy in the IAS-19 abstract (best MLP 97.2% group / 84.6% clip in Table 3–4 stratified five-fold evaluation on the exploratory 21-participant cohort).',
+      'Demonstrated how systematic PICARD-ICA cleaning removes DC drift and ocular spikes prior to spectral feature extraction.',
     ],
     referenceLinks: [
-      { label: 'Published abstract and results', href: 'https://link.springer.com/chapter/10.1007/978-3-032-33874-7_13#Abs1' },
-      { label: 'EEG and wearable acquisition protocol (Italian)', href: 'https://github.com/kappino/SpectraProtocol' },
+      { label: 'Published paper on Springer LNNS (DOI)', href: 'https://doi.org/10.1007/978-3-032-33874-7_13' },
+      { label: 'Wearable EEG acquisition protocol (GitHub)', href: 'https://github.com/kappino/SpectraProtocol' },
     ],
-    technologies: ['Python', 'scikit-learn', 'MATLAB', 'EEGLAB', 'PICARD ICA', 'Wearable EEG'],
+    technologies: ['MATLAB', 'EEGLAB', 'PICARD-ICA', 'Python', 'scikit-learn', 'Wearable EEG (14-ch)'],
     date: '2025-05',
     featured: true,
     metrics: [
-      { label: 'Participants', value: '21 across 3 groups' },
-      { label: 'EEG acquisition', value: '14 channels at 256 Hz' },
+      { label: 'Publication', value: 'Springer LNNS · First Author' },
+      { label: 'Cohort & Hardware', value: '21 participants · 14-ch @ 256 Hz' },
+      { label: 'Exploratory Result', value: 'Up to 95% (IAS-19 abstract)' },
+    ],
+  },
+  {
+    id: 'proj-agy-telegram',
+    title: 'agy-telegram: Outbound Mobile Cockpit for Local Coding Agents',
+    displayTitle: 'agy-telegram',
+    articleSlug: 'agy-telegram-mobile-cockpit',
+    category: 'systems',
+    tagline: 'Operate local tmux coding sessions from Telegram over outbound HTTPS long polling — zero open ports, JSONL transcript tracking, and Unix socket alerts.',
+    contribution:
+      'Designed and built an open-source asynchronous Python Telegram bridge for local coding agents, combining outbound-only HTTPS long polling, account allowlisting, atomic tmux buffer injection, JSONL transcript streaming, and Unix domain socket notifications.',
+    description:
+      'An open-source mobile interface for supervising and approving local coding-agent sessions without opening firewall ports, exposing SSH, or abandoning an active tmux workspace.',
+    problemStatement:
+      'Checking on long-running local coding or sysadmin agent sessions from mobile usually meant wrestling with tiny SSH terminals, opening inbound firewall ports, or losing interactive human-in-the-loop approvals.',
+    threatModelOrChallenge:
+      'Outbound HTTPS long polling eliminates inbound attack surface and NAT port-forwarding, while a strict Telegram user ID allowlist gates command execution. Reading structured append-only JSONL transcripts replaced fragile tmux ANSI screen scraping, though Telegram itself remains part of the message-transport trust boundary.',
+    securityStandards: [
+      'Outbound-only HTTPS long polling (no listening WAN port or NAT forwarding)',
+      'Strict Telegram User ID allowlisting before command dispatch',
+      'Local Unix Domain Socket IPC with filesystem permission controls',
+      'HTML sanitization and tag-boundary chunking for safe Telegram message rendering',
+    ],
+    architectureSpecs: [
+      'Asynchronous Python bridge (AsyncIO, python-telegram-bot v21+) polling Telegram over outbound HTTPS without moving processes out of their existing tmux session.',
+      'Atomic multiline prompt injection via tmux paste buffers, separating text insertion from Enter submission to prevent broken keystroke sequences.',
+      'Structured JSONL transcript watcher replacing ANSI terminal scraping to track intermediate tool status in a single live-edited message and deliver clean final replies.',
+      'Local Unix domain socket IPC allowing external hooks and background daemons to push proactive mobile alerts and inline human-in-the-loop approval buttons.',
+    ],
+    keyResults: [
+      'Enabled reliable mobile monitoring and inline approvals for local agent sessions with zero inbound ports.',
+      'Replaced brittle ANSI terminal scraping with deterministic event-driven JSONL transcript parsing.',
+    ],
+    technologies: ['Python', 'AsyncIO', 'Telegram Bot API', 'tmux', 'JSONL', 'Unix Domain Sockets', 'Linux / systemd'],
+    githubUrl: 'https://github.com/kappino/agy-telegram',
+    githubLabel: 'Open-source repository',
+    date: '2026-09',
+    featured: true,
+    metrics: [
+      { label: 'Network Exposure', value: 'Zero inbound ports' },
+      { label: 'Event Source', value: 'Structured JSONL transcript' },
+      { label: 'Local IPC', value: 'tmux buffer + Unix socket' },
     ],
   },
   {
     id: 'proj-unireviews',
-    title: 'UniReviews',
+    title: 'UniReviews: Verified Post-Exam Course Reviews & Quality Dashboard',
+    displayTitle: 'UniReviews',
     articleSlug: 'unireviews-beyond-course-surveys',
     category: 'systems',
-    tagline: 'Post-exam course reviews with an Esse3 verification badge and an analytics dashboard.',
-    description: 'I built UniReviews for my graduate Database Systems II course. It grew out of ParthenoAnswer, an undergraduate Web Technologies project I built with Riccardo Aiello and Aniello Genovese.',
-    problemStatement: 'A survey completed before an exam misses what students learn from taking it. A later review can address how well the exam matched the syllabus, teaching materials, and expected workload.',
-    threatModelOrChallenge: 'Course pages read precomputed review statistics from MongoDB. A review and its course summary are written separately, so failed or concurrent updates can leave the summary behind.',
-    architectureSpecs: [
-      'The Esse3 API integration synchronizes passed exams into a subset of the student document. UniReviews checks the course code to assign a verification badge.',
-      'Course pages use cursor pagination and a MongoDB lookup for discussion replies. Moderation controls which reviews appear in the public feed.',
-      'MongoDB aggregation pipelines power the dashboard, with drill-down from departments to degree programmes and individual courses.',
-      'The demo ETL imports real review text from the University of Waterloo. It matches course titles using an inverted word index with IDF weights, then maps reviews to Salerno course codes and assigns synthetic authors.',
-    ],
-    keyResults: [
-      'Implemented the review and discussion flows, moderation tools, and a dashboard for academic quality staff.',
-      'The final report records a local catalogue query that examined 18 documents with a compound index, compared with 3,570 before indexing.',
-    ],
-    technologies: ['Python', 'Flask', 'MongoDB', 'PyMongo', 'Chart.js', 'Esse3 APIs'],
-    referenceLinks: [{ label: 'Course Reviews University of Waterloo · Kaggle dataset', href: 'https://www.kaggle.com/datasets/anthonysusevski/course-reviews-university-of-waterloo' }],
-    metrics: [
-      { label: 'Data model', value: '5 MongoDB collections' },
-      { label: 'Local catalogue query', value: '3,570 → 18 documents examined' },
-    ],
-    date: '2026',
-    featured: false,
-  },
-  {
-    id: 'proj-munnisc-cestinno',
-    title: 'MUNNISC: Embedded Waste Sorter & Sensor Interfacing Prototype',
-    category: 'embedded',
-    tagline: '10-day HackFest embedded prototype using STM32, ChibiOS RTOS, and sensor interfacing at NeaPolis Summer Campus.',
+    tagline: 'Post-exam course reviews verified against Esse3 exam records, backed by MongoDB aggregation pipelines and compound-indexed catalogue search.',
+    contribution:
+      'Designed the 5-collection MongoDB schema, Flask backend, Esse3 exam-verification workflow, Waterloo-to-Salerno IDF demo ETL, and hierarchical department/degree/course analytics dashboard.',
     description:
-      'Prototyped during the intensive 10-day STMicroelectronics NeaPolis Summer Campus, exploring electronics fundamentals, sensor circuit interfacing, and servomotor actuation on 32-bit STM32 microcontrollers.',
+      'Built for the graduate Database Systems II course at UNISA, evolving from ParthenoAnswer (an undergraduate Web Technologies project co-built with Riccardo Aiello and Aniello Genovese) into a structured post-exam review platform and academic quality dashboard.',
     problemStatement:
-      'Prototyping an automated waste-sorting receptacle combining electronic sensor triggers and PWM mechanical deflection in a rapid 10-day hands-on sprint.',
+      'Standard university course surveys happen before the exam — when students cannot yet evaluate syllabus alignment, real study load, or which materials actually prepared them for the test.',
+    threatModelOrChallenge:
+      'Precomputing review aggregates inside each course document makes catalogue browsing fast, but writing a review and updating its summary in separate operations introduces an eventual-consistency window if a write fails mid-flight.',
     architectureSpecs: [
-      'The SortEdge Bin firmware uses C and ChibiOS on STM32. A state machine coordinates sensors and actuators.',
-      'The source also includes a UART image path and local CNN inference on the STM32.',
+      'Esse3 API integration synchronizes passed exams into a subset of each student document so reviews matching a completed course code receive a verification badge.',
+      'Course feeds combine cursor-based pagination with MongoDB lookups for threaded replies and moderation queues.',
+      'MongoDB aggregation pipelines power a drill-down analytics dashboard from department to degree programme to individual course score distributions.',
+      'Demo ETL imports public University of Waterloo course review text, matching titles to Salerno courses via an IDF-weighted inverted word index with synthetic authors.',
     ],
     keyResults: [
-      'Designed, built, and demonstrated during the final HackFest at STMicroelectronics Arzano campus.',
-      'The firmware source includes sensor polling, motor actuation, and on-device classification.',
+      'Cut local catalogue query examination from 3,570 documents down to 18 (99.5% reduction, 198× fewer docs scanned) using a compound MongoDB index.',
+      'Delivered end-to-end verified review flows, threaded discussions, moderation controls, and academic quality drill-down analytics.',
     ],
-    technologies: ['STM32', 'ChibiOS RTOS', 'C', 'PWM', 'UART', 'On-device CNN'],
-    date: '2026-09',
-    featured: false,
+    technologies: ['Python', 'Flask', 'MongoDB', 'PyMongo', 'Aggregation Pipelines', 'Chart.js', 'Esse3 APIs'],
+    referenceLinks: [
+      { label: 'University of Waterloo Course Reviews dataset (Kaggle)', href: 'https://www.kaggle.com/datasets/anthonysusevski/course-reviews-university-of-waterloo' },
+    ],
     metrics: [
-      { label: 'Hardware Platform', value: 'STM32 ARM Cortex-M' },
-      { label: 'RTOS Kernel', value: 'ChibiOS (G. Di Sirio)' },
-      { label: 'Program Duration', value: '10-Day Campus' },
+      { label: 'Data Model', value: '5 MongoDB collections' },
+      { label: 'Index Speedup', value: '3,570 → 18 docs (198×)' },
+      { label: 'Verification', value: 'Esse3 passed-exam match' },
     ],
+    date: '2026-11',
+    featured: false,
   },
   {
     id: 'proj-posix-sockets',
-    title: 'Concurrent TCP Services in C',
-    displayTitle: 'Concurrent TCP services',
+    title: 'Concurrent TCP Services in C11',
+    displayTitle: 'Concurrent TCP Services',
     category: 'systems',
-    tagline: 'A coursework simulation using POSIX sockets, worker processes, and a shared binary datastore.',
-    description: 'A C11 networking project that models issuing, checking, and updating a certificate record across cooperating TCP services.',
-    problemStatement: 'TCP can deliver a message in several reads. The system also needs to coordinate access when separate workers read or update the same file.',
-    threatModelOrChallenge: 'The implementation uses full-read and full-write loops at the connection boundary and advisory file locks around shared record updates.',
+    tagline: 'Multi-service C11 TCP simulation using POSIX sockets, forked worker processes, full-I/O framing loops, and flock-coordinated binary storage.',
+    contribution:
+      'Implemented three cooperating C11 TCP services handling partial socket reads/writes, concurrent forked client workers, and flock-synchronized updates to a shared binary record file.',
+    description:
+      'A systems-programming networking project modeling certificate issuance, status verification, and status updates across cooperating TCP daemons in standard C11 on POSIX.',
+    problemStatement:
+      'TCP is a byte stream rather than a message protocol: a single send can arrive fragmented across multiple read calls. Meanwhile, concurrent forked workers writing to a shared binary datastore will corrupt records without explicit locking.',
+    threatModelOrChallenge:
+      'Enforcing deterministic full-read and full-write loops at every socket boundary eliminates short-read truncation bugs, while advisory flock locks serialize concurrent record mutations across cooperating processes.',
     architectureSpecs: [
-      'The registration and verification clients connect to separate services, which forward requests to the central record server.',
-      'The C server uses forked workers to handle TCP clients and fixed-size binary messages to exchange requests.',
-      'The shared datastore uses flock to coordinate workers that follow the same locking protocol.',
+      'Separated registration and verification clients connect to dedicated TCP services that relay fixed-size binary frames to a central record daemon.',
+      'Server processes fork per-connection workers and wrap POSIX socket I/O in full-read / full-write loops to handle partial TCP stream delivery cleanly.',
+      'Shared binary datastore coordinates concurrent reads and writes across worker processes using POSIX flock advisory file locking.',
     ],
     keyResults: [
-      'Implemented certificate issuance, status checks, and status updates as separate workflows in the simulation.',
-      'Handled partial socket I/O and coordinated updates to the shared file across worker processes.',
+      'Implemented certificate issuance, verification, and status-update workflows across cooperating C11 daemons.',
+      'Eliminated partial-read framing errors and concurrent datastore race conditions under parallel client connections.',
     ],
-    technologies: ['C11', 'POSIX sockets', 'TCP/IP', 'flock', 'fork', 'GNU Make'],
+    technologies: ['C11', 'POSIX Sockets', 'TCP/IP', 'fork()', 'flock()', 'GNU Make'],
     githubUrl: 'https://github.com/kappino/computer_network_green_pass',
+    githubLabel: 'C11 source code',
     date: '2022-02',
     featured: false,
     metrics: [
-      { label: 'Transport', value: 'TCP byte streams' },
-      { label: 'Concurrency', value: 'Forked workers' },
-      { label: 'Storage coordination', value: 'Advisory file locks' },
+      { label: 'Framing', value: 'Full-read / full-write TCP' },
+      { label: 'Concurrency', value: 'Forked POSIX workers' },
+      { label: 'Storage Safety', value: 'Advisory flock() locking' },
     ],
   },
   {
     id: 'proj-virtual-pong',
-    title: 'Virtual Pong: Motion-Controlled Table Tennis',
+    title: 'Virtual Pong: Apple Watch Motion-Controlled Table Tennis',
     displayTitle: 'Virtual Pong',
-    recognition: 'Winner · Best App Award “Alfredo Petrosino”',
+    recognition: 'Winner · Best App Award “Alfredo Petrosino” (2023)',
     category: 'systems',
-    tagline: 'An Apple Watch motion controller and an iPhone game with local peer-to-peer multiplayer.',
+    tagline: 'Turning Apple Watch accelerometer & gyroscope streams into on-device Core ML swing classification for peer-to-peer iPhone multiplayer.',
+    contribution:
+      'Co-developed the watchOS/iOS native Swift app during Apple Developer Academy iOS Foundation & Advanced, combining CoreMotion sensor capture, on-device Core ML gesture classification, WatchConnectivity, and MultipeerConnectivity.',
     description:
-      'An Apple Developer Academy team project that turns Apple Watch swings into inputs for a table-tennis game on iPhone.',
+      'An Apple Developer Academy Network & UniParthenope team project that transforms an Apple Watch into a real-time motion paddle controller for local peer-to-peer iPhone table tennis.',
     problemStatement:
-      'Recognize swings from wrist motion and pass the resulting input from watchOS to the game running on iPhone.',
+      'Mapping human wrist swings into low-latency game inputs requires filtering noisy high-frequency IMU signals directly on the watch and synchronizing state seamlessly across both Watch-to-iPhone and iPhone-to-iPhone links.',
     architectureSpecs: [
-      'The Apple Watch collects accelerometer and gyroscope readings with CoreMotion and classifies gestures on-device with Core ML.',
-      'WatchConnectivity links the watch to the iPhone, and MultipeerConnectivity exchanges game state between nearby iPhones.',
+      'Apple Watch samples accelerometer and gyroscope telemetry via CoreMotion and classifies forehand/backhand swings on-device with a Core ML model.',
+      'WatchConnectivity relays classified swing events to the paired iPhone with minimal latency.',
+      'MultipeerConnectivity synchronizes match state directly between nearby iPhones for local peer-to-peer multiplayer without an external game server.',
     ],
     keyResults: [
-      'Awarded Best App Award "Alfredo Petrosino" (May 2023).',
-      'Built a local multiplayer prototype that uses wrist gestures as game input.',
+      'Won the Best App Award “Alfredo Petrosino” (May 2023) at Apple Developer Academy Network & UniParthenope.',
+      'Delivered a responsive local multiplayer demo driven entirely by on-device watchOS motion classification.',
     ],
     technologies: ['Swift', 'SwiftUI', 'CoreMotion', 'Core ML', 'WatchConnectivity', 'MultipeerConnectivity'],
     githubUrl: 'https://github.com/kappino/Ios_A1_TeamC_Virtual_Pong',
-    githubLabel: 'iOS and watchOS app',
+    githubLabel: 'iOS & watchOS source',
     date: '2023-05',
     featured: false,
+    metrics: [
+      { label: 'Recognition', value: 'Best App Award (2023)' },
+      { label: 'On-Watch AI', value: 'CoreMotion + Core ML' },
+      { label: 'Multiplayer', value: 'Local P2P Multipeer' },
+    ],
   },
   {
     id: 'proj-pepper-icsr',
-    title: 'Pepper Infotainment at ICSR 2025',
+    title: 'Pepper Interactive Demo at ICSR 2025',
+    displayTitle: 'Pepper @ ICSR 2025',
     category: 'robotics',
-    tagline: 'Bidirectional bridge between NAOqi runtime and responsive client dashboard for conference demo.',
+    tagline: 'WebSocket bridge connecting a tablet infotainment interface to Pepper’s NAOqi runtime for live conference demonstrations.',
+    contribution:
+      'Built the Python WebSocket bridge connecting a responsive tablet UI to Pepper’s NAOqi qi runtime for live interactive scenes at the International Conference on Social Robotics (ICSR 2025).',
     description:
-      'Integrated software platform for the Pepper humanoid robot presented at the International Conference on Social Robotics (ICSR 2025).',
+      'An interactive infotainment platform deployed on the Pepper humanoid robot at ICSR 2025, pairing synchronized robot speech with multimedia tablet scenes and audience Q&A.',
     problemStatement:
-      'Connect a touch interface on a tablet to Pepper’s NAOqi runtime during a live demo.',
+      'Running live conference demonstrations on a humanoid robot requires decoupling the responsive front-end interface on a tablet from Pepper’s NAOqi runtime so operators can trigger scenes reliably without stalling speech or UI state.',
     architectureSpecs: [
-      'A Python WebSocket backend connects the web interface to Pepper through the qi library.',
-      'Predefined scenes combine robot speech, multimedia and multiple-choice questions with feedback.',
+      'Python WebSocket backend bridges browser-based tablet controls to Pepper’s NAOqi runtime via the qi library.',
+      'Predefined interactive scenes synchronize robot speech synthesis, multimedia slides, and multiple-choice audience feedback.',
+      'Complements parallel lab work modernizing Pepper’s PC client stack from legacy Python 2.7 to Python 3.12 and ROS 2 over Wi-Fi/NAOqi.',
     ],
     keyResults: [
-      'Live operational demonstration exhibited at ICSR 2025 conference.',
+      'Operated live during demonstrations at the International Conference on Social Robotics (ICSR 2025).',
     ],
-    technologies: ['Python', 'NAOqi', 'WebSockets', 'HTML', 'JavaScript', 'CSS'],
+    technologies: ['Python', 'NAOqi (qi)', 'WebSockets', 'HTML / CSS / JS', 'Social Robotics'],
     githubUrl: 'https://github.com/kappino/pepper_icsr2025',
     githubLabel: 'ICSR demo source',
     referenceLinks: [
-      { label: 'Related project · RESTART adaptive Pepper controller (ROS1)', href: 'https://github.com/kappino/RESTART_Pepper_ROS1' },
+      { label: 'Related · RESTART adaptive Pepper controller (ROS 1)', href: 'https://github.com/kappino/RESTART_Pepper_ROS1' },
     ],
     date: '2025-10',
     featured: false,
+    metrics: [
+      { label: 'Venue', value: 'ICSR 2025 Live Demo' },
+      { label: 'Bridge', value: 'Python WebSocket ↔ NAOqi' },
+      { label: 'Interface', value: 'Tablet UI + Synchronized Speech' },
+    ],
   },
 ];
 
-const projectPriority = ['proj-mtls-iot-gateway', 'proj-tnes', 'proj-care-decision-planner', 'proj-spectra-eeg', 'proj-unireviews'];
+const projectPriority = [
+  'proj-mtls-iot-gateway',
+  'proj-proxmox-homelab',
+  'proj-tnes',
+  'proj-care-decision-planner',
+  'proj-munnisc-cestinno',
+  'proj-spectra-eeg',
+  'proj-agy-telegram',
+  'proj-unireviews',
+];
 
 export const orderedProjects = [
-  ...projectPriority.map((id) => projects.find((project) => project.id === id)).filter((project) => project !== undefined),
+  ...projectPriority
+    .map((id) => projects.find((project) => project.id === id))
+    .filter((project): project is Project => project !== undefined),
   ...projects.filter((project) => !projectPriority.includes(project.id)),
 ];

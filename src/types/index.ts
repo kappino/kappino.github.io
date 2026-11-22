@@ -42,7 +42,7 @@ export interface Project {
   referenceLinks?: { label: string; href: string }[];
   walkthrough?: { title: string; steps: { title: string; detail: string }[] };
   articleSlug?: string;
-  category: 'security' | 'robotics' | 'embedded' | 'research' | 'systems';
+  category: 'security' | 'robotics' | 'embedded' | 'research' | 'systems' | 'infrastructure';
   tagline: string;
   shortDescription?: string;
   description: string;

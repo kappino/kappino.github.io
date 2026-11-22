@@ -12,8 +12,16 @@ mermaid.initialize({
   suppressErrorRendering: true,
   theme: 'dark',
   securityLevel: 'loose',
+  flowchart: {
+    htmlLabels: true,
+    padding: 16,
+    nodeSpacing: 36,
+    rankSpacing: 44,
+    curve: 'basis',
+  },
   themeVariables: {
     darkMode: true,
+    fontSize: '13px',
     background: '#09090b',
     mainBkg: '#121215',
     nodeBorder: '#38bdf8',
@@ -100,7 +108,7 @@ export const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart }) => {
   };
 
   return (
-    <div className="my-8 rounded-xl border border-zinc-800 bg-zinc-950/90 shadow-2xl overflow-hidden">
+    <div className="not-prose my-8 rounded-xl border border-zinc-800 bg-zinc-950/90 shadow-2xl overflow-hidden">
       {/* Header bar */}
       <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-900/90 border-b border-zinc-800 text-xs font-mono select-none">
         <div className="flex items-center gap-2 text-sky-400 font-medium">
@@ -168,7 +176,7 @@ export const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart }) => {
           </div>
         ) : svgContent ? (
           <div
-            className="p-6 overflow-x-auto flex items-center justify-center bg-zinc-950/60 min-h-[220px] [&>svg]:max-w-full [&>svg]:h-auto"
+            className="p-6 overflow-x-auto flex items-center justify-center bg-zinc-950/60 min-h-[220px] [&>svg]:max-w-full [&>svg]:h-auto [&_p]:!m-0 [&_p]:!p-0 [&_p]:!leading-[1.35] [&_foreignObject]:overflow-visible"
             dangerouslySetInnerHTML={{ __html: svgContent }}
           />
         ) : null
